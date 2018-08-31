@@ -1,3 +1,3 @@
 module.exports = {
-  Test: require('./storage/postgres_storage')
+  PostgresStorage: require('./storage/postgres_storage')
 }

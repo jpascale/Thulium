@@ -1,12 +1,11 @@
-const Test = require('@thulium/storage').Test;
+const PostgresStorage = require('@thulium/storage').PostgresStorage;
 
 const express = require('express');
 const app = express();
 const os = require('os');
 
 app.get('/status', (req, res) => {
-  const test = new Test();
-  test.test();
+  const test = new PostgresStorage();
   return res.send({ service: 'api', hostname: os.hostname() });
 });
 

@@ -1,11 +1,21 @@
-class Test {
+const { Pool } = require('pg');
 
-  constructor() {
-    console.log('test.')
+class PostgresStorage {
+
+  constructor(config) {
+    const pool = new Pool({
+      user: 'jpascale',
+      host: 'localhost',
+      database: 'test',
+      password: '',
+      port: 5432,
+    })
+
+    pool.query('SELECT NOW()', (err, res) => {
+      console.log(err, res)
+      pool.end()
+    })
   }
 
-  test() {
-    console.log('test');
-  }
 }
-module.exports = Test;
+module.exports = PostgresStorage;
