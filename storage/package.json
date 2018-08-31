@@ -1,0 +1,11 @@
+{
+  "name": "@thulium/storage",
+  "version": "1.0.0",
+  "description": "Thulium Storage Module",
+  "main": "src/thulium/exports.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
