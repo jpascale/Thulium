@@ -12,37 +12,19 @@ class PostgresStorage {
       port: 5432,
     })
 
-    pool.query('SELECT NOW()', (err, res) => {
-      console.log(err, res)
-      pool.end()
-    })
   }
 
-  dropTable(tableName, callback) {
-    const queryStr = `DROP TABLE $1;`
-    if (callback) {
-      this.pool.query(queryStr, [tableName], callback);
-    } else {
-      return this.pool.query(queryStr, [tableName]);
-    }
+  async connect() {
+    return this.pool.connect();
   }
 
-  //TODO: check types: int, smallint, real, double precision, char(N), varchar(N), date, time, timestamp, and interval
-  createTable(tableName, fields, callback) {
-    const paramStr = Object.keys(fields).map((_, index) => `$${2 * index + 1} $${2 * index + 2}`).join(', ')
-    const queryStr = `CREATE TABLE ${tableName} (${paramStr});`;
-    const args = Object.keys(fields).reduce((prev, curr) => {
-      prev.push(curr);
-      prev.push(fields[curr]);
-      return prev
-    }, []);
-
+  query(queryStr, callback) {
     if (callback) {
-      this.pool.query(queryStr, args, callback);
+      const cb = (res) => cb(res.rows);
+      this.pool.query(this.queryStr, cb);
     } else {
-      return this.pool.query(queryStr, args);
+      return this.pool.query(queryStr);
     }
-
   }
 
 }
