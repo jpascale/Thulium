@@ -20,8 +20,7 @@ class PostgresStorage {
 
   query(queryStr, callback) {
     if (callback) {
-      const cb = (res) => cb(res.rows);
-      this.pool.query(this.queryStr, cb);
+      this.pool.query(this.queryStr, callback);
     } else {
       return this.pool.query(queryStr);
     }
