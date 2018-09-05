@@ -1,0 +1,1 @@
+const config = require("@thulium/config")
