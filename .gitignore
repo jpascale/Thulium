@@ -126,3 +126,7 @@ fabric.properties
 
 # Editor-based Rest Client
 .idea/httpRequests
+
+
+## Project files
+base/src/thulium/config/app.secure.json
