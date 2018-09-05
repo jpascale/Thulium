@@ -1,13 +1,12 @@
 /* eslint-disable import/no-named-as-default */
-import { NavLink, Route, Switch } from "react-router-dom";
-
-import AboutPage from "./AboutPage";
-import FuelSavingsPage from "./containers/FuelSavingsPage";
-import HomePage from "./HomePage";
-import NotFoundPage from "./NotFoundPage";
-import PropTypes from "prop-types";
 import React from "react";
+import PropTypes from "prop-types";
+import { NavLink, Route, Switch } from "react-router-dom";
 import { hot } from "react-hot-loader";
+
+import Navbar from './containers/Navbar';
+import Sidebar from './containers/Sidebar';
+import Main from './containers/Main';
 
 // This is a class-based component because the current
 // version of hot reloading won't hot reload a stateless
@@ -15,9 +14,22 @@ import { hot } from "react-hot-loader";
 
 class App extends React.Component {
   render() {
-    const activeStyle = { color: 'blue' };
     return (
-      <div>
+      <React.Fragment>
+        <Navbar />
+        <div className="container-fluid">
+          <div className="row">
+            <Sidebar />
+            <Main />
+          </div>
+        </div>
+      </React.Fragment>
+    );
+  }
+}
+
+/**
+ * <div>
         <div>
           <NavLink exact to="/" activeStyle={activeStyle}>Home</NavLink>
           {' | '}
@@ -32,9 +44,7 @@ class App extends React.Component {
           <Route component={NotFoundPage} />
         </Switch>
       </div>
-    );
-  }
-}
+ */
 
 App.propTypes = {
   children: PropTypes.element
