@@ -1,13 +1,11 @@
 const fs = require('fs');
+const process = require('process');
 
 class ObjConfig {
-    config;
-    credentialFilename;
-    filename;
 
     constructor(filename, credentialFilename) {
-        this.filename = filename || "./app.json";
-        this.credentialFilename = credentialFilename || "./app.secure.json";
+        this.filename = filename || "../config/app.json";
+        this.credentialFilename = credentialFilename || "../config/app.secure.json";
     }
 
     async get_config() {
@@ -15,13 +13,14 @@ class ObjConfig {
             let file = JSON.parse(fs.readFileSync(this.filename, 'utf8'));
             let credential = JSON.parse(fs.readFileSync(this.credentialFilename, 'utf8'));
             this.config = {
-                ...file,
-                ...credential
+                ...file[process.env.NODE_ENV],
+                ...credential[process.env.NODE_ENV]
             };
             console.log(this.config);
         }
         return this.config;
     }
+
 
 }
 
