@@ -10,8 +10,8 @@ class ObjConfig {
 
     async get_config() {
         if(!this.config){
-            let file = JSON.parse(fs.readFileSync(this.filename, 'utf8'));
-            let credential = JSON.parse(fs.readFileSync(this.credentialFilename, 'utf8'));
+            let file = await JSON.parse(fs.readFileSync(this.filename, 'utf8'));
+            let credential = await JSON.parse(fs.readFileSync(this.credentialFilename, 'utf8'));
             this.config = {
                 ...file[process.env.NODE_ENV],
                 ...credential[process.env.NODE_ENV]
