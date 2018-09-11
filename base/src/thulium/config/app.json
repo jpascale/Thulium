@@ -1,1 +1,14 @@
-{}
+{
+  "production": {
+
+  },
+  "development":{
+
+  },
+  "test":{
+
+  },
+  "staging":{
+
+  }
+}
