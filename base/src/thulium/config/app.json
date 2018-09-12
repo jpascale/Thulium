@@ -3,12 +3,11 @@
 
   },
   "development":{
-
+    "p1": "asd",
+    "p2": "add"
   },
   "test":{
-
-  },
-  "staging":{
-
+    "p1": "asd2",
+    "p2": "add2"
   }
 }
