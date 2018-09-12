@@ -10,7 +10,10 @@ button.dropdown-item {
 .navbar.thulium-navbar {
 	position: absolute;
 	z-index: 1050;
-	-webkit-box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.75);
-	-moz-box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.75);
-	box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.75);
+	-webkit-box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.2);
+	-moz-box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.2);
+	box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.2);
+
+	padding-top: 0;
+	padding-bottom: 0;
 }
