@@ -1,17 +1,18 @@
 import React from 'react';
 
-import ActionBar from '../modules/Editor/ActionBar';
-import Editor from '../modules/Editor/Editor';
-import Results from '../modules/Editor/Results';
+
+import TabBar from '../modules/Editor/TabBar';
+import Tab from '../modules/Editor/Tab';
 
 import '../../styles/main.scss';
 
 const Main = props => (
-	<main role="main" id="main-container" className="col-md-9 ml-sm-auto col-lg-10">
-		<ActionBar />
-		<Editor />
-		<Results />
-	</main>
+	<React.Fragment>
+		<TabBar />
+		<main role="main" id="main-container" className="col-md-9 ml-sm-auto col-lg-10 full-height">
+			<Tab />
+		</main>
+	</React.Fragment>
 );
 
 export default Main;

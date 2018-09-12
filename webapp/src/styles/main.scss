@@ -1,12 +1,21 @@
 #main-container {
 	position: relative;
 	padding: 0;
-	padding-top: 50px;
+	padding-top: 67px;
 }
 
 .navbar.editor-action-bar {
 	padding-top: 0;
 	padding-bottom: 0;
+	// position: absolute;
+	// right: 0;
+	// left: 0;
+}
+
+.navbar.thulium-editor-tab-bar {
+	padding-top: 48px;
+	padding-bottom: 0;
+	position: fixed;
 	// position: absolute;
 	// right: 0;
 	// left: 0;
