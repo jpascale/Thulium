@@ -11,4 +11,6 @@ export default {
 		}
 	},
 	"currentEngine": "postgres",
+	"openFiles": [],
+	"running": false
 };

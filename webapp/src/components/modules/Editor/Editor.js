@@ -1,19 +1,28 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import brace from 'brace';
 import AceEditor from 'react-ace';
+import debounce from 'lodash.debounce';
 
 import 'brace/mode/sql';
 import 'brace/theme/monokai';
 
+import { run, queryChanged } from '../../../actions/app';
 
 class Editor extends React.Component {
+
+	constructor(props) {
+		super(props);
+
+		this.onChange = debounce(this.onChange, 400);
+	}
 
 	onLoad = () => {
 
 	}
 
-	onChange = () => {
-
+	onChange = (value, diff) => {
+		this.props.queryChanged(value);
 	}
 
 	render() {
@@ -25,7 +34,7 @@ class Editor extends React.Component {
 			onLoad={this.onLoad}
 			onChange={this.onChange}
 			fontSize={14}
-			showPrintMargin={true}
+			showPrintMargin={false}
 			showGutter={true}
 			highlightActiveLine={true}
 			width="100%"
@@ -40,4 +49,9 @@ class Editor extends React.Component {
 	}
 }
 
-export default Editor;
+const mapStateToProps = state => ({});
+const mapDispatchToProps = dispatch => ({
+	queryChanged: sql => dispatch(queryChanged(sql))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Editor);

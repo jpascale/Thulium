@@ -8,7 +8,7 @@ class TabBar extends React.Component {
 			<Navbar color="dark" expand="md" fixed="top" className="navbar-dark thulium-editor-tab-bar col-md-9 ml-sm-auto col-lg-10">
 				<Nav className="mr-auto" navbar>
 					<NavItem>
-						<NavLink href="#" className="editor-action-bar-button">File #1</NavLink>
+						<NavLink active href="#" className="editor-action-bar-button">File #1</NavLink>
 					</NavItem>
 					<NavItem>
 						<NavLink href="#" className="editor-action-bar-button">File #2</NavLink>
