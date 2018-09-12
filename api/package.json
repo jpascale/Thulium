@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "@thulium/storage": "../storage",
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "@thulium/base": "../base"
   }
 }
