@@ -1,7 +1,7 @@
 #main-container {
 	position: relative;
 	padding: 0;
-	padding-top: 67px;
+	padding-top: 72px;
 }
 
 .navbar.editor-action-bar {
@@ -16,12 +16,13 @@
 	padding-top: 48px;
 	padding-bottom: 0;
 	position: fixed;
+	border-bottom: 1px solid transparentize(#222, 0.5);
 	// position: absolute;
 	// right: 0;
 	// left: 0;
 }
 
 .navbar-expand-md .navbar-nav .nav-link.editor-action-bar-button {
-	padding-top: 0.1rem;
-	padding-bottom: 0.1rem;
+	padding-top: 0.4rem;
+	padding-bottom: 0.2rem;
 }
