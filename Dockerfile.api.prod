@@ -1,0 +1,15 @@
+FROM node:8.9.4
+ENV NODE_ENV production
+ENV PROJECT api
+ENV ROOT /usr/thulium/
+ENV INSTALL npm install
+
+WORKDIR $ROOT
+COPY storage $ROOT/storage
+COPY api $ROOT/api
+
+RUN cd storage && $INSTALL
+RUN cd api && $INSTALL
+
+WORKDIR $ROOT/api
+CMD node index.js
