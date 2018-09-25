@@ -3,10 +3,10 @@ const { Pool } = require('pg');
 
 class PostgresStorage {
 
-  constructor(config) {
-    this.pool = new Pool({
+  constructor(config, pool) {
+    this.pool = pool || new Pool({
       user: 'jpascale',
-      host: 'localhost',
+      host: '192.168.0.12',
       database: 'test',
       password: '',
       port: 5432,
@@ -20,7 +20,7 @@ class PostgresStorage {
 
   query(queryStr, callback) {
     if (callback) {
-      this.pool.query(this.queryStr, callback);
+      this.pool.query(queryStr, callback);
     } else {
       return this.pool.query(queryStr);
     }
