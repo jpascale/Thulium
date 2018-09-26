@@ -9,8 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@thulium/base": "../base",
     "@thulium/storage": "../storage",
-    "express": "^4.16.3",
-    "@thulium/base": "../base"
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3"
   }
 }

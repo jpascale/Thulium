@@ -6,15 +6,15 @@ class PostgresStorage {
   constructor(config, pool) {
     this.pool = pool || new Pool({
       user: 'jpascale',
-      host: '192.168.0.12',
+      host: '127.0.0.1',
       database: 'test',
       password: '',
       port: 5432,
-    })
+    });
 
   }
 
-  async connect() {
+  connect() {
     return this.pool.connect();
   }
 
