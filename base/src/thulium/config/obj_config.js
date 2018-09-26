@@ -4,7 +4,6 @@ const process = require('process');
 const path = require('path');
 const configPath = process.cwd() + '/../config/'
 let filename = "app.json";
-console.log();
 let credentialFilename = "app.secure.json";
 
 let file = JSON.parse(fs.readFileSync(path.resolve(configPath, filename), 'utf8'));
