@@ -1,10 +1,13 @@
 const express = require('express')
   , router = express.Router({ mergeParams: true })
-  , Status = require('http-status-codes');
+  , Status = require('http-status-codes')
+  , debug = require('debug')('api:core');
+
+debug('setting up /core routes');
 
 if (process.env.NODE_ENV === 'development') {
   router.use((req, res, next) => {
-    console.log(`${req.method} ${req.baseUrl}${req.path} %o %o`, req.query, req.body);
+    debug(`${req.method} ${req.baseUrl}${req.path} %o %o`, req.query, req.body);
     next();
   });
 }

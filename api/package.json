@@ -12,7 +12,8 @@
       "command": "node index.js",
       "env": {
         "NODE_ENV": "development",
-        "PORT": 3000
+        "PORT": 3000,
+        "DEBUG": "api*"
       }
     },
     "start:prod": {

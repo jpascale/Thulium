@@ -2,7 +2,10 @@ const express = require('express')
     , router = express.Router({ mergeParams: true })
     , os = require('os')
     , Status = require('http-status-codes')
-    , { PostgresStorage: storage } = require('@thulium/storage');
+    , { PostgresStorage: storage } = require('@thulium/storage')
+    , debug = require('debug')('api:core:v1:postgres');
+
+debug('setting up /core/v1/postgres routes');
 
 router.post('/query', (req, res) => {
   storage.query(req.body.query, (err, response) => {
