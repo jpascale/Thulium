@@ -1,5 +1,9 @@
 const bodyParser = require('body-parser')
-    , express = require('express');
+    , express = require('express')
+    , { PostgresStorage } = require('@thulium/storage')
+    , { config } = require('@thulium/base');
+
+PostgresStorage.config(config.postgres);
 
 const app = express();
 app.use(bodyParser.json())
