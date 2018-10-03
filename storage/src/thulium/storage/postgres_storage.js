@@ -2,7 +2,7 @@ const { Pool } = require('pg');
 
 const Module = {};
 
-const pool;
+let pool;
 
 Module.config = (config) => {
   if (pool) return;

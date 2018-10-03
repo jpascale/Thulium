@@ -6,10 +6,12 @@ const bodyParser = require('body-parser')
 PostgresStorage.config(config.postgres);
 
 const app = express();
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 
-app.use(require('./core/'));
+app.use('/core', require('./core/'));
 
-app.listen(3000, () => {
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
   console.log('🚀 App listening on port 3000. Press Ctrl ^C to exit...');
 });
