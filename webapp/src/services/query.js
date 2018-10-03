@@ -3,5 +3,5 @@ import objectAssign from 'object-assign';
 
 export const sendQuery = (engine, query, options) => {
 	const queryOptions = objectAssign({}, options,  { mediaType: 'application/pgsql' });
-	return post(`/api/v1/query/${engine}`, query, queryOptions).then(extractBody);
+	return post(`/core/v1/${engine}/query`, query, queryOptions).then(extractBody);
 }
