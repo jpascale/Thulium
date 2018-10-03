@@ -10,7 +10,7 @@ debug('setting up /core/v1/postgres routes');
 router.post('/query', (req, res) => {
   storage.query(req.body.query, (err, response) => {
     if (err) {
-      return res.status(Status.BAD_REQUEST).json({ error });
+      return res.status(Status.BAD_REQUEST).json({ error: err });
     }
     res.status(Status.OK).json(response);
   });
