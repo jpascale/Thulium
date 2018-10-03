@@ -1,21 +1,28 @@
 const { Pool } = require('pg');
 
-
 class PostgresStorage {
 
-  constructor(config, pool) {
-    this.pool = pool || new Pool({
-      user: 'jpascale',
-      host: '127.0.0.1',
-      database: 'test',
-      password: '',
-      port: 5432,
+  constructor(config, InjectedPool) {
+    const CurrPool = InjectedPool || Pool;
+    this.pool = new CurrPool({
+      user: config.user,
+      host: config.hostname,
+      database: config.database,
+      password: config.password,
+      port: config.port,
     });
-
+    this.connected = false;
   }
 
   connect() {
-    return this.pool.connect();
+    if (!this.connected) {
+      return this.pool.connect()
+        .then(() => {
+          this.connected = true;
+        });
+    }
+
+    return Promise.resolve(this.pool);
   }
 
   query(queryStr, callback) {

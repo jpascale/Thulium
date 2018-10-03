@@ -129,4 +129,4 @@ fabric.properties
 .idea/
 
 ## Project files
-base/src/thulium/config/app.secure.json
+app.secure.json

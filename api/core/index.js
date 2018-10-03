@@ -1,6 +1,6 @@
 const express = require('express')
-    , router = express.Router({ mergeParams: true })
-    , Status = require('http-status-codes');
+  , router = express.Router({ mergeParams: true })
+  , Status = require('http-status-codes');
 
 if (process.env.NODE_ENV === 'development') {
   router.use((req, res, next) => {
@@ -15,7 +15,6 @@ router.use('/v:api_version([1-9]+)', (req, res, next) => {
 });
 
 router.use('/v1', require('./v1/'));
-router.use('/v2', require('./v2/'));
 
 router.use('/v:api_version([1-9]+)', (req, res, next) => {
   res.status(Status.NOT_FOUND).json({
