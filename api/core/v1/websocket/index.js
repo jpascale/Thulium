@@ -1,8 +1,10 @@
 const express = require('express')
-    , router = express.Router({ mergeParams: true })
-    , os = require('os')
-    , Status = require('http-status-codes')
-    , debug = require('debug')('api:core:v1:postgres');
+	, router = express.Router({ mergeParams: true })
+	, os = require('os')
+	, Status = require('http-status-codes')
+	, debug = require('debug')('api:core:v1:postgres')
+	, { WebSocketDispatcher: WebSocketDispatcher} = require('@thulium/socket_manager');
+
 
 debug('setting up /core/v1/websocket routes');
 
@@ -14,6 +16,8 @@ router.post('/new', (req, res) => {
   if (port > maxPort){
     port = minPort;
   }
+
+  WebSocketDispatcher.newConnection(port);
   const response = {"success": "true", "data":{"socket_addr": "ws://"+ os.hostname()+":"+port+"/"}};
   port++;
   res.status(Status.OK).json(response);
