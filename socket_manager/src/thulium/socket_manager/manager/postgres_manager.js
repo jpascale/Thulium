@@ -1,24 +1,17 @@
-const {Manager} = require('./manager.js'),
-	{PostgresStorage: storage} = require('@thulium/storage'),
+const {PostgresStorage: storage} = require('@thulium/storage'),
 	{config} = require('@thulium/base');
 
-class PSQLManager extends Manager{
+const PSQLManager = {};
 
-	constructor(){
-		super('psql');
-		storage.config(config.postgres);
-	}
+PSQLManager.config = function () {
+	//TODO CHANGE CONFIG TO SESSION PASSED
+	storage.config(config.postgres);
+};
 
-	manage(msg, callback, err_callback,client){
-		return storage.query(msg, (err, response) => {
-			if (err) {
-				err_callback(client,{response : err});
-				return;
-			}
-			callback(client,{response : response});
-		});
-
-	}
-}
+PSQLManager.manage = function(msg, client, callback){
+	return storage.query(msg, (err, response) => {
+		callback(client,err, response);
+	});
+};
 
 exports.PSQLManager = PSQLManager;

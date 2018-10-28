@@ -1,8 +1,8 @@
 const http = require('http')
 	, debug = require('debug')('socket_manager:dispatcher')
 	, webSocketServer = require('websocket').server
-	, {Manager} = require("../manager/manager.js")
-	, {PSQLManager} = require("../manager/postgres_manager.js");
+	, {Manager} = require("../manager/manager")
+	, {PSQLManager} = require("../manager/postgres_manager");
 
 const Module = {};
 
@@ -24,23 +24,27 @@ Module.newConnection = function (port) {
 	let count = 0;
 	let clients = {};
 
-	let managers = {'reverse': new Manager("reverse"), 'echo': new Manager("echo"), 'psql': new PSQLManager()};
+	const managers = {
+		reverse: new Manager("reverse"),
+		echo: new Manager("echo"),
+		psql: PSQLManager
+	};
 
-	wsServer.on('request', function(r){
+	wsServer.on('request', function(request){
 		// Only accept own protocol, and here initiate the connection (and can be accessed within this .js)
-		const connection = r.accept('itba-db-protocol', r.origin);
+		const connection = request.accept('itba-db-protocol', request.origin);
 		const id = count++;
 		clients[id] = connection;
 		/*Debug*/
 		debug((new Date()) + ' Connection accepted [' + id + ']');
 
 
-		const callbk = function(client,res){
-			client.sendUTF(JSON.stringify(res));
-			connection.close();
-		};
-		const errcallbk = function(client, res){
-			client.sendUTF(JSON.stringify(res));
+		const callback = (client,err,response) => {
+			if (err){
+				client.sendUTF(JSON.stringify({response: err}));
+			}else{
+				client.sendUTF(JSON.stringify({response}));
+			}
 			connection.close();
 		};
 
@@ -63,7 +67,8 @@ Module.newConnection = function (port) {
 			//TODO ASK FOR EXPLAIN QUERY
 
 			/*The magic (?*/
-			manager.manage(msgJSON["content"], callbk, errcallbk, clients[id]);
+			manager.config();
+			manager.manage(msgJSON["content"], clients[id], callback);
 
 		});
 
