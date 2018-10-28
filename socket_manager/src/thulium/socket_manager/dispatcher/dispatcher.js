@@ -1,7 +1,8 @@
 const http = require('http')
 	, debug = require('debug')('socket_manager:dispatcher')
 	, webSocketServer = require('websocket').server
-	, {Manager} = require("../manager/manager.js");
+	, {Manager} = require("../manager/manager.js")
+	, {PSQLManager} = require("../manager/postgres_manager.js");
 
 const Module = {};
 
@@ -23,7 +24,7 @@ Module.newConnection = function (port) {
 	let count = 0;
 	let clients = {};
 
-	let managers = {'reverse': new Manager("reverse"), 'echo': new Manager("echo")};
+	let managers = {'reverse': new Manager("reverse"), 'echo': new Manager("echo"), 'psql': new PSQLManager()};
 
 	wsServer.on('request', function(r){
 		// Only accept own protocol, and here initiate the connection (and can be accessed within this .js)
@@ -32,6 +33,16 @@ Module.newConnection = function (port) {
 		clients[id] = connection;
 		/*Debug*/
 		debug((new Date()) + ' Connection accepted [' + id + ']');
+
+
+		const callbk = function(client,res){
+			client.sendUTF(JSON.stringify(res));
+			connection.close();
+		};
+		const errcallbk = function(client, res){
+			client.sendUTF(JSON.stringify(res));
+			connection.close();
+		};
 
 		// Create event listener
 		connection.on('message', function(message) {
@@ -52,8 +63,8 @@ Module.newConnection = function (port) {
 			//TODO ASK FOR EXPLAIN QUERY
 
 			/*The magic (?*/
-			clients[id].sendUTF(manager.manage(msgJSON["content"]));
-			connection.close();
+			manager.manage(msgJSON["content"], callbk, errcallbk, clients[id]);
+
 		});
 
 		connection.on('close', function(reasonCode, description) {
