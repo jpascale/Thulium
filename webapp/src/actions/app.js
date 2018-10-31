@@ -1,4 +1,32 @@
 import C from '../constants/app';
+import { checkAuth, fetchProfile } from './auth';
+import { fetchEngines } from './engines';
+
+const booting = () => ({
+	type: C.BOOTING
+});
+
+const booted = () => ({
+	type: C.BOOTED
+});
+
+export const boot = () => (dispatch, getState) => {
+	dispatch(booting());
+
+	dispatch(
+		checkAuth()
+	).then(() => {
+		if (getState().auth.authenticated) {
+			return Promise.all([
+				dispatch(fetchProfile()),
+				dispatch(fetchEngines())
+			]);
+		}
+		return Promise.resolve();
+	}).then(() => {
+		dispatch(booted());
+	});
+};
 
 export const changeEngine = engine => ({
 	type: C.CHANGE_ENGINE,

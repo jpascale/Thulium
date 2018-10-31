@@ -1,12 +1,8 @@
 import constants from 'namespace-constants';
 
-export default constants('app', [
-	'booting',
-	'booted',
-	'change engine',
-	'running',
-	'run',
-	'query changed'
+export default constants('engines', [
+	'fetching',
+	'fetched',
 ], {
 	separator: '/',
 	transform: v => v.replace(/ /g, '_').toUpperCase()

@@ -2,12 +2,6 @@ import C from '../../constants/app';
 import objectAssign from 'object-assign';
 
 export default {
-  [C.BOOTING] : (state) => {
-    return objectAssign({}, state, { booting: true });
-  },
-  [C.BOOTED] : (state) => {
-    return objectAssign({}, state, { booting: false });
-  },
   [C.CHANGE_ENGINE] : (state, engine) => {
     return objectAssign({}, state, { currentEngine: engine });
   },

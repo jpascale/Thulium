@@ -11,5 +11,4 @@ export default {
     }
   },
   "currentEngine": "postgres",
-  "booting": true
 };
