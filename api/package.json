@@ -13,7 +13,7 @@
       "env": {
         "NODE_ENV": "development",
         "PORT": 3000,
-        "DEBUG": "api*,storage*"
+        "DEBUG": "api*,storage*,ws*"
       }
     },
     "start:prod": {
@@ -29,12 +29,12 @@
   "dependencies": {
     "@thulium/base": "../base",
     "@thulium/storage": "../storage",
+    "@thulium/ws": "../ws",
     "body-parser": "^1.18.3",
     "debug": "^4.0.1",
     "express": "^4.16.3",
     "http-status-codes": "^1.3.0",
-    "pg": "^7.4.3",
-    "@thulium/socket_manager": "../socket_manager"
+    "pg": "^7.4.3"
   },
   "devDependencies": {
     "better-npm-run": "^0.1.1"

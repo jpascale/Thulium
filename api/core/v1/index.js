@@ -5,6 +5,7 @@ const express = require('express')
 debug('setting up /core/v1 routes');
 
 router.use('/postgres', require('./postgres'));
-router.use('/websocket', require('./websocket'));
+// router.use('/websocket', require('./websocket'));
+router.use('/session', require('./session'));
 
 module.exports = router;

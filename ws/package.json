@@ -1,14 +1,14 @@
 {
-  "name": "@thulium/socket_manager",
+  "name": "@thulium/ws",
   "version": "1.0.0",
   "description": "Thulium Socket Manager Module",
-  "main": "src/thulium/exports.js",
+  "main": "index.js",
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "debug": "^4.0.1",
-    "websocket": "^1.0.28",
     "@thulium/base": "../base",
-    "@thulium/storage": "../storage"
+    "@thulium/storage": "../storage",
+    "debug": "^4.0.1",
+    "ws": "^6.1.0"
   }
 }
