@@ -1,6 +1,7 @@
-const { Session } = require('@thulium/internal');
+const { Session } = require('@thulium/internal')
+		, ThuliumHandler = require('./handlers');
 
-const wssRouteHandler = (ws, req, cb) => {
+const resolveSession = (ws, req, cb) => {
 	const sessionID = (() => {
 		const match = req.url.match(/^\/([a-f0-9]+)/);
 		if (!match) return null;
@@ -16,8 +17,26 @@ const wssRouteHandler = (ws, req, cb) => {
 		if (!session) return cb(new Error('Session not found'));
 		return cb(null, session);
 	});
-}
+};
+
+const route = (ws, req, rawMessage, done) => {
+
+	const message = (() => {
+		try {
+			return JSON.parse(rawMessage);
+		} catch (e) {
+			return null;
+		}
+	});
+
+	if (!message || !message.type || !message.payload) {
+		return cb(new Error('invalid message format'));
+	}
+
+	ThuliumHandler.handle(ws, req, message, done);
+};
 
 module.exports = {
-	resolveSession: wssRouteHandler
+	resolveSession,
+	route
 }
