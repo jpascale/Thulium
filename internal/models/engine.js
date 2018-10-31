@@ -4,6 +4,13 @@ const mongoose = require('mongoose')
 debug('configuring engine schema');
 
 const Engine = mongoose.Schema({
+	created: {
+		type: Date,
+		default: Date.now
+	},
+	last_updated: {
+		type: Date
+	},
 	title: {
 		type: String
 	},

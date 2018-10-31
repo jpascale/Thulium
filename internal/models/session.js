@@ -4,6 +4,13 @@ const mongoose = require('mongoose')
 debug('configuring session schema');
 
 const Session = mongoose.Schema({
+	created: {
+		type: Date,
+		default: Date.now
+	},
+	last_updated: {
+		type: Date
+	},
 	owner: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'User'
