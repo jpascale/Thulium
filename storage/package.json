@@ -9,7 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "debug": "^4.0.1",
+    "@thulium/base": "../base",
+    "debug": "^4.1.0",
     "pg": "^7.4.3"
   }
 }

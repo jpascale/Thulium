@@ -1,11 +1,12 @@
-const { PostgresStorage, InternalStorage } = require('@thulium/storage')
+const { PostgresStorage } = require('@thulium/storage')
+    , { connect } = require("@thulium/internal")
     , { config } = require('@thulium/base')
     , debug = require('debug')('api:boot')
 
 debug('setting up postgres config');
 PostgresStorage.config(config.postgres);
 
-InternalStorage.connect((err) => {
+connect((err) => {
   if (err) {
     console.error(err);
     debug('failed to connect to internal storage')

@@ -3,7 +3,8 @@ const bodyParser = require('body-parser')
     , http = require('http')
     , debug = require('debug')('api:app')
     , { createThuliumWebSocketServer } = require('@thulium/ws')
-    , Status = require('http-status-codes');
+    , Status = require('http-status-codes')
+    , { Session } = require('@thulium/internal');
 
 const app = express();
 debug('setting up middleware');

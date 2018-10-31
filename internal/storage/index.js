@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 		, debug = require('debug')('storage:internal')
-		, { storage } = require('@thulium/base');
+		, { storage } = require('@thulium/base').config;
 
 const uri = `mongodb://${storage.internal.user}:${storage.internal.password}@${storage.internal.host}:${storage.internal.port}/${storage.internal.database}`;
 
@@ -24,7 +24,7 @@ const connect = (cb) => {
 		debug(`Mongoose default connection disconnected`);
 	});
 
-	mongoose.connect(uri, cb);
+	mongoose.connect(uri, { useNewUrlParser: true }, cb);
 };
 
 module.exports = {
