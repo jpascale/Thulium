@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@thulium/base": "../base",
     "debug": "^4.1.0",
     "mongoose": "^5.3.8"
   }

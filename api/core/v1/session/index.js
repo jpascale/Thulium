@@ -12,6 +12,8 @@ const PORT = process.env.PORT || 3000;
 
 router.post('/hello', (req, res) => {
 
+  Session.findOrCreate()
+
   // find or create session
 
   // TODO: replace with configuration
