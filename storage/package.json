@@ -2,7 +2,7 @@
   "name": "@thulium/storage",
   "version": "1.0.0",
   "description": "Thulium Storage Module",
-  "main": "src/thulium/exports.js",
+  "main": "index.js",
   "scripts": {
     "test": "jest"
   },
