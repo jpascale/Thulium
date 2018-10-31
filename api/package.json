@@ -30,6 +30,7 @@
     "@thulium/base": "../base",
     "@thulium/storage": "../storage",
     "@thulium/ws": "../ws",
+    "@thulium/internal": "../internal",
     "body-parser": "^1.18.3",
     "debug": "^4.0.1",
     "express": "^4.16.3",

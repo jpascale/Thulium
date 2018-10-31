@@ -13,7 +13,8 @@ router.post('/hello', (req, res) => {
 
   // find or create session
 
-  res.set('Location', `ws://${os.hostname()}:${PORT}/`);
+  // TODO: replace with configuration
+  res.set('Location', `ws://127.0.0.1:${PORT}/`);
 
   if (/* session.isNew */ Math.random() > 0.5) {
     return res.status(Status.CREATED).json({
