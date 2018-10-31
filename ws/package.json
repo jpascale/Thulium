@@ -8,6 +8,7 @@
   "dependencies": {
     "@thulium/base": "../base",
     "@thulium/storage": "../storage",
+    "@thulium/internal": "../internal",
     "debug": "^4.0.1",
     "ws": "^6.1.0"
   }

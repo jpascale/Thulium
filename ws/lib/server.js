@@ -1,6 +1,7 @@
 const http = require('http')
 		, debug = require('debug')('ws')
 		, WebSocket = require('ws')
+		, routeHandler = require('./routes')
 	// , {Manager} = require("../manager/manager")
 	// , {PSQLManager} = require("../manager/postgres_manager");
 
@@ -21,20 +22,28 @@ const createWebSocketServer = server => {
 	// 	psql: PSQLManager
 	// };
 
-	wss.on('connection', ws => {
+	wss.on('connection', (ws, req) => {
 
 		const id = count++;
 		clients[id] = ws;
 		clients[id].id = id;
 
-		debug(`Connection accepted [${id}]`);
+		routeHandler.resolveSession(ws, req, (err, sesion) => {
+			if (err) {
+				consoler.error(err);
+				ws.close(108, 'Invalid session id');
+				return;
+			}
 
-		ws.on('message', message => {
-			debug(`Received message from ${id}: ${message}`);
-			ws.send(message);
+			debug(`Connection accepted [${id}]`);
+
+			ws.on('message', message => {
+				debug(`Received message from ${id}: ${message}`);
+				ws.send(message);
+			});
+
+			ws.send('Hello to Thulium!');
 		});
-
-		ws.send('Hello to Thulium!');
 	});
 
 	return wss;
