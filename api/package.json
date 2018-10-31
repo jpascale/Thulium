@@ -28,9 +28,10 @@
   "license": "ISC",
   "dependencies": {
     "@thulium/base": "../base",
+    "@thulium/internal": "../internal",
     "@thulium/storage": "../storage",
     "@thulium/ws": "../ws",
-    "@thulium/internal": "../internal",
+    "async": "^2.6.1",
     "body-parser": "^1.18.3",
     "debug": "^4.0.1",
     "express": "^4.16.3",

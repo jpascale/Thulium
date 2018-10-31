@@ -11,21 +11,17 @@ debug('setting up /core/v1/session routes');
 const PORT = process.env.PORT || 3000;
 
 router.post('/hello', (req, res) => {
+  Session.findOrCreateById(null, {}, (err, session, found) => {
+    if (err) {
+      console.error(err);
+      return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });
+    }
 
-  Session.findOrCreate()
+    // TODO: replace with configuration
+    res.set('Location', `ws://127.0.0.1:${PORT}/${session._id}`);
 
-  // find or create session
-
-  // TODO: replace with configuration
-  res.set('Location', `ws://127.0.0.1:${PORT}/`);
-
-  if (/* session.isNew */ Math.random() > 0.5) {
-    return res.status(Status.CREATED).json({
-      files: []
-    });
-  }
-  res.status(Status.OK).json({
-    files: []
+    if (found) return res.status(Status.OK).json(session);
+    res.status(Status.CREATED).json(session);
   });
 });
 
