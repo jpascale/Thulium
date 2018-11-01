@@ -1,11 +1,14 @@
 const bodyParser = require('body-parser')
-    , express = require('express')
-    , { PostgresStorage } = require('@thulium/storage')
-    , { config } = require('@thulium/base')
-    , debug = require('debug')('api');
+  , express = require('express')
+  , { PostgresStorage, MongoStorage } = require('@thulium/storage')
+  , { config } = require('@thulium/base')
+  , debug = require('debug')('api');
 
 debug('setting up postgres config');
 PostgresStorage.config(config.postgres);
+
+debug('setting up mongo config for users')
+MongoStorage.config(config.mongo.users);
 
 const app = express();
 debug('setting up middleware');

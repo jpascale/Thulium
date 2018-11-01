@@ -9,9 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "debug": "^4.0.1",
+    "debug": "^4.1.0",
     "jsonwebtoken": "^8.3.0",
-    "mongoose": "^5.3.4",
+    "mongoose": "^5.3.8",
+    "mongoose-unique-validator": "^2.0.2",
     "pg": "^7.4.3"
   }
 }

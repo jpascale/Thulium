@@ -1,9 +1,10 @@
-const userModel = require('../models/users')
+const { userModel } = require('@thulium/storage')
   , jwt = require('jsonwebtoken'),
   { config } = require('@thulium/base');
 
 module.exports = {
   create: function (req, res, next) {
+    console.log(`Creating ${req.body.username}`);
     userModel.create({ username: req.body.username, email: req.body.email, hash: req.body.password }, function (err, result) {
       if (err) {
         return next(err);

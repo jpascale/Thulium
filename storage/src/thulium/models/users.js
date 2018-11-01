@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
   , uniqueValidator = require('mongoose-unique-validator')
-  , crypto = require('crypto');
+  , crypto = require('crypto')
+  , jwt = require('jsonwebtoken');
 
 const saltRounds = 10;
 
@@ -27,7 +28,7 @@ const UserSchema = mongoose.Schema({
 
 UserSchema.pre('save', function (next) {
   this.salt = crypto.randomBytes(16).toString('hex');
-  this.hash = crypto.pbkdf2Sync(password, this.salt, 10000, 512, 'sha512').toString('hex');
+  this.hash = crypto.pbkdf2Sync(this.hash, this.salt, 10000, 512, 'sha512').toString('hex');
   next();
 });
 
