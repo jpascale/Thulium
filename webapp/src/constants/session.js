@@ -1,7 +1,7 @@
 import constants from 'namespace-constants';
 
-export default constants('engines', [
-	'start session',
+export default constants('session', [
+	'start',
 ], {
 	separator: '/',
 	transform: v => v.replace(/ /g, '_').toUpperCase()

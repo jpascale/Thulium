@@ -16,7 +16,7 @@ class EnginePicker extends React.Component {
 
 		return Object.keys(engines).map(engine => (
 			<DropdownItem key={engine} toggle={false} onClick={() => this.changeEngine(engine)}>
-				{currentEngine === engine ? '✓' : ''} {engines[engine].displayName}
+				{currentEngine === engine ? '✓' : ''} {engines[engine].title}
 			</DropdownItem>
 		));
 	}
@@ -26,7 +26,7 @@ class EnginePicker extends React.Component {
 		return (
 			<UncontrolledDropdown nav inNavbar>
 				<DropdownToggle nav caret>
-					Engine ({engines[currentEngine].displayName})
+					Engine ({engines[currentEngine].title})
 				</DropdownToggle>
 				<DropdownMenu right>
 					{this.renderEngines()}

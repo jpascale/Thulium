@@ -13,7 +13,7 @@ const fetchedEngines = (payload) => ({
 export const fetchEngines = () => (dispatch, getState) => {
 	dispatch(fetchingEngines());
 
-	EngineService.fetchAll({}, {
+	return EngineService.fetchAll({}, {
 		token: getState().auth.token
 	}).then(engines => {
 		return dispatch(fetchedEngines(engines));

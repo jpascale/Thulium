@@ -1,7 +1,6 @@
 import CA from '../constants/auth';
 import jwtDecode from 'jwt-decode';
-
-const AuthService = {};
+import * as AuthService from '../services/auth';
 
 const THULIUM_LOCALSTORAGE_TOKEN_KEY = 'thulium:token';
 
@@ -68,15 +67,11 @@ const fetchedProfile = (profile) => ({
 
 export const fetchProfile = () => (dispatch, getState) => {
 	dispatch(fetchingProfile());
-	AuthService.fetchProfile({
+	return AuthService.fetchProfile({
 		token: getState().auth.token
 	}).then((profile) => {
 		return dispatch(fetchedProfile(profile));
 	}, err => {
 		return dispatch(unauthorized());
 	});
-}
-
-export const anonymous = () => (dispatch, getState) => {
-	
 }

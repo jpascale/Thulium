@@ -27,7 +27,6 @@ const isUserValid = (req, res, next) => {
 const validateUser = (req, res, next) => {
 	isUserValid(req, res, (err) => {
 		if (err) {
-			console.error(err);
 			return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });
 		}
 		if (!req.user) {

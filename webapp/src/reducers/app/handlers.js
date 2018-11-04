@@ -1,4 +1,6 @@
 import C from '../../constants/app';
+import CS from '../../constants/session';
+import CE from '../../constants/engine';
 import objectAssign from 'object-assign';
 
 export default {
@@ -19,5 +21,17 @@ export default {
   },
   [C.RUN] : (state) => {
   	return objectAssign({}, state, { running: false });
+  },
+
+  [CS.START] : (state, session) => {
+    return objectAssign({}, state, { session });
+  },
+
+  [CE.FETCHED] : (state, engineList) => {
+    const engines = engineList.reduce((memo, val) => {
+      memo[val.slug] = val;
+      return memo;
+    }, {});
+    return objectAssign({}, state, { engines });
   }
 }

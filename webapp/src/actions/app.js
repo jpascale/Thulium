@@ -18,7 +18,12 @@ export const boot = () => (dispatch, getState) => {
 	dispatch(
 		hello()
 	).then(() => {
-		dispatch(booted());
+		return Promise.all([
+			dispatch(fetchProfile()),
+			dispatch(fetchEngines())
+		]);
+	}).then(() => {
+		return dispatch(booted());
 	});
 
 	// dispatch(
