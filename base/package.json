@@ -1,14 +1,12 @@
 {
   "name": "@thulium/base",
   "version": "1.0.0",
-  "description": "Thulium base models utils",
-  "main": "src/thulium/exports.js",
+  "description": "Thulium base utils",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "process": "^0.11.10"
-  }
+  "dependencies": {}
 }

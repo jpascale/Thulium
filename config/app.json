@@ -1,11 +1,4 @@
 {
   "development": {
-    "mongo": {
-      "users": {
-        "database": "thulium_users",
-        "hostname": "localhost",
-        "port": "27017"
-      }
-    }
   }
 }
