@@ -3,7 +3,7 @@ import jwtDecode from 'jwt-decode';
 
 const AuthService = {};
 
-const THULIUM_LOCALSTORAGE_KEY = 'thulium:token';
+const THULIUM_LOCALSTORAGE_TOKEN_KEY = 'thulium:token';
 
 const decodeToken = (token) => {
 	try {
@@ -27,27 +27,24 @@ export const authenticating = () => ({
 
 export const authenticated = ({ token }) => (dispatch, getState) => {
 
-	localStorage.setItem(THULIUM_LOCALSTORAGE_KEY, token);
+	localStorage.setItem(THULIUM_LOCALSTORAGE_TOKEN_KEY, token);
 
 	return dispatch({
 		type: CA.AUTHENTICATED,
-		payload: {
-			token,
-			should_change_password
-		}
+		payload: { token }
 	});
 };
 
 export const unauthorized = () => (dispatch) => {
 
-	localStorage.removeItem(THULIUM_LOCALSTORAGE_KEY);
+	localStorage.removeItem(THULIUM_LOCALSTORAGE_TOKEN_KEY);
 	dispatch({ type: CA.UNAUTHORIZED });
 };
 
 export const checkAuth = () => (dispatch, getState) => {
 	const token = (() => {
 		if (getState().auth.token) return getState().auth.token;
-		return localStorage.getItem(THULIUM_LOCALSTORAGE_KEY);
+		return localStorage.getItem(THULIUM_LOCALSTORAGE_TOKEN_KEY);
 	})();
 	
 	const jwt = decodeToken(token);

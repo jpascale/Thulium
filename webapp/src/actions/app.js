@@ -2,6 +2,8 @@ import C from '../constants/app';
 import { checkAuth, fetchProfile, anonymous } from './auth';
 import { fetchEngines } from './engines';
 
+import { hello } from './session';
+
 const booting = () => ({
 	type: C.BOOTING
 });
@@ -14,19 +16,25 @@ export const boot = () => (dispatch, getState) => {
 	dispatch(booting());
 
 	dispatch(
-		checkAuth()
+		hello()
 	).then(() => {
-		return Promise.all([
-			dispatch(fetchProfile()),
-			dispatch(fetchEngines())
-		]);
-	}, err => {
-		return dispatch(anonymous());
-	}).then(() => {
-		return dispatch(negotiateSession());
-	}).then(() => {
-		return dispatch(booted());
+		dispatch(booted());
 	});
+
+	// dispatch(
+	// 	checkAuth()
+	// ).then(() => {
+	// 	return Promise.all([
+	// 		dispatch(fetchProfile()),
+	// 		dispatch(fetchEngines())
+	// 	]);
+	// }, err => {
+	// 	return dispatch(anonymous());
+	// }).then(() => {
+	// 	return dispatch(negotiateSession());
+	// }).then(() => {
+	// 	return dispatch(booted());
+	// });
 };
 
 export const changeEngine = engine => ({

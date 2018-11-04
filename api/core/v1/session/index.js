@@ -2,7 +2,8 @@ const express = require('express')
     , router = express.Router({ mergeParams: true })
     , Status = require('http-status-codes')
     , debug = require('debug')('api:core:v1:session')
-    , jwt = require('jsonwebtoken')
+    , async = require('async')
+    , omit = require('lodash/omit')
     , { Session, User } = require("@thulium/internal")
     , { isUserValid } = require('../../../middleware/validateUser');
 
@@ -38,15 +39,17 @@ const handleSessionHello = [
       // TODO: replace with configuration
       res.set('Location', `ws://127.0.0.1:${PORT}/${session._id}`);
 
-      session.token = req.user.token;
+      res.set('x-api-token', req.user.token);
       
-      if (found) return res.status(Status.OK).json(session);
-      res.status(Status.CREATED).json(session);
+      if (found) return res.status(Status.OK).json(session.dto());
+      res.status(Status.CREATED).json(session.dto());
     });
   }
 ];
 
-router.post('/hello', isUserValid, handleSessionHello);
-router.post('/hello/:id([a-f0-9]+)', isUserValid, handleSessionHello);
+const isUserValidWrapper = (req, res, next) => isUserValid(req, res, err => next());
+
+router.post('/hello', isUserValidWrapper, handleSessionHello);
+router.post('/hello/:id([a-f0-9]+)', isUserValidWrapper, handleSessionHello);
 
 module.exports = router;

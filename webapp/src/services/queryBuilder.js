@@ -3,8 +3,7 @@ import superagent from 'superagent';
 console.log(process.env);
 
 const request = (path, body = {}, options = {}, method = 'post') => {
-	const baseRequest = superagent[method]
-		.url(`${SERVICE_URL}${path}`)
+	const baseRequest = superagent[method](`${SERVICE_URL}${path}`)
 		.set('Authorization', `Bearer ${options.token}`)
 		.set('Content-Type', options.mediaType || 'application/json')
 		.set('Accept', 'application/json')

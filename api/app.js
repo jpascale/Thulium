@@ -1,6 +1,7 @@
 const bodyParser = require('body-parser')
     , express = require('express')
     , http = require('http')
+    , cors = require('cors')
     , debug = require('debug')('api:app')
     , { createThuliumWebSocketServer } = require('@thulium/ws')
     , Status = require('http-status-codes')
@@ -9,6 +10,10 @@ const bodyParser = require('body-parser')
 const app = express();
 debug('setting up middleware');
 app.use(bodyParser.json());
+app.use(cors({
+  origin: [/localhost/, /https?:\/\/(?:www\.)?thulium\.xyz/],
+  exposedHeaders: ['Location', 'x-api-token']
+}));
 
 debug('setting up routes');
 app.use('/core', require('./core/'));
