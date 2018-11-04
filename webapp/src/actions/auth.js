@@ -46,9 +46,7 @@ export const unauthorized = () => (dispatch) => {
 
 export const checkAuth = () => (dispatch, getState) => {
 	const token = (() => {
-		if (getState().auth.token) {
-			return getState().auth.token;
-		}
+		if (getState().auth.token) return getState().auth.token;
 		return localStorage.getItem(THULIUM_LOCALSTORAGE_KEY);
 	})();
 	
@@ -56,7 +54,7 @@ export const checkAuth = () => (dispatch, getState) => {
 	
 	if (!jwt || isTokenExpired(jwt)) {
 		dispatch(unauthorized());
-		return Promise.resolve();
+		return Promise.reject();
 	}
 	
 	return Promise.resolve(dispatch(authenticated({ token })));
@@ -77,5 +75,11 @@ export const fetchProfile = () => (dispatch, getState) => {
 		token: getState().auth.token
 	}).then((profile) => {
 		return dispatch(fetchedProfile(profile));
+	}, err => {
+		return dispatch(unauthorized());
 	});
+}
+
+export const anonymous = () => (dispatch, getState) => {
+	
 }

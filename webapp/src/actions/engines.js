@@ -1,6 +1,5 @@
 import C from '../constants/engine';
-
-const EngineService = {};
+import * as EngineService from '../services/engine';
 
 const fetchingEngines = () => ({
 	type: C.FETCHING
@@ -14,7 +13,7 @@ const fetchedEngines = (payload) => ({
 export const fetchEngines = () => (dispatch, getState) => {
 	dispatch(fetchingEngines());
 
-	EngineService.fetch({}, {
+	EngineService.fetchAll({}, {
 		token: getState().auth.token
 	}).then(engines => {
 		return dispatch(fetchedEngines(engines));

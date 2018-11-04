@@ -5,7 +5,8 @@ const mongoose = require('mongoose')
 	, { User } = require('../models')
   , debug = require('debug')('internal:controllers:user')
   , { Config } = require('@thulium/base')
-  , omit = require('lodash/omit');
+  , omit = require('lodash/omit')
+  , async = require('async');
   
 debug('setting up user controller');
 
@@ -53,6 +54,17 @@ User.methods.generateJWT = function (cb) {
 
 User.methods.dto = function () {
   return omit(this, 'password', 'hash');
+};
+
+User.statics.findOrCreateAnonymous = function (id, done) {
+  const self = this;
+  async.waterfall([
+    cb => self.findById(id).exec(cb),
+    (user, cb) => {
+      if (user) return cb(null, user);
+      self.create({ role: 'anonymous' }, cb);
+    }
+  ], done);
 };
 
 User.plugin(uniqueValidator, { message: 'is already taken.' });

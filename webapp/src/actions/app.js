@@ -1,5 +1,5 @@
 import C from '../constants/app';
-import { checkAuth, fetchProfile } from './auth';
+import { checkAuth, fetchProfile, anonymous } from './auth';
 import { fetchEngines } from './engines';
 
 const booting = () => ({
@@ -16,15 +16,16 @@ export const boot = () => (dispatch, getState) => {
 	dispatch(
 		checkAuth()
 	).then(() => {
-		if (getState().auth.authenticated) {
-			return Promise.all([
-				dispatch(fetchProfile()),
-				dispatch(fetchEngines())
-			]);
-		}
-		return Promise.resolve();
+		return Promise.all([
+			dispatch(fetchProfile()),
+			dispatch(fetchEngines())
+		]);
+	}, err => {
+		return dispatch(anonymous());
 	}).then(() => {
-		dispatch(booted());
+		return dispatch(negotiateSession());
+	}).then(() => {
+		return dispatch(booted());
 	});
 };
 

@@ -6,14 +6,14 @@ import HardSourceWebpackPlugin from 'hard-source-webpack-plugin';
 const GLOBALS = {
   'process.env.NODE_ENV': JSON.stringify('development'),
   __DEV__: true,
-  'SERVICE_URL': 'http://localhost:3000'
+  'process.env.SERVICE_URL': JSON.stringify('http://localhost:3000')
 };
 
 export default {
   resolve: {
     extensions: ['*', '.js', '.jsx', '.json']
   },
-  devtool: 'cheap-module-eval-source-map', // more info:https://webpack.js.org/guides/development/#using-source-maps and https://webpack.js.org/configuration/devtool/
+  devtool: false,//'inline-source-map', // more info:https://webpack.js.org/guides/development/#using-source-maps and https://webpack.js.org/configuration/devtool/
   entry: [
     // must be first entry to properly set public path
     './src/webpack-public-path',

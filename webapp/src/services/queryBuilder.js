@@ -1,5 +1,7 @@
 import superagent from 'superagent';
 
+console.log(process.env);
+
 const request = (path, body = {}, options = {}, method = 'post') => {
 	const baseRequest = superagent[method]
 		.url(`${SERVICE_URL}${path}`)
@@ -20,4 +22,4 @@ export const get = (path, query, options) => request(path, query, options, 'get'
 export const patch = (path, body, options) => request(path, body, options, 'patch');
 export const put = (path, body, options) => request(path, body, options, 'put');
 
-export const extractBody = res => res.body
+export const extractBody = res => res.body;

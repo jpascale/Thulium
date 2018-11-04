@@ -1,5 +1,6 @@
 /* eslint-disable import/no-named-as-default */
 import React from "react";
+import { connect } from 'react-redux';
 import PropTypes from "prop-types";
 import { NavLink, Route, Switch } from "react-router-dom";
 import { hot } from "react-hot-loader";
@@ -13,7 +14,14 @@ import Main from './containers/Main';
 // component at the top-level.
 
 class App extends React.Component {
+
   render() {
+    const { booting } = this.props; 
+
+    if (booting) {
+      return <h1>Booting...</h1>;
+    }
+
     return (
       <React.Fragment>
         <Navbar />
@@ -28,26 +36,18 @@ class App extends React.Component {
   }
 }
 
-/**
- * <div>
-        <div>
-          <NavLink exact to="/" activeStyle={activeStyle}>Home</NavLink>
-          {' | '}
-          <NavLink to="/fuel-savings" activeStyle={activeStyle}>Demo App</NavLink>
-          {' | '}
-          <NavLink to="/about" activeStyle={activeStyle}>About</NavLink>
-        </div>
-        <Switch>
-          <Route exact path="/" component={HomePage} />
-          <Route path="/fuel-savings" component={FuelSavingsPage} />
-          <Route path="/about" component={AboutPage} />
-          <Route component={NotFoundPage} />
-        </Switch>
-      </div>
- */
-
 App.propTypes = {
   children: PropTypes.element
 };
 
-export default hot(module)(App);
+const mapStateToProps = state => ({
+  booting: state.app.booting
+});
+
+const mapDispatchToProps = dispatch => ({
+
+});
+
+const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App);
+
+export default hot(module)(ConnectedApp);
