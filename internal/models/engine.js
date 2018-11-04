@@ -14,6 +14,9 @@ const Engine = mongoose.Schema({
 	title: {
 		type: String
 	},
+	slug: {
+		type: String
+	}
 	/// other meta information
 });
 

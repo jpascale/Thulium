@@ -2,11 +2,18 @@ const { PostgresStorage } = require('@thulium/storage')
     , { connect } = require("@thulium/internal")
     , { Config } = require('@thulium/base')
     , debug = require('debug')('api:boot')
+    , async = require('async')
+    , bootstrapModules = require('./bootstrap');
 
 debug('setting up postgres config');
 PostgresStorage.config(Config.postgres);
 
-connect((err) => {
+const bootModule = (bootModule, next) => bootModule.boot(next);
+
+async.series([
+  connect,
+  cb => async.each(bootstrapModules, bootModule, cb)
+], (err) => {
   if (err) {
     console.error(err);
     debug('failed to connect to internal storage')
@@ -14,4 +21,4 @@ connect((err) => {
   }
   // continue setup
   require('./app');
-})
+});
