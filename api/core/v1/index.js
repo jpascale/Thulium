@@ -8,5 +8,6 @@ router.use('/postgres', require('./postgres'));
 // router.use('/websocket', require('./websocket'));
 router.use('/session', require('./session'));
 router.use('/users', require('./auth'));
+router.use('/engines', require('./engines'));
 
 module.exports = router;
