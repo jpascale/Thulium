@@ -33,14 +33,13 @@ const createWebSocketServer = server => {
 
 			ws.on('message', message => {
 				debug(`Received message from ${id}: ${message}`);
-
-				routeHandler.route(ws, req, message, (err) => {
+				debug(typeof message);
+				routeHandler.route(ws, req, message, (err, response) => {
 					if (err) {
 						console.error(err);
 					}
+					ws.send(JSON.stringify(response));
 				});
-
-				ws.send(message);
 			});
 
 			ws.send('Hello to Thulium!');

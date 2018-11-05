@@ -6,7 +6,7 @@ const { PostgresStorage } = require('@thulium/storage')
     , bootstrapModules = require('./bootstrap');
 
 debug('setting up postgres config');
-PostgresStorage.config(Config.postgres);
+PostgresStorage.config(Config.storage.postgres);
 
 const bootModule = (bootModule, next) => bootModule.boot(next);
 

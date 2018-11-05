@@ -1,5 +1,6 @@
 const { Session } = require('@thulium/internal')
-		, ThuliumHandler = require('./handlers');
+		, ThuliumHandler = require('./handlers')
+		, debug = require('debug')('ws:routes');
 
 const resolveSession = (ws, req, cb) => {
 	const sessionID = (() => {
@@ -27,11 +28,14 @@ const route = (ws, req, rawMessage, done) => {
 		} catch (e) {
 			return null;
 		}
-	});
+	})();
 
 	if (!message || !message.type || !message.payload) {
-		return cb(new Error('invalid message format'));
+		return done(new Error('invalid message format'));
 	}
+
+	debug(`parsed message successfully`);
+	debug(message);
 
 	ThuliumHandler.handle(ws, req, message, done);
 };

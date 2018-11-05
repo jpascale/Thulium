@@ -15,6 +15,10 @@ const startSession = (payload) => ({
 	payload
 });
 
+let wsc;
+
+export const ws = () => wsc;
+
 export const hello = () => (dispatch, getState) => {
 	const token = localStorage.getItem(THULIUM_LOCALSTORAGE_TOKEN_KEY);
 	const sessionId = localStorage.getItem(THULIUM_LOCALSTORAGE_SESSION_KEY) || '';
@@ -26,10 +30,22 @@ export const hello = () => (dispatch, getState) => {
 		dispatch(startSession(session));
 		dispatch(authenticated({ token }));
 
-		const wsc = new WebSocket(ws);
+		wsc = new WebSocket(ws);
 		wsc.onmessage = event => {
 			console.log(event.data);
-		}
+		};
+		wsc.onopen = () => {
+			console.log('ws open');
+			setTimeout(() => {
+				console.log('sending');
+				wsc.send(JSON.stringify({
+					type: 'psql',
+					payload: {
+						query: 'select * from foo'
+					}
+				}));
+			}, 500);
+		};
 		return Promise.resolve();
 	});
 }
