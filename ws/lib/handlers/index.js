@@ -1,8 +1,10 @@
 const PostgresHandler = require('./psql')
+		, MySQLHandler = require('./mysql')
 		, debug = require('debug')('ws:handlers');
 
 const handlersList = [
-	PostgresHandler
+	PostgresHandler,
+	MySQLHandler
 ];
 
 debug('registering handlers')

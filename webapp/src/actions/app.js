@@ -61,7 +61,7 @@ export const run = payload => (dispatch, getState) => {
 	dispatch(running());
 
 	ws().send(JSON.stringify({
-		type: 'psql',
+		type: getState().app.currentEngine,
 		payload: {
 			query: getState().app.query
 		}

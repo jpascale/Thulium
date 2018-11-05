@@ -39,21 +39,5 @@ export const hello = () => (dispatch, getState) => {
 				resolve();
 			};
 		});
-
-		
-		wsc.onopen = () => {
-
-			console.log('ws open');
-			setTimeout(() => {
-				console.log('sending');
-				wsc.send(JSON.stringify({
-					type: 'psql',
-					payload: {
-						query: 'select * from foo'
-					}
-				}));
-			}, 500);
-		};
-		return Promise.resolve();
 	});
 }

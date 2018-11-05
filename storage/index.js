@@ -1,3 +1,4 @@
 module.exports = {
-	PostgresStorage: require('./psql/')
+	PostgresStorage: require('./psql/'),
+	MySQLStorage: require('./mysql/')
 };
