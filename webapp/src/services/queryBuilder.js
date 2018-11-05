@@ -1,6 +1,6 @@
 import superagent from 'superagent';
 
-console.log(process.env);
+console.log(process);
 
 const request = (path, body = {}, options = {}, method = 'post') => {
 	const baseRequest = superagent[method](`${SERVICE_URL}${path}`)
