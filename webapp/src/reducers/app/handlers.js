@@ -19,8 +19,8 @@ export default {
   [C.RUNNING] : (state) => {
   	return objectAssign({}, state, { running: true });
   },
-  [C.RUN] : (state) => {
-  	return objectAssign({}, state, { running: false });
+  [C.RUN] : (state, results) => {
+  	return objectAssign({}, state, { running: false, results });
   },
 
   [CS.START] : (state, session) => {

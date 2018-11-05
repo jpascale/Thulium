@@ -1,6 +1,7 @@
 import C from '../constants/session';
 import * as SessionService from '../services/session';
 import { authenticated } from './auth';
+import { doneRunning } from './app';
 
 
 const THULIUM_LOCALSTORAGE_TOKEN_KEY = 'thulium:token';
@@ -29,12 +30,19 @@ export const hello = () => (dispatch, getState) => {
 		
 		dispatch(startSession(session));
 		dispatch(authenticated({ token }));
-
 		wsc = new WebSocket(ws);
 		wsc.onmessage = event => {
-			console.log(event.data);
+			dispatch(doneRunning(JSON.parse(event.data)));
 		};
+		return new Promise((resolve, reject) => {
+			wsc.onopen = () => {
+				resolve();
+			};
+		});
+
+		
 		wsc.onopen = () => {
+
 			console.log('ws open');
 			setTimeout(() => {
 				console.log('sending');

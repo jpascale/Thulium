@@ -2,7 +2,7 @@ import C from '../constants/app';
 import { checkAuth, fetchProfile, anonymous } from './auth';
 import { fetchEngines } from './engines';
 
-import { hello } from './session';
+import { hello, ws } from './session';
 
 const booting = () => ({
 	type: C.BOOTING
@@ -51,17 +51,25 @@ const running = () => ({
 	type: C.RUNNING
 });
 
-const doneRunning = () => ({
-	type: C.RUN
+export const doneRunning = (payload) => ({
+	type: C.RUN,
+	payload
 });
 
 export const run = payload => (dispatch, getState) => {
 
-	dispatch(running())
+	dispatch(running());
 
-	setTimeout(() => {
-		dispatch(doneRunning());
-	}, 5000);
+	ws().send(JSON.stringify({
+		type: 'psql',
+		payload: {
+			query: getState().app.query
+		}
+	}));
+
+	// setTimeout(() => {
+	// 	dispatch(doneRunning());
+	// }, 5000);
 };
 
 export const queryChanged = sql => ({
