@@ -41,8 +41,6 @@ const createWebSocketServer = server => {
 					ws.send(JSON.stringify(response));
 				});
 			});
-
-			ws.send('Hello to Thulium!');
 		});
 	});
 

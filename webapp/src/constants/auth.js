@@ -5,7 +5,9 @@ export default constants('auth', [
 	'fetched profile',
 	'unauthorized',
 	'authenticating',
-	'authenticated'
+	'authenticated',
+	'logging in',
+	'logged in'
 ], {
 	separator: '/',
 	transform: v => v.replace(/ /g, '_').toUpperCase()

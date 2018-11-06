@@ -58,7 +58,7 @@ User.methods.generateJWT = function (data, cb) {
 };
 
 User.methods.dto = function () {
-  return omit(this, 'password', 'hash');
+  return omit(this.toObject(), 'password', 'hash', '__v', 'salt', 'created', 'last_updated');
 };
 
 User.statics.findOrCreateAnonymous = function (id, done) {

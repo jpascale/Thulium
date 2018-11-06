@@ -74,4 +74,22 @@ export const fetchProfile = () => (dispatch, getState) => {
 	}, err => {
 		return dispatch(unauthorized());
 	});
+};
+
+const loggingIn = () => ({
+	type: CA.LOGGING_IN
+});
+
+const loggedIn = (profile, token) => (dispatch, getState) => {
+	dispatch(authenticated({ token }));
+	dispatch(fetchedProfile(profile));
+	dispatch({ type: CA.LOGGED_IN });
+}
+
+export const login = (form) => (dispatch, getState) => {
+	dispatch(loggingIn());
+	return AuthService.login(form).then(({ profile, token }) => {
+		console.log(profile, token);
+		dispatch(loggedIn(profile, token));
+	});
 }
