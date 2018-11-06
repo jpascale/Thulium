@@ -19,7 +19,9 @@ class App extends React.Component {
     const { booting } = this.props; 
 
     if (booting) {
-      return <h1>Booting...</h1>;
+      return (
+        <h1 style={{ lineHeight: '100%', textAlign: 'center', display: 'table-cell', verticalAlign: 'middle' }}>Loading...</h1>
+      );
     }
 
     return (

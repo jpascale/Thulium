@@ -1,12 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button, NavItem, NavLink, Form, FormGroup, Input, Label } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, ModalFooter, Button, NavItem, NavLink, Form, FormGroup, Input, Label, Nav } from 'reactstrap';
 
 import EnginePicker from '../modules/Navbar/EnginePicker';
 
 import '../../styles/navbar.scss';
 
-import { login } from '../../actions/auth';
+import { login, logout } from '../../actions/auth';
 
 class ThuliumLogin extends React.Component {
 
@@ -30,17 +30,29 @@ class ThuliumLogin extends React.Component {
 		});
 	}
 
+	logout = () => this.props.logout()
+
 	render = () => {
 		const { profile, loggingIn } = this.props;
 		const { modal } = this.state;
-		console.log(profile);
+		const navbarItems = profile.role === 'anonymous' ? (
+			<NavItem>
+				<NavLink href="#" onClick={this.displayLoginModal}>
+					{profile.role === 'anonymous' ? 'Login' : profile.email}
+				</NavLink>
+			</NavItem>
+		) : (
+			<NavItem>
+				<NavLink href="#" onClick={this.logout}>
+					Logout
+				</NavLink>
+			</NavItem>
+		);
 		return (
 			<React.Fragment>
-				<NavItem>
-					<NavLink href="#" onClick={profile.role === 'anonymous' ? this.displayLoginModal : null}>
-						{profile.role === 'anonymous' ? 'Login' : profile.email}
-					</NavLink>
-				</NavItem>
+				<Nav>
+					{navbarItems}
+				</Nav>
 				<Modal isOpen={modal}>
 					<ModalHeader>Login</ModalHeader>
 					<ModalBody>
@@ -71,7 +83,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-	login: form => dispatch(login(form))
+	login: form => dispatch(login(form)),
+	logout: () => dispatch(logout())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ThuliumLogin);

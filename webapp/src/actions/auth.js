@@ -89,7 +89,11 @@ const loggedIn = (profile, token) => (dispatch, getState) => {
 export const login = (form) => (dispatch, getState) => {
 	dispatch(loggingIn());
 	return AuthService.login(form).then(({ profile, token }) => {
-		console.log(profile, token);
 		dispatch(loggedIn(profile, token));
 	});
 }
+
+export const logout = () => (dispatch, getState) => {
+	localStorage.removeItem(THULIUM_LOCALSTORAGE_TOKEN_KEY);
+	dispatch({ type: CA.LOGOUT });
+};

@@ -16,5 +16,11 @@ export default {
 
 	[C.FETCHED_PROFILE] : (state, data) => {
 		return objectAssign({}, state, { profile: data });
+	},
+
+	[C.LOGOUT] : (state, data) => {
+		const nextState = { loggingIn: state.loggingIn };
+		return nextState;
+		// return objectAssign({}, state, {  })
 	}
 }

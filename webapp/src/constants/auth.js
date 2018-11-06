@@ -7,7 +7,8 @@ export default constants('auth', [
 	'authenticating',
 	'authenticated',
 	'logging in',
-	'logged in'
+	'logged in',
+	'logout'
 ], {
 	separator: '/',
 	transform: v => v.replace(/ /g, '_').toUpperCase()
