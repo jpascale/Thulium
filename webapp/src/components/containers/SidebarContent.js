@@ -1,9 +1,20 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import classNames from 'classnames';
 
 class SidebarContent extends React.Component {
 
-	render() {
+	render = () => {
+		const { files } = this.props;
+
+		const fileList = files.map((file, i) => (
+			<li key={`file${i}`} className="nav-item ml-2 mr-4">
+				<a className={classNames('nav-link', { active: !i })} href="#">
+					File #{i + 1}
+				</a>
+			</li>
+		));
+
 		return (
 			<React.Fragment>
 				<h6 className="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-1 mb-1 text-muted">OPEN FILES</h6>
@@ -12,21 +23,7 @@ class SidebarContent extends React.Component {
 					</a>*/}
 				{/*</h6>*/}
 				<ul className="nav flex-column">
-					<li className="nav-item ml-2 mr-4">
-						<a className="nav-link active" href="#">
-							File #1
-						</a>
-					</li>
-					<li className="nav-item ml-2 mr-4">
-						<a className="nav-link text-muted" href="#">
-							File #2
-						</a>
-					</li>
-					<li className="nav-item ml-2 mr-4">
-						<a className="nav-link text-muted" href="#">
-							File #3
-						</a>
-					</li>
+					{fileList}
 					{/*<li className="nav-item">
 						<a className="nav-link active" href="#">
 							Dashboard <span className="sr-only">(current)</span>
@@ -64,7 +61,7 @@ class SidebarContent extends React.Component {
 }
 
 const mapStateToProps = state => ({
-
+	files: state.app.session.files
 });
 
 const mapDispatchToProps = dispatch => ({
