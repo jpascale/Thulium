@@ -38,8 +38,11 @@ export default {
       files: nextFiles
     });
   },
-  [C.QUERY_CHANGED] : (state, query) => {
-  	return objectAssign({}, state, { query });
+  [CF.AUTOSAVING] : (state, query) => {
+  	return objectAssign({}, state, { autosaving: true });
+  },
+  [CF.AUTOSAVED] : (state, query) => {
+  	return objectAssign({}, state, { autosaving: false });
   },
   [C.RUNNING] : (state) => {
   	return objectAssign({}, state, { running: true });

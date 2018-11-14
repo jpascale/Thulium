@@ -31,6 +31,26 @@ export const createFile = (filename) => (dispatch, getState) => {
 	}, {
 		token: getState().auth.token
 	}).then(file => {
-		dispatch(createdFile(file));
+		return dispatch(createdFile(file));
 	});
-}
+};
+
+const autosaving = () => ({
+	type: C.AUTOSAVING
+});
+const autosaved = () => ({
+	type: C.AUTOSAVED
+});
+
+export const autosave = sql => (dispatch, getState) => {
+	dispatch(autosaving());
+
+	return FileService.update(getState().app.selectedFile, {
+		content: sql
+	}, {
+		token: getState().auth.token
+	}).then(file => {
+		return dispatch(autosaved(file));
+	});
+};
+

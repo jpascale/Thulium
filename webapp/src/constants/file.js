@@ -5,7 +5,9 @@ export default constants('file', [
 	'close create modal',
 	'creating',
 	'created',
-	'change'
+	'change',
+	'autosaving',
+	'autosaved',
 ], {
 	separator: '/',
 	transform: v => v.replace(/ /g, '_').toUpperCase()

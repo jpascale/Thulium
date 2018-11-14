@@ -48,13 +48,4 @@ export const run = payload => (dispatch, getState) => {
 			query: getState().app.query
 		}
 	}));
-
-	// setTimeout(() => {
-	// 	dispatch(doneRunning());
-	// }, 5000);
 };
-
-export const queryChanged = sql => ({
-	type: C.QUERY_CHANGED,
-	payload: sql
-});

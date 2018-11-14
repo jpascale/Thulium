@@ -13,7 +13,7 @@ File.pre('save', function (next) {
 
 File.pre('save', function (next) {
 	const self = this;
-	if (!self.isNew) return;
+	if (!self.isNew) return next();
 
 	async.waterfall([
 		cb => self.model('Session').findById(self.session, cb),

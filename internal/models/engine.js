@@ -16,6 +16,9 @@ const Engine = mongoose.Schema({
 	},
 	slug: {
 		type: String
+	},
+	mimeType: {
+		type: String
 	}
 	/// other meta information
 });
