@@ -1,4 +1,15 @@
 {
   "development": {
+    "engines": [{
+      "title": "PostgreSQL",
+      "slug": "psql"
+    }, {
+      "title": "MongoDB",
+      "slug": "mongo"
+    }, {
+      "title": "MySQL",
+      "slug": "mysql"
+    }],
+    "defaultEngine": "psql"
   }
 }

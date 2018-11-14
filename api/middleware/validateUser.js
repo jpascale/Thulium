@@ -26,10 +26,7 @@ const isUserValid = (req, res, next) => {
 
 const validateUser = (req, res, next) => {
 	isUserValid(req, res, (err) => {
-		if (err) {
-			return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });
-		}
-		if (!req.user) {
+		if (err || !req.user) {
 			return res.status(Status.UNAUTHORIZED).json({ ok: 0, code: 'INVALID_TOKEN' });
 		}
 		next();

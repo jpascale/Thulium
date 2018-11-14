@@ -6,16 +6,13 @@ import { changeEngine } from '../../../actions/app';
 
 class EnginePicker extends React.Component {
 
-	changeEngine = (engine) => {
-		console.log(engine);
-		this.props.changeEngine(engine);
-	}
+	changeEngine = (engine) => () => this.props.changeEngine(engine)
 
 	renderEngines = () => {
 		const { engines, currentEngine } = this.props;
 
 		return Object.keys(engines).map(engine => (
-			<DropdownItem key={engine} toggle={false} onClick={() => this.changeEngine(engine)}>
+			<DropdownItem key={engine} toggle={false} onClick={this.changeEngine(engine)}>
 				{currentEngine === engine ? '✓' : ''} {engines[engine].title}
 			</DropdownItem>
 		));

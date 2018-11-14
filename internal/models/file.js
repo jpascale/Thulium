@@ -23,6 +23,10 @@ const File = mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Dataset'
 	},
+	session: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Session'
+	},
 	title: {
 		type: String
 	},

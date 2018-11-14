@@ -3,7 +3,6 @@ const express = require('express')
     , Status = require('http-status-codes')
     , debug = require('debug')('api:core:v1:session')
     , async = require('async')
-    , omit = require('lodash/omit')
     , { Session, User } = require("@thulium/internal")
     , { isUserValid } = require('../../../middleware/validateUser');
 
@@ -30,7 +29,17 @@ const handleSessionHello = [
     });
   },
   (req, res) => {
-    Session.findOrCreateById(req.params.id, { owner: req.user.db._id }, (err, session, found) => {
+    async.waterfall([
+      cb => Session.findOrCreateById(req.params.id, { owner: req.user.db._id }, cb),
+      (session, found, cb) => {
+        session.populate({
+          path: 'files',
+          select: 'engine title content'
+        }, (err) => {
+          cb(err, session, found);
+        });
+      }
+    ], (err, session, found) => {
       if (err) {
         console.error(err);
         return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });
@@ -38,7 +47,6 @@ const handleSessionHello = [
 
       // TODO: replace with configuration
       res.set('Location', `ws://127.0.0.1:${PORT}/${session._id}`);
-
       res.set('x-api-token', req.user.token);
       
       if (found) return res.status(Status.OK).json(session.dto());

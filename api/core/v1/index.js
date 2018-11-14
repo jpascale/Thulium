@@ -9,5 +9,6 @@ router.use('/postgres', require('./postgres'));
 router.use('/session', require('./session'));
 router.use('/auth', require('./auth'));
 router.use('/engines', require('./engines'));
+router.use('/files', require('./files'));
 
 module.exports = router;
