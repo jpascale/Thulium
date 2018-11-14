@@ -1,6 +1,11 @@
 import C from '../constants/engine';
 import * as EngineService from '../services/engine';
 
+export const changeEngine = engine => ({
+	type: C.CHANGE,
+	payload: engine
+});
+
 const fetchingEngines = () => ({
 	type: C.FETCHING
 });

@@ -8,6 +8,7 @@ import { hot } from "react-hot-loader";
 import Navbar from './containers/Navbar';
 import Sidebar from './containers/Sidebar';
 import Main from './containers/Main';
+import Files from './containers/Files';
 
 // This is a class-based component because the current
 // version of hot reloading won't hot reload a stateless
@@ -27,6 +28,7 @@ class App extends React.Component {
     return (
       <React.Fragment>
         <Navbar />
+        <Files />
         <div className="container-fluid">
           <div className="row">
             <Sidebar />

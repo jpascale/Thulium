@@ -4,6 +4,8 @@ import { fetchEngines } from './engines';
 
 import { hello, ws } from './session';
 
+import * as FileService from '../services/file';
+
 const booting = () => ({
 	type: C.BOOTING
 });
@@ -25,27 +27,7 @@ export const boot = () => (dispatch, getState) => {
 	}).then(() => {
 		return dispatch(booted());
 	});
-
-	// dispatch(
-	// 	checkAuth()
-	// ).then(() => {
-	// 	return Promise.all([
-	// 		dispatch(fetchProfile()),
-	// 		dispatch(fetchEngines())
-	// 	]);
-	// }, err => {
-	// 	return dispatch(anonymous());
-	// }).then(() => {
-	// 	return dispatch(negotiateSession());
-	// }).then(() => {
-	// 	return dispatch(booted());
-	// });
 };
-
-export const changeEngine = engine => ({
-	type: C.CHANGE_ENGINE,
-	payload: engine
-});
 
 const running = () => ({
 	type: C.RUNNING
