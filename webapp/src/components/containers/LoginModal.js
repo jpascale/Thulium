@@ -42,12 +42,12 @@ class ThuliumLogin extends React.Component {
 				</NavLink>
 			</NavItem>
 		) : (
-			<NavItem>
-				<NavLink href="#" onClick={this.logout}>
-					Logout
-				</NavLink>
-			</NavItem>
-		);
+				<NavItem>
+					<NavLink href="#" onClick={this.logout}>
+						Logout ({profile.email})
+					</NavLink>
+				</NavItem>
+			);
 		return (
 			<React.Fragment>
 				<Nav>
@@ -59,7 +59,7 @@ class ThuliumLogin extends React.Component {
 						<Form>
 							<FormGroup>
 								<Label for="exampleEmail">Email</Label>
-								<Input type="email" name="email" placeholder="Email" onChange={this.handleChange('email')}/>
+								<Input type="email" name="email" placeholder="Email" onChange={this.handleChange('email')} />
 							</FormGroup>
 							<FormGroup>
 								<Label for="examplePassword">Password</Label>
@@ -68,7 +68,7 @@ class ThuliumLogin extends React.Component {
 						</Form>
 					</ModalBody>
 					<ModalFooter>
-						<Button color="primary" onClick={this.login} disabled={loggingIn}>{loggingIn ? 'Logging In'  : 'Login'}</Button>{' '}
+						<Button color="primary" onClick={this.login} disabled={loggingIn}>{loggingIn ? 'Logging In' : 'Login'}</Button>{' '}
 						<Button color="secondary" onClick={this.closeModal}>Cancel</Button>
 					</ModalFooter>
 				</Modal>
