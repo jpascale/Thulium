@@ -11,7 +11,7 @@ const app = express();
 debug('setting up middleware');
 app.use(bodyParser.json());
 app.use(cors({
-  origin: [/localhost/, /https?:\/\/(?:www\.)?thulium\.xyz/],
+  origin: [/localhost/, /https?:\/\/(?:www\.|api\.)?thulium\.xyz/],
   exposedHeaders: ['Location', 'x-api-token']
 }));
 
