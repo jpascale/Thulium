@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 
-import { changeEngine } from '../../../actions/app';
+import { changeEngine } from '../../../actions/engines';
 
 class EnginePicker extends React.Component {
 

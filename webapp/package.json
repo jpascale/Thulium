@@ -187,6 +187,15 @@
       "jquery": true,
       "jest": true
     },
-    "globals": {}
+    "globals": {
+      "SERVICE_URL": 1
+    },
+    "rules": {
+      "no-unused-vars": 1,
+      "no-console": 1,
+      "no-mixed-spaces-and-tabs": 1,
+      "react/prop-types": 1,
+      "react/no-deprecated": 1
+    }
   }
 }
