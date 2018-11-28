@@ -13,7 +13,7 @@ File.pre('save', function (next) {
 
 File.pre('save', function (next) {
 	const self = this;
-	if (!self.isNew) return next();
+	if (!self.isNew || self.isDefaultFile) return next();
 
 	async.waterfall([
 		cb => self.model('Session').findById(self.session, cb),
@@ -23,7 +23,7 @@ File.pre('save', function (next) {
 			session.save(cb)
 		}
 	], next);
-})
+});
 
 File.methods.dto = function () {
 	return omit(this.toObject(), '__v', 'created', 'last_updated');

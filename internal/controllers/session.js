@@ -20,8 +20,11 @@ Session.pre('save', function (next) {
 
 	const file = new File({
 		owner: self.owner,
-		title: 'New File'				
+		title: 'New File',
+		session: self._id,
 	});
+
+	file.isDefaultFile = true;
 
 	async.waterfall([
 		cb => Engine.findOne({ slug: Config.defaultEngine }, cb),

@@ -1,10 +1,8 @@
 import C from '../constants/app';
-import { checkAuth, fetchProfile, anonymous } from './auth';
+import { fetchProfile } from './auth';
 import { fetchEngines } from './engines';
 
 import { hello, ws } from './session';
-
-import * as FileService from '../services/file';
 
 const booting = () => ({
 	type: C.BOOTING
