@@ -32,10 +32,24 @@ export const hello = () => (dispatch, getState) => {
 		dispatch(authenticated({ token }));
 		wsc = new WebSocket(ws);
 		wsc.onmessage = event => {
+			console.log(event.data);
+			const data = (() => {
+				try {
+					return JSON.parse(event.data);
+				} catch (e) {
+					return null;
+				}
+			})();
+			if (!data) {
+				console.error('could not parse ws response data');
+				console.error(data);
+				return;
+			}
 			dispatch(doneRunning(JSON.parse(event.data)));
 		};
 		return new Promise((resolve, reject) => {
 			wsc.onopen = () => {
+				console.log(`Opened websocket connection to ${ws}`);
 				resolve();
 			};
 		});

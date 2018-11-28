@@ -40,10 +40,12 @@ export const run = payload => (dispatch, getState) => {
 
 	dispatch(running());
 
-	ws().send(JSON.stringify({
-		type: getState().app.currentEngine,
+	const query = {
+		type: getState().app.engines[getState().app.currentEngine].slug,
 		payload: {
-			query: getState().app.query
+			query: getState().app.files[getState().app.selectedFile].content
 		}
-	}));
+	};
+
+	ws().send(JSON.stringify(query));
 };
