@@ -1,13 +1,13 @@
 const mongoose = require('mongoose')
   , uniqueValidator = require('mongoose-unique-validator')
   , crypto = require('crypto')
-	, jwt = require('jsonwebtoken')
-	, { User } = require('../models')
+  , jwt = require('jsonwebtoken')
+  , { User } = require('../models')
   , debug = require('debug')('internal:controllers:user')
   , { Config } = require('@thulium/base')
   , omit = require('lodash/omit')
   , async = require('async');
-  
+
 debug('setting up user controller');
 
 // User.pre('save', function (next) {
@@ -24,7 +24,7 @@ debug('setting up user controller');
 User.methods.changePassword = function (password, cb) {
   const self = this;
   self.salt = crypto.randomBytes(16).toString('hex');
-  crypto.pbkdf2(password, this.salt, 10000, 512, 'sha512', (err, derivedKey) => {
+  crypto.pbkdf2(password, self.salt, 10000, 512, 'sha512', (err, derivedKey) => {
     if (err) return cb(err);
     self.hash = derivedKey.toString('hex');
     cb();

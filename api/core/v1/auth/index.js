@@ -4,21 +4,38 @@ const express = require('express')
   , debug = require('debug')('api:core:v1:postgres')
   , Status = require('http-status-codes')
   , async = require('async')
+  , crypto = require('crypto')
   , validateUser = require('../../../middleware/validateUser');
 
 router.post('/register',
   (req, res, next) => {
-    debug(`Creating ${req.body.username}`);
+    debug(`Creating ${req.body.email}`);
     User.create({
-      username: req.body.username,
       email: req.body.email,
-      hash: req.body.password
+      hash: req.body.password,
+      role: req.body.role,
+      salt: crypto.randomBytes(16).toString('hex')
     }, (err, user) => {
       if (err) {
         console.error(err);
         return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });
       }
-      return res.status(Status.CREATED).json(user.dto());
+
+      User.findOne({
+        email: req.body.email
+      }, (err, user) => {
+        if (err) {
+          console.error(err);
+          return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });
+        }
+        user.changePassword(req.body.password, (err) => {
+          if (err) {
+            console.error(err);
+            return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });
+          }
+          return res.status(Status.CREATED).json(user.dto());
+        });
+      });
     });
   }
 );

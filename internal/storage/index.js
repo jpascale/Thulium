@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
-		, debug = require('debug')('storage:internal')
-		, { storage } = require('@thulium/base').Config;
+	, debug = require('debug')('storage:internal')
+	, { storage } = require('@thulium/base').Config;
 
 const uri = `mongodb://${storage.internal.user}:${storage.internal.password}@${storage.internal.host}:${storage.internal.port}/${storage.internal.database}`;
 
