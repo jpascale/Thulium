@@ -10,6 +10,6 @@ router.use('/session', require('./session'));
 router.use('/auth', require('./auth'));
 router.use('/engines', require('./engines'));
 router.use('/files', require('./files'));
-router.use('/dataset', require('./dataset'));
+router.use('/datasets', require('./datasets'));
 
 module.exports = router;
