@@ -46,7 +46,12 @@ const handleSessionHello = [
       }
 
       // TODO: replace with configuration
-      res.set('Location', `ws://127.0.0.1:${PORT}/${session._id}`);
+      res.set('Location', (() => {
+        if (process.env.NODE_ENV === 'development') {
+          return `ws://127.0.0.1:${PORT}/${session._id}`;
+        }
+        return `ws://thulium.xyz/${session._id}`;
+      })());
       res.set('x-api-token', req.user.token);
       
       if (found) return res.status(Status.OK).json(session.dto());

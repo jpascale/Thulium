@@ -22,6 +22,14 @@
         "NODE_ENV": "production",
         "PORT": 3000
       }
+    },
+    "forever": {
+      "env": {
+        "NODE_ENV": "production",
+        "ADDRESS": "esmailserver.com.ar",
+        "PORT": 5000
+      },
+      "command": "forever start --colors -a -l thulium.log -o thulium.log -e thulium.log index.js"
     }
   },
   "author": "",
