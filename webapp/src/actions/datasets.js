@@ -1,5 +1,10 @@
 import CD from '../constants/dataset';
-import * as DatasetService from '../services/dataset'
+import * as DatasetService from '../services/dataset';
+import Papa from 'papaparse';
+
+Papa.parsePromise = (file, options) => new Promise((complete, error) => {
+  Papa.parse(file, Object.assign(options, { complete, error }))
+});
 
 const uploadingFile = () => ({
   type: CD.UPLOADING_FILE,
@@ -43,3 +48,18 @@ export const addItemToDataset = title => ({
   type: CD.ADD_ITEM,
   payload: title
 });
+
+export const assignFileToItem = (id, file) => dispatch => {
+  return Papa.parsePromise(file, {}).then(({ data }) => {
+    return dispatch({
+      type: CD.ASSIGN_FILE_TO_ITEM,
+      payload: { id, data }
+    });
+  }, err => {
+    console.error(err);
+    return dispatch({
+      type: CD.ASSIGN_FILE_TO_ITEM,
+      payload: { id, error: true }
+    });
+  });
+};
