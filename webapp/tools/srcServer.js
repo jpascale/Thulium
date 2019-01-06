@@ -38,8 +38,8 @@ browserSync({
           version: false,
           hash: false,
           timings: false,
-          chunks: true,
-          chunkModules: true
+          chunks: false,
+          chunkModules: false
         },
 
         // for other settings see
