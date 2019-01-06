@@ -8,9 +8,15 @@ import CSVReader from 'react-csv-reader';
 
 import Header from './Header'
 
+import './DatasetModal.scss';
+import PickType from './PickType';
+
+
 class CreateDatasetModal extends React.Component {
 
-  state = {}
+  state = {
+    stage: 'pick-type'
+  }
 
   handleFileChange = data => this.setState({ data })
   handleUpload = () => {
@@ -23,9 +29,28 @@ class CreateDatasetModal extends React.Component {
     });
   }
 
+  nextStep = () => {
+
+  }
+
   render = () => {
+
+
     return (
-      <Modal isOpen={true}>
+      <Modal isOpen={true} className="create-dataset-modal">
+        <Header toggle={this.props.closeModal} />
+        <ModalBody>
+          <PickType />
+        </ModalBody>
+        <ModalFooter>
+          <Button color="primary" onClick={this.nextStep}>Next Step</Button>{' '}
+          <Button color="secondary" onClick={this.props.closeModal}>Cancel</Button>
+        </ModalFooter>
+      </Modal>
+    );
+
+    return (
+      <Modal isOpen={true} className="create-dataset-modal">
         <Header />
         <ModalBody>
           <Form>
@@ -39,7 +64,7 @@ class CreateDatasetModal extends React.Component {
           </Form>
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" onClick={this.handleUpload}>Upload</Button>{' '}
+          <Button color="primary" onClick={this.nextStep}>Upload</Button>{' '}
           <Button color="secondary" onClick={this.props.closeModal}>Cancel</Button>
         </ModalFooter>
       </Modal>

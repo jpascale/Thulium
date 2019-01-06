@@ -23,3 +23,16 @@ export const upload = (data) => (dispatch, getState) => {
     dispatch(uploaded(data))
   })
 }
+
+// -----
+
+
+export const changeDatasetTitle = title => ({
+  type: CD.CHANGE_TITLE,
+  payload: title
+});
+
+export const changeDatasetType = type => ({
+  type: CD.CHANGE_TYPE,
+  payload: type
+});

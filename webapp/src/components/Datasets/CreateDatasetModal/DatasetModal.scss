@@ -1,0 +1,24 @@
+.create-dataset-modal {
+
+	.modal-header {
+		cursor: pointer;
+
+		&.untitled {
+			color: '#ddd';
+			font-style: italic;
+		}
+	}
+
+	.modal-body {
+		.pick-type {
+			img {
+				transition: border .2s ease-in-out;
+				margin-left: 5px;
+				cursor: pointer;
+				&.selected, &:hover {
+					border-color: #337ab7;
+				}
+			}
+		}
+	}
+}

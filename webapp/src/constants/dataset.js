@@ -1,9 +1,13 @@
 import constants from 'namespace-constants';
 
-export default constants('upload_file', [
+export default constants('dataset', [
   'uploading file',
   'upload failed',
-  'uploaded'
+  'uploaded',
+
+
+  'change title',
+  'change type'
 ], {
     separator: '/',
     transform: v => v.replace(/ /g, '_').toUpperCase()

@@ -1,26 +1,14 @@
-import C from '../../constants/auth';
+import C from '../../constants/dataset';
 import objectAssign from 'object-assign';
 
 export default {
-  [C.AUTHENTICATED] : (state, data) => {
-		return objectAssign({}, state, data);
+  [C.CHANGE_TITLE] : (state, title) => {
+		const create = objectAssign({}, state.create, { title });
+		return objectAssign({}, state, { create });
 	},
 
-	[C.LOGGING_IN] : (state) => {
-		return objectAssign({}, state, { loggingIn: true });
-	},
-
-	[C.LOGGED_IN] : (state) => {
-		return objectAssign({}, state, { loggingIn: false });
-	},
-
-	[C.FETCHED_PROFILE] : (state, data) => {
-		return objectAssign({}, state, { profile: data });
-	},
-
-	[C.LOGOUT] : (state, data) => {
-		const nextState = { loggingIn: state.loggingIn };
-		return nextState;
-		// return objectAssign({}, state, {  })
+	[C.CHANGE_TYPE] : (state, type) => {
+		const create = objectAssign({}, state.create, { type });
+		return objectAssign({}, state, { create });
 	}
 }

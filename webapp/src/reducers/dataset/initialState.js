@@ -1,1 +1,5 @@
-export default {};
+export default {
+	create: {
+		type: 'sql'
+	}
+};
