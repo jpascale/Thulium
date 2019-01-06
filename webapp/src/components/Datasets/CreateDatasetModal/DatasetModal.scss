@@ -29,5 +29,15 @@
 				}
 			}
 		}
+
+		.upload-datasets {
+			.card-header {
+				padding: .25rem .75rem;
+
+				span {
+					cursor: pointer;
+				}
+			}
+		}
 	}
 }

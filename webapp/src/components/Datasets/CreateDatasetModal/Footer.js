@@ -8,7 +8,7 @@ import { nextStage } from '../../../actions/datasets';
 
 const Footer = ({ stage, nextStage, closeModal }) => {
 
-	if (stage === 'pick-type') {
+	if (stage === 'pick-type' || stage === 'upload-datasets') {
 		return (
 			<ModalFooter>
 				<Button color="primary" onClick={nextStage}>Next Step</Button>{' '}

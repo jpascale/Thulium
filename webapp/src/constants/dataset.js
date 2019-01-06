@@ -8,6 +8,7 @@ export default constants('dataset', [
 
   'change title',
   'change type',
+  'add item',
 
   'next stage',
 ], {

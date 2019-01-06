@@ -21,5 +21,15 @@ export default {
 			stage: nextStages[state.create.stage]
 		});
 		return objectAssign({}, state, { create });
-	}
+	},
+
+	[C.ADD_ITEM] : (state, title) => {
+		const create = objectAssign({}, state.create, {
+			items: state.create.items.concat({
+				id: state.create.items.length,
+				title
+			})
+		});
+		return objectAssign({}, state, { create });
+	},
 }

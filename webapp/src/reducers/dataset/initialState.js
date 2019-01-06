@@ -1,6 +1,7 @@
 export default {
 	create: {
 		stage: 'pick-type',
-		type: 'SQL'
+		type: 'SQL',
+		items: []
 	}
 };
