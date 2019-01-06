@@ -7,7 +7,9 @@ export default constants('dataset', [
 
 
   'change title',
-  'change type'
+  'change type',
+
+  'next stage',
 ], {
     separator: '/',
     transform: v => v.replace(/ /g, '_').toUpperCase()

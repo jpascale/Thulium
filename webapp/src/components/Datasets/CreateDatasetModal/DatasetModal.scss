@@ -3,6 +3,15 @@
 	.modal-header {
 		cursor: pointer;
 
+		.modal-title {
+			width: 100%;
+
+			input {
+				display: inline-block;
+				width: auto;
+			}
+		}
+
 		&.untitled {
 			color: '#ddd';
 			font-style: italic;

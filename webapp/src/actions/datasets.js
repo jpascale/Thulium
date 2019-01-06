@@ -36,3 +36,5 @@ export const changeDatasetType = type => ({
   type: CD.CHANGE_TYPE,
   payload: type
 });
+
+export const nextStage = () => ({ type: CD.NEXT_STAGE });

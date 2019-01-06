@@ -1,5 +1,6 @@
 export default {
 	create: {
-		type: 'sql'
+		stage: 'pick-type',
+		type: 'SQL'
 	}
 };

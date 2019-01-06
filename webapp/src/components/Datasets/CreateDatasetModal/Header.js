@@ -1,7 +1,7 @@
 /* eslint-disable import/no-named-as-default */
 import React from 'react';
 import { connect } from 'react-redux';
-import { ModalHeader, UncontrolledTooltip } from 'reactstrap';
+import { ModalHeader, UncontrolledTooltip, Badge } from 'reactstrap';
 import classNames from 'classnames';
 
 import { changeDatasetTitle } from '../../../actions/datasets';
@@ -29,6 +29,7 @@ class Header extends React.Component {
   }
 
   render = () => {
+    const { type } = this.props;
     const { modifiedTitle, changingTitle, title } = this.state;
     const titleContent = (() => {
       if (changingTitle) {
@@ -47,13 +48,14 @@ class Header extends React.Component {
     })();
     return (
       <ModalHeader toggle={this.props.toggle} onClick={this.changeTitle} className={classNames({ untitled: !modifiedTitle })}>
-        {titleContent}
+        <Badge color="success">{type}</Badge> {titleContent}
       </ModalHeader>
     )
   }
 }
 
 const mapStateToProps = state => ({
+  type: state.dataset.create.type
 });
 
 const mapDispatchToProps = dispatch => ({

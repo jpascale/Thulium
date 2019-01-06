@@ -9,8 +9,8 @@ const src = title => `https://placeholdit.imgix.net/~text?txtsize=33&txt=${title
 
 const PickType = ({ type, changeDatasetType }) => (
 	<div className="text-center pick-type">
-		<img onClick={() => changeDatasetType('sql')} src={src('SQL')} className={classNames('rounded img-thumbnail', { selected: type === 'sql' })}></img>
-		<img onClick={() => changeDatasetType('nosql')} src={src('NoSQL')} className={classNames('rounded img-thumbnail', { selected: type === 'nosql'})}></img>
+		<img onClick={() => changeDatasetType('SQL')} src={src('SQL')} className={classNames('rounded img-thumbnail', { selected: type === 'SQL' })}></img>
+		<img onClick={() => changeDatasetType('NoSQL')} src={src('NoSQL')} className={classNames('rounded img-thumbnail', { selected: type === 'NoSQL'})}></img>
 	</div>
 );
 
