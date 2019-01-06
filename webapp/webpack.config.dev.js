@@ -14,7 +14,7 @@ export default {
   resolve: {
     extensions: ['*', '.js', '.jsx', '.json']
   },
-  devtool: false,//'inline-source-map', // more info:https://webpack.js.org/guides/development/#using-source-maps and https://webpack.js.org/configuration/devtool/
+  devtool: 'source-map',//'inline-source-map', // more info:https://webpack.js.org/guides/development/#using-source-maps and https://webpack.js.org/configuration/devtool/
   entry: [
     // must be first entry to properly set public path
     './src/webpack-public-path',
@@ -27,7 +27,13 @@ export default {
   output: {
     path: path.resolve(__dirname, 'dist'), // Note: Physical files are only output by the production build task `npm run build`.
     publicPath: '/',
-    filename: 'bundle.js'
+    filename: '[name].bundle.js',
+    chunkFilename: '[name].bundle.js',
+  },
+  optimization: {
+    splitChunks: {
+      chunks: 'all'
+    }
   },
   plugins: [
     new HardSourceWebpackPlugin(),

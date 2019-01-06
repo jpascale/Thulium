@@ -1,8 +1,8 @@
 import React from 'react';
 
 
-import TabBar from '../modules/Editor/TabBar';
-import Tab from '../modules/Editor/Tab';
+import TabBar from '../Editor/TabBar';
+import Tab from '../Editor/Tab';
 
 import '../../styles/main.scss';
 

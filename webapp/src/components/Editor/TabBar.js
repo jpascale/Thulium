@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { Navbar, Nav, NavItem, NavLink } from 'reactstrap'
 
-import { changeFile, showCreateFileModal } from '../../../actions/files';
+import { changeFile, showCreateFileModal } from '../../actions/files';
 
 class TabBar extends React.Component {
 

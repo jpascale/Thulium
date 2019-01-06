@@ -1,10 +1,15 @@
 import React from 'react';
-import { Navbar, Nav, NavItem, NavLink } from 'reactstrap'
+import Loadable from 'react-loadable';
 
 import ActionBar from './ActionBar';
 import StatusBar from './StatusBar';
 import Editor from './Editor';
-import Results from './Results';
+
+const AsyncResults = Loadable({
+  loader: () => import(/* webpackChunkName: "Results" */ './Results'),
+  /* eslint-disable react/display-name */
+  loading: () => <span>Loading</span>
+});
 
 class Tab extends React.Component {
 	render() {
@@ -13,7 +18,7 @@ class Tab extends React.Component {
 				<ActionBar />
 				<Editor />
 				<StatusBar />
-				<Results />
+				<AsyncResults />
 			</div>
 		);
 	}

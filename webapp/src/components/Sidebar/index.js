@@ -1,8 +1,8 @@
 import React from 'react';
 
-import SidebarContent from '../modules/Sidebar/SidebarContent';
+import SidebarContent from './SidebarContent';
 
-import '../../styles/sidebar.scss';
+import './sidebar.scss';
 
 const Sidebar = props => (
 	<nav className="col-md-2 d-none d-md-block bg-light sidebar">

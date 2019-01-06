@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { Navbar, Nav, NavItem, NavLink } from 'reactstrap'
 
-import { run } from '../../../actions/app';
+import { run } from '../../actions/app';
 
 class ActionBar extends React.Component {
 

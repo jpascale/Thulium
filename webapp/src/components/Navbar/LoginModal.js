@@ -2,13 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button, NavItem, NavLink, Form, FormGroup, Input, Label, Nav } from 'reactstrap';
 
-import EnginePicker from '../modules/Navbar/EnginePicker';
-
-import '../../styles/navbar.scss';
-
 import { login, logout } from '../../actions/auth';
 
-class ThuliumLogin extends React.Component {
+class LoginModal extends React.Component {
 
 	state = {}
 
@@ -42,12 +38,12 @@ class ThuliumLogin extends React.Component {
 				</NavLink>
 			</NavItem>
 		) : (
-				<NavItem>
-					<NavLink href="#" onClick={this.logout}>
-						Logout ({profile.email})
-					</NavLink>
-				</NavItem>
-			);
+			<NavItem>
+				<NavLink href="#" onClick={this.logout}>
+					Logout ({profile.email})
+				</NavLink>
+			</NavItem>
+		);
 		return (
 			<React.Fragment>
 				<Nav>
@@ -78,7 +74,7 @@ class ThuliumLogin extends React.Component {
 }
 
 const mapStateToProps = state => ({
-	profile: state.auth.profile,
+	profile: state.auth.profile || {},
 	loggingIn: state.auth.loggingIn
 });
 
@@ -87,4 +83,4 @@ const mapDispatchToProps = dispatch => ({
 	logout: () => dispatch(logout())
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ThuliumLogin);
+export default connect(mapStateToProps, mapDispatchToProps)(LoginModal);

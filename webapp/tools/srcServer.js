@@ -33,13 +33,13 @@ browserSync({
         noInfo: true,
         quiet: false,
         stats: {
-          assets: false,
+          assets: true,
           colors: true,
           version: false,
           hash: false,
           timings: false,
-          chunks: false,
-          chunkModules: false
+          chunks: true,
+          chunkModules: true
         },
 
         // for other settings see

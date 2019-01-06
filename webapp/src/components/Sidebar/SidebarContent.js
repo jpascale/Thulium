@@ -2,8 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 
-import { changeFile, showCreateFileModal } from '../../../actions/files';
-import ThuliumCreateDataset from '../../containers/CreateDatasetModal';
+import { changeFile, showCreateFileModal } from '../../actions/files';
+import CreateDatasetMenuItem from '../Datasets/CreateDatasetModal';
+
+import AddIcon from '../common/AddIcon';
 
 class SidebarContent extends React.Component {
 
@@ -22,15 +24,9 @@ class SidebarContent extends React.Component {
 		));
 		return (
 			<React.Fragment>
-				<ThuliumCreateDataset />
+				<CreateDatasetMenuItem />
 				<h6 className="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-1 mb-1 text-muted">OPEN FILES
-					<a className="d-flex align-items-center text-muted" href="#" onClick={this.createFile}>
-						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-plus-circle">
-							<circle cx="12" cy="12" r="10"></circle>
-							<line x1="12" y1="8" x2="12" y2="16"></line>
-							<line x1="8" y1="12" x2="16" y2="12"></line>
-						</svg>
-					</a>
+					<AddIcon onClick={this.createFile} />
 				</h6>
 				<ul className="nav flex-column">
 					{fileList}

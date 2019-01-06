@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button, NavItem, NavLink, Form, FormGroup, Input, Label, Nav } from 'reactstrap';
 
-import { closeCreateFileModal, createFile } from '../../../actions/files';
+import { closeCreateFileModal, createFile } from '../../actions/files';
 
 class CreateFileModal extends React.Component {
 

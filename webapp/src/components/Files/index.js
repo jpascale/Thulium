@@ -1,6 +1,6 @@
 import React from 'react';
 
-import CreateFileModal from '../modules/Files/CreateFileModal';
+import CreateFileModal from './CreateFileModal';
 
 const Files = props => (
 	<React.Fragment>

@@ -7,7 +7,7 @@ import debounce from 'lodash.debounce';
 import 'brace/mode/sql';
 import 'brace/theme/monokai';
 
-import { autosave } from '../../../actions/files';
+import { autosave } from '../../actions/files';
 
 class Editor extends React.Component {
 

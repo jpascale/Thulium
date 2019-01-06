@@ -1,10 +1,10 @@
 import React from 'react';
 import { Navbar, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
 
-import EnginePicker from '../modules/Navbar/EnginePicker';
+import EnginePicker from './EnginePicker';
 import LoginModal from './LoginModal';
 
-import '../../styles/navbar.scss';
+import './navbar.scss';
 
 import { logout } from '../../actions/auth';
 
