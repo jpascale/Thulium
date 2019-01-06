@@ -49,11 +49,15 @@ export const addItemToDataset = title => ({
   payload: title
 });
 
-export const assignFileToItem = (id, file) => dispatch => {
+export const assignFileToItem = (id, file, { firstLine }) => dispatch => {
   return Papa.parsePromise(file, {}).then(({ data }) => {
     return dispatch({
       type: CD.ASSIGN_FILE_TO_ITEM,
-      payload: { id, data }
+      payload: {
+        id,
+        data: firstLine ? data.slice(1) : data,
+        headers: firstLine ? data[0] : []
+      }
     });
   }, err => {
     console.error(err);

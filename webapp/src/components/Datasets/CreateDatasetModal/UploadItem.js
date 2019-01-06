@@ -1,7 +1,7 @@
 /* eslint-disable import/no-named-as-default */
 import React from 'react';
 import { connect } from 'react-redux';
-import { Collapse, CardBody, Card, CardHeader, UncontrolledTooltip, FormGroup, Label, Input, Form, FormText } from 'reactstrap';
+import { Collapse, CardBody, Card, CardHeader, UncontrolledTooltip, FormGroup, Label, Input, Form, FormText, Button } from 'reactstrap';
 import classNames from 'classnames';
 
 import { addItemToDataset, assignFileToItem, upload } from '../../../actions/datasets';
@@ -16,6 +16,7 @@ class UploadItem extends React.Component {
   }
 
   handleChange = key => e => this.setState({ [key]: e.target.value })
+  toggleFirstLine = e => this.setState({ firstLine: e.target.checked })
   toggleCollapsed = e => this.setState({ collapsed: !this.state.collapsed })
   toggleTitleEdit = e => {
     if (e) {
@@ -36,9 +37,7 @@ class UploadItem extends React.Component {
     }
   }
 
-  handleBlur = e => {
-    this.toggleTitleEdit();
-  }
+  handleBlur = e => this.toggleTitleEdit()
 
   handleInputClick = e => {
     e.preventDefault();
@@ -46,14 +45,21 @@ class UploadItem extends React.Component {
   }
   
   handleFileChange = e => {
-    const { assignFileToItem, item } = this.props;
     const file = e.target.files[0];
-    assignFileToItem(item.id, file);
+    this.setState({ file });
+  }
+
+  process = e => {
+    const { assignFileToItem, item } = this.props;
+    const { file, firstLine } = this.state;
+    assignFileToItem(item.id, file, {
+      firstLine
+    });
   }
 
   render = () => {
     const { adding, sql, item } = this.props;
-    const { changingTitle, collapsed, title } = this.state;
+    const { changingTitle, collapsed, title, file } = this.state;
 
     const header = (() => {
       if (changingTitle) {
@@ -100,9 +106,10 @@ class UploadItem extends React.Component {
                   </FormGroup>
                   <FormGroup check>
                     <Label check>
-                      <Input type="checkbox" /> First line contains column names
+                      <Input type="checkbox" onChange={this.toggleFirstLine} /> First line contains column names
                     </Label>
                   </FormGroup>
+                  <Button size="sm" disabled={!file} onClick={this.process}>Process File</Button>
                 </Form>
               </CardBody>
             </Collapse>
@@ -119,7 +126,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   addItemToDataset: title => dispatch(addItemToDataset(title)),
-  assignFileToItem: (id, file) => dispatch(assignFileToItem(id, file)),
+  assignFileToItem: (id, file, options) => dispatch(assignFileToItem(id, file, options)),
   handleUpload: data => dispatch(upload(data))
 });
 

@@ -33,9 +33,9 @@ export default {
 		return objectAssign({}, state, { create });
 	},
 
-	[C.ASSIGN_FILE_TO_ITEM] : (state, { id, data, error }) => {
+	[C.ASSIGN_FILE_TO_ITEM] : (state, { id, data, headers, error }) => {
 		const nextItems = state.create.items.slice();
-		nextItems[id] = objectAssign({}, nextItems[id], { data, error });
+		nextItems[id] = objectAssign({}, nextItems[id], { data, headers, error });
 		const create = objectAssign({}, state.create, { items: nextItems });
 		return objectAssign({}, state, { create });
 	},
