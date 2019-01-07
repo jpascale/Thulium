@@ -10,7 +10,7 @@ import Footer from './Footer';
 import Body from './Body';
 
 const CreateDatasetModal = ({ closeModal }) => (
-  <Modal isOpen={true} className="create-dataset-modal">
+  <Modal isOpen={true} size="lg" className="create-dataset-modal">
     <Header toggle={closeModal} />
     <Body />
     <Footer closeModal={closeModal} />

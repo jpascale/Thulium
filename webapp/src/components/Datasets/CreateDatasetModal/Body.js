@@ -2,14 +2,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { ModalBody } from 'reactstrap';
-import PickType from './PickType';
-import UploadDatasets from './UploadDatasets';
+import PickType from './Stages/PickType';
+import UploadDatasets from './Stages/UploadDatasets';
+import ReviewDatasets from './Stages/ReviewDatasets';
 
 const Body = ({ stage, nextStage, closeModal }) => {
 
 	const Component = (() => {
 		if (stage === 'pick-type') return PickType;
 		if (stage === 'upload-datasets') return UploadDatasets;
+		if (stage === 'review-datasets') return ReviewDatasets;
 		return PickType;
 	})();
 

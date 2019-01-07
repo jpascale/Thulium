@@ -2,7 +2,8 @@ import C from '../../constants/dataset';
 import objectAssign from 'object-assign';
 
 const nextStages = {
-	'pick-type': 'upload-datasets'
+	'pick-type': 'upload-datasets',
+	'upload-datasets': 'review-datasets'
 };
 
 export default {

@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 
-import { changeDatasetType } from '../../../actions/datasets';
+import { changeDatasetType } from '../../../../actions/datasets';
 
 const src = title => `https://placeholdit.imgix.net/~text?txtsize=33&txt=${title}&w=200&h=150`
 

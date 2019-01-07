@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import { Collapse, CardBody, Card, CardHeader, UncontrolledTooltip, FormGroup, Label, Input, Form, FormText, Button } from 'reactstrap';
 import classNames from 'classnames';
 
-import { addItemToDataset, assignFileToItem, upload } from '../../../actions/datasets';
+import { addItemToDataset, assignFileToItem, upload } from '../../../../actions/datasets';
 
-import AddIcon from '../../common/AddIcon';
+import AddIcon from '../../../common/AddIcon';
 
 class UploadItem extends React.Component {
 

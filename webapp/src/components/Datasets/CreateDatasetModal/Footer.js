@@ -6,13 +6,22 @@ import classNames from 'classnames';
 
 import { nextStage } from '../../../actions/datasets';
 
-const Footer = ({ stage, nextStage, closeModal }) => {
+const Footer = ({ stage, nextStage, closeModal, ok }) => {
 
-	if (stage === 'pick-type' || stage === 'upload-datasets') {
+	if (stage === 'pick-type') {
 		return (
 			<ModalFooter>
-				<Button color="primary" onClick={nextStage}>Next Step</Button>{' '}
-				<Button color="secondary" onClick={closeModal}>Cancel</Button>
+				<Button color="secondary" onClick={closeModal}>Cancel</Button>{' '}
+				<Button color="primary" onClick={nextStage}>Next Step</Button>
+			</ModalFooter>
+		)
+	}
+
+	if (stage === 'upload-datasets') {
+		return (
+			<ModalFooter>
+				<Button color="secondary" onClick={closeModal}>Cancel</Button>{' '}
+				<Button color="primary" disabled={!ok} onClick={nextStage}>Next Step</Button>
 			</ModalFooter>
 		)
 	}
@@ -21,7 +30,12 @@ const Footer = ({ stage, nextStage, closeModal }) => {
 };
 
 const mapStateToProps = state => ({
-	stage: state.dataset.create.stage
+	stage: state.dataset.create.stage,
+	ok: ((items) => {
+		if (!items.length) return false;
+		return !items.filter(i => i.error || !i.data || !i.data.length).length
+	})(state.dataset.create.items),
+	
 });
 
 const mapDispatchToProps = dispatch => ({

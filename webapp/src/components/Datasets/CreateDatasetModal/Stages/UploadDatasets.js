@@ -1,10 +1,8 @@
 /* eslint-disable import/no-named-as-default */
 import React from 'react';
 import { connect } from 'react-redux';
-import { Collapse, CardBody, Card, CardHeader } from 'reactstrap';
-import classNames from 'classnames';
 
-import { changeDatasetTitle, upload } from '../../../actions/datasets';
+import { changeDatasetTitle, upload } from '../../../../actions/datasets';
 
 import UploadItem from './UploadItem';
 
@@ -22,8 +20,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  changeDatasetTitle: title => dispatch(changeDatasetTitle(title)),
-  handleUpload: data => dispatch(upload(data))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(UploadDatasets);
