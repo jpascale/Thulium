@@ -22,10 +22,9 @@ class ReviewDatasets extends React.Component {
   render = () => {
     const { items } = this.props;
     const { active } = this.state;
-    console.log(active);
     return (
-      <div className="review-datasets">
-        <Nav tabs>
+      <div className="review-datasets d-flex flex-row">
+        <Nav tabs className="nav-tabs--vertical nav-tabs--left">
           {items.map(item => (
             <NavItem key={item.id}>
               <NavLink className={classNames({ active: active === item.id })} onClick={this.switchToTab(item.id)}>
@@ -34,7 +33,7 @@ class ReviewDatasets extends React.Component {
             </NavItem>
           ))}
         </Nav>
-        <TabContent activeTab={active}>
+        <TabContent className="flex-grow-1" activeTab={active}>
           <TabPane tabId={active} tabIndex={active}>
             <ReviewItem item={items[active]} />
           </TabPane>

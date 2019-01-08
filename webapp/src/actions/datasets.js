@@ -50,7 +50,7 @@ export const addItemToDataset = title => ({
 });
 
 export const assignFileToItem = (id, file, { firstLine }) => dispatch => {
-  return Papa.parsePromise(file, {}).then(({ data }) => {
+  return Papa.parsePromise(file, { skipEmptyLines: true }).then(({ data }) => {
     return dispatch({
       type: CD.ASSIGN_FILE_TO_ITEM,
       payload: {
@@ -67,3 +67,13 @@ export const assignFileToItem = (id, file, { firstLine }) => dispatch => {
     });
   });
 };
+
+export const updateDataForItem = (id, delta) => ({
+  type: CD.UPDATE_DATA_FOR_ITEM,
+  payload: { id, delta }
+});
+
+export const updateHeaderForItem = (id, delta) => ({
+  type: CD.UPDATE_HEADER_FOR_ITEM,
+  payload: { id, delta }
+});

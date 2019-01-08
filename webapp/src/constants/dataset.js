@@ -10,6 +10,8 @@ export default constants('dataset', [
   'change type',
   'add item',
   'assign file to item',
+  'update data for item',
+  'update header for item',
 
   'next stage',
 ], {

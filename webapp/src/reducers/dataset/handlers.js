@@ -40,4 +40,26 @@ export default {
 		const create = objectAssign({}, state.create, { items: nextItems });
 		return objectAssign({}, state, { create });
 	},
+
+	[C.UPDATE_DATA_FOR_ITEM] : (state, { id, delta }) => {
+		const { row, index, value } = delta;
+		const nextItems = state.create.items.slice();
+		const nextData = nextItems[id].data.slice();
+		const nextRow = nextData[row].slice();
+		nextRow.splice(index, 1, value);
+		nextData[row] = nextRow;
+		nextItems[id] = objectAssign({}, nextItems[id], { data: nextData });
+		const create = objectAssign({}, state.create, { items: nextItems });
+		return objectAssign({}, state, { create });
+	},
+
+	[C.UPDATE_HEADER_FOR_ITEM] : (state, { id, delta }) => {
+		const { index, value } = delta;
+		const nextItems = state.create.items.slice();
+		const nextHeaders = nextItems[id].headers.slice();
+		nextHeaders.splice(index, 1, value);
+		nextItems[id] = objectAssign({}, nextItems[id], { headers: nextHeaders });
+		const create = objectAssign({}, state.create, { items: nextItems });
+		return objectAssign({}, state, { create });
+	}
 }
