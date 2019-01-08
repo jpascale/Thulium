@@ -34,9 +34,9 @@ export default {
 		return objectAssign({}, state, { create });
 	},
 
-	[C.ASSIGN_FILE_TO_ITEM] : (state, { id, data, headers, error }) => {
+	[C.ASSIGN_FILE_TO_ITEM] : (state, { id, data, headers, types, error }) => {
 		const nextItems = state.create.items.slice();
-		nextItems[id] = objectAssign({}, nextItems[id], { data, headers, error });
+		nextItems[id] = objectAssign({}, nextItems[id], { data, headers, types, error });
 		const create = objectAssign({}, state.create, { items: nextItems });
 		return objectAssign({}, state, { create });
 	},
@@ -59,6 +59,16 @@ export default {
 		const nextHeaders = nextItems[id].headers.slice();
 		nextHeaders.splice(index, 1, value);
 		nextItems[id] = objectAssign({}, nextItems[id], { headers: nextHeaders });
+		const create = objectAssign({}, state.create, { items: nextItems });
+		return objectAssign({}, state, { create });
+	},
+
+	[C.UPDATE_TYPE_FOR_ITEM] : (state, { id, delta }) => {
+		const { index, value } = delta;
+		const nextItems = state.create.items.slice();
+		const nextTypes = nextItems[id].types.slice();
+		nextTypes.splice(index, 1, value);
+		nextItems[id] = objectAssign({}, nextItems[id], { types: nextTypes });
 		const create = objectAssign({}, state.create, { items: nextItems });
 		return objectAssign({}, state, { create });
 	}

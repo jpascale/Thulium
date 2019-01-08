@@ -6,11 +6,7 @@ import classNames from 'classnames';
 import ReactDataGrid from 'react-data-grid';
 import { Editors } from 'react-data-grid-addons';
 
-import { updateDataForItem, updateHeaderForItem } from '../../../../actions/datasets';
-
-import isInt from 'validator/lib/isInt';
-import isFloat from 'validator/lib/isFloat';
-import isBoolean from 'validator/lib/isBoolean';
+import { updateDataForItem, updateHeaderForItem, updateTypeForItem } from '../../../../actions/datasets';
 
 const range = (n, b = 0, fn = i => i) => new Array(n).fill(undefined).map((_, i) => fn(i + b));
 
@@ -77,38 +73,15 @@ const dataGridBaseOptions = {
 
 class ReviewItem extends React.Component {
 
-	constructor(props) {
-		super(props);
-
-		this.state = {
-			columnTypes: this._guessColumnTypes()
-		}
-	}
-
-	_guessColumnTypes = () => {
-		const { item } = this.props;
-
-		return item.headers.map((h, i) => {
-			// read values from first 5 rows
-			const values = item.data.slice(5).map(row => row[i]);
-			const isAnInt = values.filter(isInt).length === values.length;
-			if (isAnInt) return 'Int';
-			const isAFloat = values.filter(isFloat).length === values.length;
-			if (isAFloat) return 'Float';
-			const isABoolean = values.filter(isBoolean).length === values.length;
-			if (isABoolean) return 'Boolean';
-			return  'String';
-		});
-	}
-
-
 	handleChange = key => e => this.setState({ [key]: e.target.value })
 	rowGetter = i => this.props.item.data[i];
 	onUpdateColumnTypes = ({ fromRow, toRow, updated }) => {
-		const columnTypes = this.state.columnTypes.slice();
+		const { item, updateTypeForItem } = this.props;
 		const index = parseInt(Object.keys(updated)[0], 10);
-		columnTypes.splice(index, 1, updated[index]);
-		this.setState({ columnTypes });
+		updateTypeForItem(item.id, {
+			index,
+			value: updated[index]
+		});
 	}
 
 	onGridRowsUpdated = ({ fromRow, toRow, updated }) => {
@@ -165,7 +138,7 @@ class ReviewItem extends React.Component {
 				<h5>Column Types</h5>
 				<ReactDataGrid
 					columns={dataGridColumnsTypes}
-					rowGetter={() => this.state.columnTypes}
+					rowGetter={() => item.types}
 					rowsCount={1}
 					minHeight={80}
 					rowHeight={20}
@@ -182,7 +155,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-	updateDataForItem: (id, delta) => dispatch(updateDataForItem(id, delta))
+	updateDataForItem: (id, delta) => dispatch(updateDataForItem(id, delta)),
+	updateTypeForItem: (id, delta) => dispatch(updateTypeForItem(id, delta))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ReviewItem);
