@@ -41,8 +41,17 @@
 		}
 
 		.review-datasets {
+
+			.nav-link {
+				cursor: pointer;
+			}
+
 			.tab-pane {
 				outline: none;
+			}
+
+			.drag-handle {
+				display: none;
 			}
 		}
 	}
