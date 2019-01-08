@@ -10,7 +10,7 @@ const handlersList = [
 debug('registering handlers')
 
 const handlers = handlersList.reduce((memo, val) => {
-	memo[val.TYPE] = val.handle;
+	memo[val.TYPE] = {handler: val.handle, explain: val.explain};
 	return memo;
 }, {});
 
@@ -23,8 +23,9 @@ const handle = (ws, req, message, done) => {
 	if (!handler) {
 		return done(new Error('No such handler'));
 	}
-	return handler(ws, req, message.payload, done);
-}
+	debug(`explain return ${handler.explain(message.payload,debug)}`);
+	return handler.handler(ws, req, message.payload, done);
+};
 
 module.exports = {
 	handle
