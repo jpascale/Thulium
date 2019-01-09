@@ -24,7 +24,7 @@ const explain = (message, done) => {
 		if (message.query.replace(/ +(?= )/g, '').trim().substr(0, 15).toUpperCase() === "EXPLAIN ANALYSE"){
 			explainQuery = "EXPLAIN ".concat(message.query.replace(/ +(?= )/g, '').trim().substr(15));
 	  }else{
-			explainQuery = message.query; //RET 0
+			done(null, 0.0);
 	  }
 	}else {
 		explainQuery = "EXPLAIN ".concat(message.query);
@@ -36,9 +36,10 @@ const explain = (message, done) => {
 			columns: result.fields.map(v => v.name),
 			records: result.rows,
 			count: result.rowCount
-		}
-		//TODO PARSE FIRST LINE
-		done(null, response);
+		};
+		let ans = parseFloat(response.records[0]['QUERY PLAN'].match(/\d+(\.\d+)?/g)[1]);
+		done(null, ans);
+		// TODO separate explain execution and parse result in different functions
 	});
 };
 
