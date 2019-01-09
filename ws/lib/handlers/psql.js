@@ -24,7 +24,12 @@ const explain = (message, done) => {
 		if (message.query.replace(/ +(?= )/g, '').trim().substr(0, 15).toUpperCase() === "EXPLAIN ANALYSE"){
 			explainQuery = "EXPLAIN ".concat(message.query.replace(/ +(?= )/g, '').trim().substr(15));
 	  }else{
-			done(null, 0.0);
+			let ans = { columns: [ 'QUERY PLAN' ],
+				records:
+					[ { 'QUERY PLAN': 'Result  (cost=0.00..0.00 rows=1 width=0)' } ],
+				count: null
+			};
+			done(null, ans);
 	  }
 	}else {
 		explainQuery = "EXPLAIN ".concat(message.query);
@@ -37,14 +42,21 @@ const explain = (message, done) => {
 			records: result.rows,
 			count: result.rowCount
 		};
-		let ans = parseFloat(response.records[0]['QUERY PLAN'].match(/\d+(\.\d+)?/g)[1]);
-		done(null, ans);
-		// TODO separate explain execution and parse result in different functions
+		done(null, response);
 	});
 };
 
+const explainValue = (message, done) => {
+	explain(message,(err, response) =>
+	{
+		if (err) return done(err);
+		let ans = parseFloat(response.records[0]['QUERY PLAN'].match(/\d+(\.\d+)?/g)[1])
+		done(null, ans);
+	});
+};
 module.exports = {
 	handle,
 	explain,
+	explainValue,
 	TYPE: 'psql'
 };
