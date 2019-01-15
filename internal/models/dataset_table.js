@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-  , debug = require('debug')('internal:models:dataset');
+  , debug = require('debug')('internal:models:dataset_table');
 
 debug('configuring dataset schema');
 
