@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
   , debug = require('debug')('internal:models:dataset_table');
 
-debug('configuring dataset schema');
+debug('configuring dataset_table schema');
 
 const DatasetTable = mongoose.Schema({
   created: {
