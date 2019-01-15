@@ -22,7 +22,6 @@ const DatasetTable = mongoose.Schema({
   },
   rows: [{
     name: String,
-    /* int, string, float, boolean */
     data_type: {
       type: String,
       enum: ['int', 'string', 'float', 'boolean']

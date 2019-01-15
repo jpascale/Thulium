@@ -18,7 +18,6 @@ const Dataset = mongoose.Schema({
 		ref: 'User'
 	},
 	paradigm: {
-		/* sql, nosql*/
 		type: String,
 		enum: ['sql', 'nosql']
 	},
