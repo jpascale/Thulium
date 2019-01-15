@@ -2,7 +2,8 @@ const { Pool } = require('pg')
 		, crypto =require('crypto')
 		, async = require('async')
 		, debug = require('debug')('storage:postgres')
-		, escape = require('pg-escape');
+		, escape = require('pg-escape')
+		, parser = require('pg-query-parser');
 
 const Module = {};
 
@@ -18,6 +19,9 @@ Module.query = function () {
 	if (!pool) {
 		throw new Error('module has no config');
 	}
+	debug('trying parser');
+	let temp_variable = parser.parse(arguments[0]);
+	debug(temp_variable);
 	debug('querying postgres');
 	return pool.query.apply(pool, arguments);
 };
