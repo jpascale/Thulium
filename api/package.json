@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "better-npm-run start",
+    "debug": "better-npm-run debug",
     "forever": "better-npm-run forever"
   },
   "betterScripts": {
@@ -22,6 +23,14 @@
       "env": {
         "NODE_ENV": "production",
         "PORT": 3000
+      }
+    },
+    "debug": {
+      "command": "node $NODE_DEBUG_OPTION index.js",
+      "env": {
+        "NODE_ENV": "development",
+        "PORT": 3000,
+        "DEBUG": "api*,storage*,ws*,internal*"
       }
     },
     "forever": {
