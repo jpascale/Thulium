@@ -18,10 +18,12 @@ const handle = (ws, req, message, done) => {
 };
 
 const explain = (message, done) => {
-	debug(message.query.trim().substr(0,7).toUpperCase());
+	let beginningStr = message.query.trim().substr(0,Math.min(7,message.query.length)).toUpperCase();
+	debug(beginningStr);
 	let explainQuery;
-	if(message.query.trim().substr(0,7).toUpperCase()==="EXPLAIN") {
-		if (message.query.replace(/ +(?= )/g, '').trim().substr(0, 15).toUpperCase() === "EXPLAIN ANALYSE"){
+	if(beginningStr ==="EXPLAIN") {
+		beginningStr = message.query.replace(/ +(?= )/g, '').trim().substr(0, Math.min(15,message.query.length)).toUpperCase();
+		if (beginningStr === "EXPLAIN ANALYSE"){
 			explainQuery = "EXPLAIN ".concat(message.query.replace(/ +(?= )/g, '').trim().substr(15));
 	  }else{
 			let ans = { columns: [ 'QUERY PLAN' ],
