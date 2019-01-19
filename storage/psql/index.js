@@ -28,7 +28,7 @@ PSQL.query = (sql, done) => {
 	debug('trying parser');
 	const { query: ast, error } = PSQL.parse(sql);
 	if (error) return done(error);
-	debug(ast);
+	debug(JSON.stringify(ast, null, 2));
 	debug('querying postgres');
 	return pool.query(sql, done);
 };
