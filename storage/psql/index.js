@@ -3,42 +3,43 @@ const { Pool } = require('pg')
 		, async = require('async')
 		, debug = require('debug')('storage:postgres')
 		, escape = require('pg-escape')
-		, parser = require('pg-query-parser');
+		, parser = require('pg-query-parser')
+		, generateTableName = require('../utils/generateTableName')
+		, toSQLColumnName = require('../utils/toSQLColumnName')
+		, chunk = require('../utils/chunk')
+		, range = require('../utils/range');
 
-const Module = {};
+const PSQL = {};
 
 let pool;
 
-Module.config = (config) => {
+PSQL.config = (config) => {
 	if (pool) return;
 	debug('configuring pool');
 	pool = new Pool(config);
 };
 
-Module.query = function () {
+PSQL.parse = sql => parser.parse(sql);
+
+PSQL.query = function () {
 	if (!pool) {
 		throw new Error('module has no config');
 	}
 	debug('trying parser');
-	let temp_variable = parser.parse(arguments[0]);
-	debug(temp_variable);
+	const { query: ast, error } = PSQL.parse();
+	if (error) {
+		const callback = Array.prototype.slice.call(arguments)[arguments.length - 1];
+		if (typeof(callback) === 'function') {
+			return callback(null, error);
+		}
+		return Promise.reject(error);
+	}
+	debug(ast);
 	debug('querying postgres');
 	return pool.query.apply(pool, arguments);
 };
 
-const generateTableName = (data) => crypto.createHash('md5').update(data).digest('hex');
-const toSQLColumnName = c => c.replace(/[^0-9a-zA-Z_]/g, '').replace(/^[^a-zA-Z_]+/, '');
-
-const chunk = (arr, chunkSize, cache = []) => {
-  const tmp = [...arr]
-  while (tmp.length) cache.push(tmp.splice(0, chunkSize))
-  return cache
-};
-
-const range = (n, b = 0, fn = i => i) => new Array(n).fill(undefined).map((_, i) => fn(b + i));
-const flatten = arr => arr.reduce((memo, arr) => memo.concat(arr), []);
-
-Module.createDataset = ({ headers, data }, done) => {
+PSQL.createDataset = ({ headers, data }, done) => {
 	if (!pool) {
 		throw new Error('module has no config');
 	}
@@ -49,7 +50,7 @@ Module.createDataset = ({ headers, data }, done) => {
 	async.series([
 		next => {
 			debug(`dropping ${tableName}`);
-			Module.query(`DROP TABLE IF EXISTS ${tableName}`, next)
+			PSQL.query(`DROP TABLE IF EXISTS ${tableName}`, next)
 		},
 		next => {
 			const headersSQL = columnHeaders.map(h => `${h} TEXT`).join(',\n');
@@ -58,7 +59,7 @@ Module.createDataset = ({ headers, data }, done) => {
 			)`;
 			debug('creating table with DDL');
 			debug(createTableSQL);
-			Module.query(createTableSQL, next);
+			PSQL.query(createTableSQL, next);
 		},
 		next => {
 			debug('inserting data');
@@ -69,7 +70,7 @@ Module.createDataset = ({ headers, data }, done) => {
 				const query = escape(insertDataSQL, ...flatten(data))
 				debug('inserting data with query');
 				debug(query);
-				Module.query(query, cb);
+				PSQL.query(query, cb);
 			}, next);
 		}
 	], err => {
@@ -78,4 +79,4 @@ Module.createDataset = ({ headers, data }, done) => {
 	});
 };
 
-module.exports = Module;
+module.exports = PSQL;
