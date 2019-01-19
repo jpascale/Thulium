@@ -3,13 +3,18 @@ import { connect } from 'react-redux';
 
 import { Navbar, Nav, NavItem, NavLink } from 'reactstrap'
 
-import { run } from '../../../actions/app';
+import { run, explain } from '../../../actions/app';
 
 class ActionBar extends React.Component {
 
 	onRun = () => {
 		console.log('onRun');
 		this.props.run();
+	}
+
+	onExplain = () => {
+		console.log('onRun');
+		this.props.explain();
 	}
 
 	render() {
@@ -24,7 +29,7 @@ class ActionBar extends React.Component {
 						<NavLink href="#" className="editor-action-bar-button">Stop</NavLink>
 					</NavItem>
 					<NavItem>
-						<NavLink href="#" className="editor-action-bar-button">Explain</NavLink>
+						<NavLink href="#" onClick={this.onExplain} className="editor-action-bar-button">Explain</NavLink>
 					</NavItem>
 				</Nav>
 			</Navbar>
@@ -36,7 +41,8 @@ const mapStateToProps = state => ({
 	running: state.app.running
 });
 const mapDispatchToProps = dispatch => ({
-	run: () => dispatch(run())
+	run: () => dispatch(run()),
+	explain: () => dispatch(explain())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ActionBar);

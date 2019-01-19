@@ -21,22 +21,34 @@ PSQL.config = (config) => {
 
 PSQL.parse = sql => parser.parse(sql);
 
-PSQL.query = function () {
+PSQL.query = (sql, done) => {
 	if (!pool) {
 		throw new Error('module has no config');
 	}
 	debug('trying parser');
-	const { query: ast, error } = PSQL.parse();
-	if (error) {
-		const callback = Array.prototype.slice.call(arguments)[arguments.length - 1];
-		if (typeof(callback) === 'function') {
-			return callback(null, error);
-		}
-		return Promise.reject(error);
-	}
+	const { query: ast, error } = PSQL.parse(sql);
+	if (error) return done(error);
 	debug(ast);
 	debug('querying postgres');
-	return pool.query.apply(pool, arguments);
+	return pool.query(sql, done);
+};
+
+const EXPLAIN = 'EXPLAIN';
+const EXPLAIN_ANALYSE = 'EXPLAIN ANALYSE';
+
+PSQL.explain = (sql, done) => {
+	debug('transforming query to explainable')
+	const trimmedQuery = sql.replace(/ +(?= )/g, '').trim();
+	const explainQuery = (() => {
+		if (trimmedQuery.substr(0, EXPLAIN_ANALYSE.length).toUpperCase() === EXPLAIN_ANALYSE) {
+			return trimmedQuery;
+		}
+		if (trimmedQuery.substr(0, EXPLAIN.length).toUpperCase() === EXPLAIN) {
+			return trimmedQuery;
+		}
+		return `${EXPLAIN} ${sql}`;
+	})();
+	return PSQL.query(explainQuery, done);
 };
 
 PSQL.createDataset = ({ headers, data }, done) => {

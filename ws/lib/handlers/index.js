@@ -23,7 +23,7 @@ const handle = (ws, req, message, done) => {
 	if (!handler) {
 		return done(new Error('No such handler'));
 	}
-	debug(`explain return ${handler.explain(message.payload,debug)}`);
+	// debug(`explain return ${handler.explain(message.payload,debug)}`);
 	return handler.handler(ws, req, message.payload, done);
 };
 

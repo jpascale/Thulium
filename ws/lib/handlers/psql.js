@@ -5,40 +5,22 @@ const { PostgresStorage } = require('@thulium/storage')
 PostgresStorage.config(Config.storage.postgres);
 
 const handle = (ws, req, message, done) => {
-	debug(`querying psql: ${message.query}`);
-	PostgresStorage.query(message.query, (err, result) => {
-		if (err) return done(err);
-		const response = {
-			columns: result.fields.map(v => v.name),
-			records: result.rows,
-			count: result.rowCount
-		}
-		done(null, response);
-	});
-};
 
-const EXPLAIN = 'EXPLAIN';
-const EXPLAIN_ANALYSE = 'EXPLAIN ANALYSE';
-
-const explain = (message, done) => {
-	const trimmedQuery = message.query.replace(/ +(?= )/g, '').trim();
-	const explainQuery = (() => {
-		if (trimmedQuery.substr(0, EXPLAIN_ANALYSE.length).toUpperCase() === EXPLAIN_ANALYSE) {
-			return trimmedQuery;
-		}
-		if (trimmedQuery.substr(0, EXPLAIN.length).toUpperCase() === EXPLAIN) {
-			return trimmedQuery;
-		}
-		return `${EXPLAIN} ${message.query}`;
+	const [callable, sql] = (() => {
+		if (message.query) return [PostgresStorage.query, message.query];
+		return [PostgresStorage.explain, message.explain];
 	})();
-	debug(`querying explain psql: ${explainQuery}`);
-	PostgresStorage.query(explainQuery, (err, result) => {
+
+	debug(`querying psql: ${sql}`);
+
+	callable(sql, (err, result) => {
 		if (err) return done(err);
+		debug(result);
 		const response = {
 			columns: result.fields.map(v => v.name),
 			records: result.rows,
 			count: result.rowCount
-		};
+		}
 		done(null, response);
 	});
 };
@@ -50,9 +32,8 @@ const explainValue = (message, done) => {
 		done(null, ans);
 	});
 };
+
 module.exports = {
 	handle,
-	explain,
-	explainValue,
 	TYPE: 'psql'
 };
