@@ -1,4 +1,6 @@
 const { MongoMemoryServer } = require('mongodb-memory-server'),
+  User = require('../controllers/user'),
+  Dataset = require('../controllers/dataset'),
   mongoose = require('mongoose');
 
 describe('dataset tests', () => {
@@ -27,8 +29,30 @@ describe('dataset tests', () => {
   afterAll(() => {
     mongoose.disconnect();
     mongod.stop();
-  })
+  });
 
-  it('should pass', () => { });
+  it('should save a dataset correctly', (done) => {
+    
+    const user = new User({
+      email: 'email@example.xyz',
+      role: 'admin',
+      hash: 'hash',
+      salt: 'salt'
+    });
+    user.save();
+    
+    const dataset = new Dataset({
+      title: 'exampleDataset',
+      publisher: user._id,
+      paradigm: 'sql',
+      access: 'owner'
+    });
+    dataset.save();
+
+    Dataset.findOne({title: 'exampleDataset'}, (result) => {
+      expect(result.title).toEqual('exampleDataset');
+      done();
+    });
+  });
 
 });
