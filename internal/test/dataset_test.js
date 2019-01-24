@@ -20,7 +20,6 @@ describe('dataset tests', () => {
     mongoose.connect(uri, mongooseOpts);
 
     mongoose.connection.once('open', () => {
-      console.log(`MongoDB successfully connected to ${uri}`);
       done();
     });
 
@@ -31,26 +30,27 @@ describe('dataset tests', () => {
     mongod.stop();
   });
 
-  it('should save a dataset correctly', (done) => {
-    
+  it('should save a dataset correctly', async (done) => {
+
     const user = new User({
       email: 'email@example.xyz',
       role: 'admin',
       hash: 'hash',
       salt: 'salt'
     });
-    user.save();
-    
+    await user.save();
+
     const dataset = new Dataset({
       title: 'exampleDataset',
       publisher: user._id,
       paradigm: 'sql',
       access: 'owner'
     });
-    dataset.save();
 
-    Dataset.findOne({title: 'exampleDataset'}, (result) => {
-      expect(result.title).toEqual('exampleDataset');
+    await dataset.save();
+
+    Dataset.findOne({ title: 'exampleDataset' }, (err, res) => {
+      expect(res.title).toEqual('exampleDataset');
       done();
     });
   });

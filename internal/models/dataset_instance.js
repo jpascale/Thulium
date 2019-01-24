@@ -8,7 +8,7 @@ const DatasetInstance = mongoose.Schema({
     type: String,
     index: true,
     lowercase: true
-  }
+  },
   dataset: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Dataset',
@@ -35,4 +35,4 @@ const DatasetInstance = mongoose.Schema({
   }
 });
 
-module.exports = Dataset;
+module.exports = DatasetInstance;
