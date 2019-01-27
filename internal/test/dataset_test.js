@@ -8,6 +8,7 @@ describe('dataset tests', () => {
   let mongod;
 
   beforeAll(async (done) => {
+    // TODO: Modularize
     mongod = new MongoMemoryServer();
     const uri = await mongod.getConnectionString();
 
