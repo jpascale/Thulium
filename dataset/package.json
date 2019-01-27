@@ -9,6 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@thulium/internal": "../internal",
     "debug": "^4.1.1"
+  },
+  "devDependencies": {
+    "jest": "^24.0.0"
   }
 }
