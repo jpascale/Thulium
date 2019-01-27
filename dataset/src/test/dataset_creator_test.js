@@ -1,34 +1,49 @@
 const { MongoMemoryServer } = require('mongodb-memory-server')
-  , mongoose = require('mongoose');
+  , mongoose = require('mongoose')
+  , DatasetCreator = require('../thulium/dataset_creator')
+  , { User } = require('@thulium/internal');
 
 describe('dataset creator test', () => {
 
   let mongod;
+  let uri;
 
   beforeAll(async (done) => {
-    // TODO: Modularize
     mongod = new MongoMemoryServer();
-    const uri = await mongod.getConnectionString();
+    uri = await mongod.getConnectionString();
+    await User.base.connect(uri, { useNewUrlParser: true });
+    done();
+  });
 
-    const mongooseOpts = {
-      autoReconnect: true,
-      reconnectTries: 100,
-      reconnectInterval: 1000,
-      useNewUrlParser: true
-    };
-    mongoose.connect(uri, mongooseOpts);
+  afterAll(async (done) => {
+    await User.base.disconnect();
+    await mongod.stop();
+    done();
+  });
 
-    mongoose.connection.once('open', () => {
-      done();
+  it('should create a dataset manager using callback', async (done) => {
+    const user = new User({
+      email: 'email@example.xyz',
+      role: 'admin',
+      hash: 'hash',
+      salt: 'salt'
     });
+    await user.save();
 
+    const data = {
+      title: 'exampleDataset',
+      paradigm: 'sql',
+      access: 'owner'
+    };
+
+    DatasetCreator.create(data, user, (err, res) => {
+      if (err) throw err;
+      expect(res.getTitle()).toEqual(data.title);
+      done();
+    })
   });
 
-  afterAll(() => {
-    mongoose.disconnect();
-    mongod.stop();
-  });
+  // it('should create a dataset using promise', () => {
 
-  it('should create a dataset correctly', () => { });
-
+  // });
 })
