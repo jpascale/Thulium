@@ -1,4 +1,5 @@
-const { Dataset } = requir('@thulium/internal');
+const { Dataset } = require('@thulium/internal')
+  , { DatasetManager } = require('./dataset_manager');
 
 Module = {};
 
@@ -14,8 +15,15 @@ Module.create = (data, user, cb) => {
     paradigm: data.paradigm,
     access: data.access
   });
-
-  return cb ? Dataset.save() : Dataset.save().then(cb);
+  if (cb) {
+    dataset.save().then((res) => cb(null, new DatasetManager(res))).catch((err) => cb(err));
+  } else {
+    return new Promise((resolve, reject) => {
+      dataset.save()
+        .then(res => resolve(new DatasetManager(res)))
+        .catch(err => reject(err));
+    });
+  }
 };
 
 module.exports = Module;
