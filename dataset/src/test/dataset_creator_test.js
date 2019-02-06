@@ -43,7 +43,23 @@ describe('dataset creator test', () => {
     })
   });
 
-  // it('should create a dataset using promise', () => {
+  it('should create a dataset using promise', async (done) => {
+    const user = new User({
+      email: 'email@example.xyz',
+      role: 'admin',
+      hash: 'hash',
+      salt: 'salt'
+    });
+    await user.save();
 
-  // });
+    const data = {
+      title: 'exampleDataset',
+      paradigm: 'sql',
+      access: 'owner'
+    };
+
+    const dataset = await DatasetCreator.create(data, user);
+    expect(dataset.getTitle()).toEqual(data.title);
+    done();
+  });
 })
