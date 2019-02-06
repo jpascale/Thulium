@@ -1,9 +1,9 @@
 const { MongoMemoryServer } = require('mongodb-memory-server')
   , mongoose = require('mongoose')
-  , DatasetCreator = require('../thulium/dataset_creator')
+  , DatasetFactory = require('../thulium/dataset_factory')
   , { User } = require('@thulium/internal');
 
-describe('dataset creator test', () => {
+describe('dataset factory test', () => {
 
   let mongod;
   let uri;
@@ -36,7 +36,7 @@ describe('dataset creator test', () => {
       access: 'owner'
     };
 
-    DatasetCreator.create(data, user, (err, res) => {
+    DatasetFactory.create(data, user, (err, res) => {
       if (err) throw err;
       expect(res.getTitle()).toEqual(data.title);
       done();
@@ -58,7 +58,7 @@ describe('dataset creator test', () => {
       access: 'owner'
     };
 
-    const dataset = await DatasetCreator.create(data, user);
+    const dataset = await DatasetFactory.create(data, user);
     expect(dataset.getTitle()).toEqual(data.title);
     done();
   });

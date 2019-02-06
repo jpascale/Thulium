@@ -1,9 +1,9 @@
 const { Dataset } = require('@thulium/internal')
   , { DatasetManager } = require('./dataset_manager');
 
-Module = {};
+DatasetFactory = {};
 
-Module.create = (data, user, cb) => {
+DatasetFactory.create = (data, user, cb) => {
 
   if (!data) throw new Error('Data must be provided');
   if (!data.title || !data.paradigm || !data.access) throw new Error('Data must contain title, paradigm and access.')
@@ -26,4 +26,4 @@ Module.create = (data, user, cb) => {
   }
 };
 
-module.exports = Module;
+module.exports = DatasetFactory;
