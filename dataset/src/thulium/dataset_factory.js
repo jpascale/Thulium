@@ -3,6 +3,11 @@ const { Dataset } = require('@thulium/internal')
 
 DatasetFactory = {};
 
+/**
+ * @param data
+ * @param user Mongo user object
+ * @callback cb
+ */
 DatasetFactory.create = (data, user, cb) => {
 
   if (!data) throw new Error('Data must be provided');
@@ -25,5 +30,27 @@ DatasetFactory.create = (data, user, cb) => {
     });
   }
 };
+
+/**
+ * @param user Mongo user object.
+ */
+DatasetFactory.getDatasetsByUser = (user, cb) => {
+  if (!user) throw new Error('User must be provided.');
+  if (cb) {
+    Dataset.find({ publisher: user }, (err, res) => {
+      if (err) return cb(err);
+      cb(null, res.map(ds => new DatasetManager(ds)));
+    });
+  } else {
+    return new Promise((resolve, reject) => {
+      Dataset.find({ publisher: user }, (err, res) => {
+        if (err) return reject(err);
+        resolve(res.map(ds => new DatasetManager(ds)));
+      });
+    });
+  }
+}
+
+//getPublicDatasets
 
 module.exports = DatasetFactory;

@@ -62,4 +62,20 @@ describe('dataset factory test', () => {
     expect(dataset.getTitle()).toEqual(data.title);
     done();
   });
+
+  it('should get user datasets using callback', async (done) => {
+    const user = await User.findOne({ email: 'email@example.xyz' });
+    DatasetFactory.getDatasetsByUser(user, (err, res) => {
+      if (err) throw new Error(err);
+      expect(res[0].getTitle()).toEqual('exampleDataset');
+      done();
+    });
+  });
+
+  it('should get user datasets using promise', async (done) => {
+    const user = await User.findOne({ email: 'email@example.xyz' });
+    const datasetManagers = await DatasetFactory.getDatasetsByUser(user);
+    expect(datasetManagers.map(ds => ds.getTitle())).toEqual(['exampleDataset']);
+    done();
+  });
 })
