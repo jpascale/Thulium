@@ -40,10 +40,16 @@ export const unauthorized = () => (dispatch) => {
 	dispatch({ type: CA.UNAUTHORIZED });
 };
 
+const COOKIE_NAME = 'X-Access-Token';
+
 export const checkAuth = () => (dispatch, getState) => {
 	const token = (() => {
 		if (getState().auth.token) return getState().auth.token;
-		return localStorage.getItem(THULIUM_LOCALSTORAGE_TOKEN_KEY);
+		const value = `; ${document.cookie}`;
+		const parts = value.split(`; ${COOKIE_NAME}=`);
+		if (parts.length === 2) return parts.pop().split(';').shift();
+		const localStorageToken = localStorage.getItem(THULIUM_LOCALSTORAGE_TOKEN_KEY);
+		if (localStorageToken) return localStorageToken;
 	})();
 	
 	const jwt = decodeToken(token);
@@ -95,5 +101,6 @@ export const login = (form) => (dispatch, getState) => {
 
 export const logout = () => (dispatch, getState) => {
 	localStorage.removeItem(THULIUM_LOCALSTORAGE_TOKEN_KEY);
+	document.cookie = `${COOKIE_NAME}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
 	dispatch({ type: CA.LOGOUT });
 };
