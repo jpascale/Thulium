@@ -43,6 +43,7 @@ User.methods.comparePassword = function (password, cb) {
 User.methods.generateJWT = function (data, cb) {
   if (typeof data === 'function') {
     cb = data;
+    data = undefined;
   }
   const self = this;
   const expiresIn = ((role) => {
