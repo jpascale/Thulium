@@ -5,6 +5,8 @@ type Membership {
 	dataSourceId: String
 	created: String
 	courseRoleId: String
+
+	course: Course
 }
 
 type Query {
