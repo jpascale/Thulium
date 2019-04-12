@@ -24,9 +24,12 @@ const connect = (cb) => {
 		debug(`Mongoose default connection disconnected`);
 	});
 
-	mongoose.connect(uri, { useNewUrlParser: true }, cb);
+	mongoose.connect(uri, { useNewUrlParser: true }, err => {
+		cb(err, mongoose.connection);
+	});
 };
 
 module.exports = {
-	connect
+	connect,
+	connection: mongoose.connection
 };

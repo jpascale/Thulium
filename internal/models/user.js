@@ -40,6 +40,12 @@ const User = mongoose.Schema({
   bb_access_token: {
     type: String
   },
+  bb_refresh_token: {
+    type: String
+  },
+  bb_token_expiry: {
+    type: Date
+  },
 
   
 

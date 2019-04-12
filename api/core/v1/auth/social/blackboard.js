@@ -49,9 +49,11 @@ router.get('/',
 			}
 			debug('received access token');
 			debug(response.body);
-			const { access_token } = response.body;
+			const { access_token, expires_in, refresh_token } = response.body;
 
 			req.accessToken = access_token;
+			req.expiresIn = expires_in - 20;
+			req.refreshToken = refresh_token;
 
 			next();
 			
@@ -68,6 +70,7 @@ router.get('/',
 				console.error(err);
 				return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });
 			}
+			debug(body);
 			debug('received user profile');
 			const { contact, name, userName, id } = body;
 			req.profile = {
@@ -77,7 +80,9 @@ router.get('/',
 				role: 'student',
 				bb_id: id,
 				bb_username: userName,
-				bb_access_token: req.accessToken
+				bb_access_token: req.accessToken,
+				bb_refresh_token: req.refreshToken,
+				bb_token_expiry: Date.now() + req.expiresIn * 1000
 			};
 			debug(req.profile);
 
