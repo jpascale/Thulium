@@ -1,17 +1,16 @@
 const express = require('express')
 	, router = express.Router({ mergeParams: true })
-	, debug = require('debug')('api:core:v1:learn')
-	, proxy = require('express-http-proxy')
+	, debug = require('debug')('api:core:v1:learn:gql')
 	, async = require('async')
 	, { Config } = require('@thulium/base')
 	, superagent = require('superagent')
 	, Status = require('http-status-codes')
-	, validateUser = require('../../../middleware/validateUser')
-	, { User } = require('@thulium/internal');
+	, validateUser = require('../../../../middleware/validateUser')
+	, { User } = require('@thulium/internal')
+	, expressGraphQL = require('express-graphql')
+	, schema = require('./schema');
 
-debug('setting up /core/v1/learn routes');
-
-router.use('/graphql', require('./graphql'));
+debug('setting up /core/v1/learn/graphql routes');
 
 router.use('/',
 	validateUser,
@@ -61,13 +60,9 @@ router.use('/',
 		req.headers.authorization = `Bearer ${req.user.db.bb_access_token}`;
 		next();
 	},
-	proxy('https://itba-test.blackboard.com', {
-		proxyReqPathResolver: req => {
-			debug(req.path);
-			const path = `/learn/api/public${req.path.replace('/core/v1/learn/', '')}`
-			debug(path);
-			return path;
-		}
+	expressGraphQL({
+		schema,
+		graphiql: true
 	})
 );
 
