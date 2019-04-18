@@ -2,22 +2,23 @@
 import React from "react";
 import { connect } from 'react-redux';
 import PropTypes from "prop-types";
-import { NavLink, Route, Switch } from "react-router-dom";
 import { hot } from "react-hot-loader";
-
-import Navbar from './containers/Navbar';
-import Sidebar from './containers/Sidebar';
-import Main from './containers/Main';
-import Files from './containers/Files';
+import Loadable from 'react-loadable';
 
 // This is a class-based component because the current
 // version of hot reloading won't hot reload a stateless
 // component at the top-level.
 
+const AsyncApp = Loadable({
+  loader: () => import(/* webpackChunkName: "App" */ './AsyncApp'),
+  /* eslint-disable react/display-name */
+  loading: () => <h1 style={{ lineHeight: '100%', textAlign: 'center', display: 'table-cell', verticalAlign: 'middle' }}>Loading...</h1>
+});
+
 class App extends React.Component {
 
   render() {
-    const { booting } = this.props; 
+    const { booting } = this.props;
 
     if (booting) {
       return (
@@ -25,18 +26,7 @@ class App extends React.Component {
       );
     }
 
-    return (
-      <React.Fragment>
-        <Navbar />
-        <Files />
-        <div className="container-fluid">
-          <div className="row">
-            <Sidebar />
-            <Main />
-          </div>
-        </div>
-      </React.Fragment>
-    );
+    return <AsyncApp />;
   }
 }
 

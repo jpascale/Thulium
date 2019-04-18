@@ -1,0 +1,58 @@
+.create-dataset-modal {
+
+	.modal-header {
+		cursor: pointer;
+
+		.modal-title {
+			width: 100%;
+
+			input {
+				display: inline-block;
+				width: auto;
+			}
+		}
+
+		&.untitled {
+			color: '#ddd';
+			font-style: italic;
+		}
+	}
+
+	.modal-body {
+		.pick-type {
+			img {
+				transition: border .2s ease-in-out;
+				margin-left: 5px;
+				cursor: pointer;
+				&.selected, &:hover {
+					border-color: #337ab7;
+				}
+			}
+		}
+
+		.upload-datasets {
+			.card-header {
+				padding: .25rem .75rem;
+
+				span {
+					cursor: pointer;
+				}
+			}
+		}
+
+		.review-datasets {
+
+			.nav-link {
+				cursor: pointer;
+			}
+
+			.tab-pane {
+				outline: none;
+			}
+
+			.drag-handle {
+				display: none;
+			}
+		}
+	}
+}

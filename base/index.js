@@ -1,4 +1,5 @@
 module.exports = {
 	Config: require("./lib/config"),
-	Util: require('./lib/util'),
+    Util: require('./lib/util'),
+	Env: require('./lib/env')
 };

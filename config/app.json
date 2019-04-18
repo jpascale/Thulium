@@ -1,5 +1,8 @@
 {
   "development": {
+    "blackboard": {
+      "REDIRECT_URI": "http://localhost:3000/core/v1/auth/social/blackboard"
+		},
     "engines": [{
       "title": "PostgreSQL",
       "slug": "psql"

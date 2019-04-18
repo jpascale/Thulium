@@ -1,0 +1,12 @@
+type Course {
+	id: String
+	uuid: String
+	externalId: String
+	dataSourceId: String
+	courseId: String
+	name: String
+	description: String
+	created: String
+	organization: String
+	ultraStatus: String
+}

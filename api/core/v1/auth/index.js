@@ -7,6 +7,8 @@ const express = require('express')
   , crypto = require('crypto')
   , validateUser = require('../../../middleware/validateUser');
 
+router.use('/social', require('./social/'));
+
 router.post('/register',
   (req, res, next) => {
     debug(`Creating ${req.body.email}`);

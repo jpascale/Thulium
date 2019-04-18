@@ -1,0 +1,14 @@
+type Membership {
+	userId: String
+	courseId: String
+	childCourseId: String
+	dataSourceId: String
+	created: String
+	courseRoleId: String
+
+	course: Course
+}
+
+type Query {
+	memberships: [Membership]
+}

@@ -7,7 +7,7 @@ const User = mongoose.Schema({
    */
   email: {
     type: String,
-    lowercase: true,
+    // lowercase: true,
     // unique: true,
     // required: [true, "can't be blank"],
     // match: [/\S+@\S+\.\S+/, 'is invalid'],
@@ -19,6 +19,35 @@ const User = mongoose.Schema({
   role: {
     type: String
   },
+
+  first_name: {
+    type: String
+  },
+  last_name: {
+    type: String
+  },
+
+  /**
+   * Blackboard stuff
+   */
+
+  bb_id: {
+    type: String
+  },
+  bb_username: {
+    type: String
+  },
+  bb_access_token: {
+    type: String
+  },
+  bb_refresh_token: {
+    type: String
+  },
+  bb_token_expiry: {
+    type: Date
+  },
+
+  
 
 
 

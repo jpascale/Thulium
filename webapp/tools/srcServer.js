@@ -33,7 +33,7 @@ browserSync({
         noInfo: true,
         quiet: false,
         stats: {
-          assets: false,
+          assets: true,
           colors: true,
           version: false,
           hash: false,
