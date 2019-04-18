@@ -1,8 +1,8 @@
 const { Pool } = require('pg')
-		, crypto =require('crypto')
-		, async = require('async')
-		, debug = require('debug')('storage:postgres')
-		, escape = require('pg-escape');
+	, crypto = require('crypto')
+	, async = require('async')
+	, debug = require('debug')('storage:postgres')
+	, escape = require('pg-escape');
 
 const Module = {};
 
@@ -13,6 +13,8 @@ Module.config = (config) => {
 	debug('configuring pool');
 	pool = new Pool(config);
 };
+
+Module.getDatabaseId = () => 'psql';
 
 Module.query = function () {
 	if (!pool) {
@@ -26,14 +28,15 @@ const generateTableName = (data) => crypto.createHash('md5').update(data).digest
 const toSQLColumnName = c => c.replace(/[^0-9a-zA-Z_]/g, '').replace(/^[^a-zA-Z_]+/, '');
 
 const chunk = (arr, chunkSize, cache = []) => {
-  const tmp = [...arr]
-  while (tmp.length) cache.push(tmp.splice(0, chunkSize))
-  return cache
+	const tmp = [...arr]
+	while (tmp.length) cache.push(tmp.splice(0, chunkSize))
+	return cache
 };
 
 const range = (n, b = 0, fn = i => i) => new Array(n).fill(undefined).map((_, i) => fn(b + i));
 const flatten = arr => arr.reduce((memo, arr) => memo.concat(arr), []);
 
+// Deprecated
 Module.createDataset = ({ headers, data }, done) => {
 	if (!pool) {
 		throw new Error('module has no config');

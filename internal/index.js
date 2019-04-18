@@ -1,2 +1,7 @@
 module.exports = require('./controllers');
-module.exports.connect = require('./storage').connect;
+
+// This if avoids connection to be run when running tests
+// Important to test using a mongodb in-memory environment
+if (process.env.NODE_ENV !== 'test') {
+  module.exports.connect = require('./storage').connect;
+}
