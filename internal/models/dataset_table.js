@@ -20,7 +20,7 @@ const DatasetTable = mongoose.Schema({
   table_name: {
     type: String,
   },
-  rows: [{
+  columns: [{
     name: String,
     data_type: {
       type: String,
