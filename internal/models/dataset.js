@@ -1,26 +1,30 @@
 const mongoose = require('mongoose')
-		, debug = require('debug')('internal:models:dataset');
+	, debug = require('debug')('internal:models:dataset');
 
 debug('configuring dataset schema');
 
 const Dataset = mongoose.Schema({
+	title: String,
 	created: {
 		type: Date,
 		default: Date.now
 	},
 	last_updated: {
-		type: Date
+		type: Date,
+		default: Date.now
 	},
 	publisher: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'User'
 	},
-	engine: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: 'Engine'
+	paradigm: {
+		type: String,
+		enum: ['sql', 'nosql']
 	},
-	title: {
-		type: String
+	access: {
+		/* defined access levels or 'owner'. 'admin' role should be always able to access. */
+		type: String,
+		enum: ['owner', 'student', 'teacher', 'anonymous']
 	}
 });
 

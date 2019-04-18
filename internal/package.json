@@ -15,5 +15,8 @@
     "lodash.omit": "^4.5.0",
     "mongoose": "^5.3.8",
     "mongoose-unique-validator": "^2.0.2"
+  },
+  "devDependencies": {
+    "mongodb-memory-server": "^3.0.0"
   }
 }
