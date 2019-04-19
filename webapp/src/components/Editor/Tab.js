@@ -1,27 +1,18 @@
 import React from 'react';
-import Loadable from 'react-loadable';
+import { connect } from 'react-redux';
 
-import ActionBar from './ActionBar';
-import StatusBar from './StatusBar';
-import Editor from './Editor';
+import CourseTab from './CourseTab';
+import EditorTab from './EditorTab';
 
-const AsyncResults = Loadable({
-  loader: () => import(/* webpackChunkName: "Results" */ './Results'),
-  /* eslint-disable react/display-name */
-  loading: () => <span>Loading</span>
+const Tab = ({ selectedTab }) => {
+	if (selectedTab === 'course') {
+		return <CourseTab />;
+	}
+	return <EditorTab />;
+};
+
+const mapStateToProps = state => ({
+	selectedTab: state.app.selectedTab
 });
 
-class Tab extends React.Component {
-	render() {
-		return (
-			<div className="thulium-tab">
-				<ActionBar />
-				<Editor />
-				<StatusBar />
-				<AsyncResults />
-			</div>
-		);
-	}
-}
-
-export default Tab;
+export default connect(mapStateToProps)(Tab);

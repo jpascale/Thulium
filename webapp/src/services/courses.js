@@ -11,6 +11,10 @@ export const fetchAll = (query, options) => {
 					courseId,
 					course {
 						name
+						grades {
+							id
+							name
+						}
 					}
 				}
 			}`

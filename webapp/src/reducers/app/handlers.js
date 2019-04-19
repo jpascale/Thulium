@@ -13,11 +13,11 @@ export default {
     return objectAssign({}, state, { booting: false });
   },
   [CE.CHANGE] : (state, engine) => {
+    if (state.currentEngine === engine) return state;
     return objectAssign({}, state, { currentEngine: engine });
   },
   [CF.CHANGE] : (state, selectedFile) => {
-    if (state.selectedFile === selectedFile) return state;
-    return objectAssign({}, state, { selectedFile });
+    return objectAssign({}, state, { selectedFile, selectedTab: 'file' });
   },
   [CF.SHOW_CREATE_MODAL] : (state) => {
     if (state.createFileModal) return state;
@@ -80,5 +80,8 @@ export default {
       return memo;
     }, {});
     return objectAssign({}, state, { courses });
-  }
+  },
+  [CC.CHANGE] : (state, course) => {
+    return objectAssign({}, state, { selectedCourse: course, selectedTab: 'course' });
+  },
 }

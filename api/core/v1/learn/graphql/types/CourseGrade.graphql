@@ -1,0 +1,9 @@
+type CourseGrade {
+	id: String
+	name: String
+	displayName: String
+	description: String
+	externalGrade: Boolean
+	created: String
+	contentId: String
+}

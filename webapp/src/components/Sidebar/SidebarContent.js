@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import Loadable from 'react-loadable';
 
 import { changeFile, showCreateFileModal } from '../../actions/files';
+import { changeCourse } from '../../actions/courses';
 
 import AddIcon from '../common/AddIcon';
 
@@ -18,7 +19,7 @@ class SidebarContent extends React.Component {
 	changeFile = file => () => this.props.changeFile(file)
 	createFile = () => this.props.createFile()
 	
-	changeCourse = file => () => this.props.changeCourse(file)
+	changeCourse = course => () => this.props.changeCourse(course)
     
 	render() {
 		const { profile, files, courses, selectedFile, selectedCourse } = this.props;
@@ -33,7 +34,7 @@ class SidebarContent extends React.Component {
 
 		const courseList = courses.map((membership, i) => (
 			<li key={membership.courseId} className="nav-item ml-2 mr-4">
-				<a className={classNames('nav-link', { active: membership.courseId === selectedCourse })} href="#" onClick={this.changeCourse(membership.courseId)}>
+				<a className={classNames('nav-link', 'course', { active: membership.courseId === selectedCourse })} href="#" onClick={this.changeCourse(membership.courseId)}>
 					{membership.course.name}
 				</a>
 			</li>
@@ -71,6 +72,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
 	changeFile: file => dispatch(changeFile(file)),
+	changeCourse: course => dispatch(changeCourse(course)),
 	createFile: () => dispatch(showCreateFileModal())
 });
 
