@@ -22,5 +22,10 @@ export const fetchCourses = () => (dispatch, getState) => {
 		token: getState().auth.token
 	}).then(courses => {
 		return dispatch(fetchedCourses(courses));
+	})
+	.catch(err => {
+		return dispatch(fetchedCourses({
+			memberships: []
+		}))
 	});
 };
