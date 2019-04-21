@@ -122,6 +122,9 @@ class CourseTab extends React.Component {
 				<Row>
 					<Col sm={6}>
 						<h1>Exams</h1>
+						{!gradeList.length ? (
+							<span>No exams for this course. Create one clicking the button below</span>
+						) : null}
 						<ul className="list-unstyled">
 							{gradeList}
 						</ul>
