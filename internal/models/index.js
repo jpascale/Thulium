@@ -5,5 +5,6 @@ module.exports = {
 	Engine: require('./engine'),
 	File: require('./file'),
 	Session: require('./session'),
-	User: require('./user')
+	User: require('./user'),
+	Exam: require('./exam')
 };

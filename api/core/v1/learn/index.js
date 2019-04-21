@@ -7,7 +7,7 @@ const express = require('express')
 	, superagent = require('superagent')
 	, Status = require('http-status-codes')
 	, validateUser = require('../../../middleware/validateUser')
-	, { User } = require('@thulium/internal');
+	, { User, Exam } = require('@thulium/internal');
 
 debug('setting up /core/v1/learn routes');
 
@@ -57,17 +57,52 @@ router.use('/',
 		], next);
 	},
 	(req, res, next) => {
-		debug('rewriting authorization');
-		req.headers.authorization = `Bearer ${req.user.db.bb_access_token}`;
-		next();
+		const isPublishingExam = /createAssignment$/.test(req.path);
+		if (!isPublishingExam) return next();
+		req.publishExam = true;
+		Exam.create({}, (err, exam) => {
+			if (err) {
+				console.error(err);
+				return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });
+			}
+			req.body.instructions = `<!-- Thulium Exam -->
+			<div>
+				Navigate to
+				<a href="http://localhost:3010/?exam=${exam._id}">
+					http://localhost:3010/?exam=${exam._id}
+				</a>
+			</div>`;
+			req.exam = exam;
+			next();
+		});
 	},
 	proxy('https://itba-test.blackboard.com', {
+		proxyReqOptDecorator: (proxyReqOpts, req) => {
+			debug('rewriting authorization');
+			proxyReqOpts.headers.authorization = `Bearer ${req.user.db.bb_access_token}`;
+			delete proxyReqOpts.headers.origin;
+			delete proxyReqOpts.headers.referer;
+			return proxyReqOpts;
+		},
 		proxyReqPathResolver: req => {
 			debug(req.path);
 			const path = `/learn/api/public${req.path.replace('/core/v1/learn/', '')}`
 			debug(path);
 			return path;
-		}
+		},
+		userResDecorator: (proxyRes, proxyResData, req, res) => {
+			if (!req.publishExam) return proxyResData;
+			if (proxyRes.statusCode >= 400) return proxyResData;
+			return new Promise((resolve, reject) => {
+				const responseJSON = JSON.parse(proxyResData.toString());
+				req.exam.contentId = responseJSON.contentId;
+				req.exam.gradeColumnId = responseJSON.gradeColumnId;
+				req.exam.save(err => {
+					if (err) return reject(err);
+					resolve(req.exam);
+				});
+			});
+		}	
 	})
 );
 

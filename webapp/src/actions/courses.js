@@ -29,3 +29,22 @@ export const fetchCourses = () => (dispatch, getState) => {
 		}))
 	});
 };
+
+const creatingExam = () => ({
+	type: C.CREATING_EXAM
+});
+
+const createdExam = (payload) => ({
+	type: C.CREATED_EXAM,
+	payload
+});
+
+export const createExam = (course, exam) => (dispatch, getState) => {
+	dispatch(creatingExam());
+
+	return CourseService.createExam(course, exam, {
+		token: getState().auth.token
+	}).then(exam => {
+		return dispatch(createdExam(exam));
+	});
+};

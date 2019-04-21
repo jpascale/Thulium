@@ -5,4 +5,5 @@ module.exports = {
 	DatasetTable: require('./dataset_table'),
 	Engine: require('./engine'),
 	File: require('./file'),
+	Exam: require('./exam'),
 };
