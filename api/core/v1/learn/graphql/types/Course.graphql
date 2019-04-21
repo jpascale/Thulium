@@ -10,4 +10,5 @@ type Course {
 	organization: String
 	ultraStatus: String
 	grades: [CourseGrade]
+	contents: [Content]
 }

@@ -1,0 +1,10 @@
+type AdaptiveRelease {
+	start: String
+	end: String
+}
+
+type Availability {
+	available: String,
+	allowGuests: Boolean,
+	adaptiveRelease: AdaptiveRelease
+}

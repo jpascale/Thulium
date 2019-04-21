@@ -15,6 +15,10 @@ export const fetchAll = (query, options) => {
 							id
 							name
 						}
+						contents {
+							id
+							title
+						}
 					}
 				}
 			}`

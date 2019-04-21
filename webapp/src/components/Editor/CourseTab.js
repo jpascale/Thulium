@@ -90,6 +90,8 @@ class CourseTab extends React.Component {
 			)
 		})();
 
+		const isTeacher = ~['Instructor', 'TeachingAssistant'].indexOf(membership.courseRoleId)
+
 		return (
 			<div className="thulium-tab course-tab">
 				<Row>
@@ -100,7 +102,7 @@ class CourseTab extends React.Component {
 						</ul>
 						<Button onClick={this.createExam}>New Exam</Button>
 					</Col>
-					{createExamColumn}
+					{isTeacher ? createExamColumn : null}
 				</Row>
 			</div>
 		);

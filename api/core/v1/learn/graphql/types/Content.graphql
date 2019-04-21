@@ -1,0 +1,13 @@
+type Content {
+	id: String
+	parentId: String
+	title: String
+	body: String
+	description: String 
+	created: String
+	position: Int
+	hasChildren: Boolean
+	hasGradebookColumns: Boolean 
+	hasAssociatedGroups:  Boolean
+	availability: Availability
+}

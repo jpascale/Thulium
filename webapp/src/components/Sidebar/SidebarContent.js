@@ -51,9 +51,11 @@ class SidebarContent extends React.Component {
 				<ul className="nav flex-column">
 					{fileList}
 				</ul>
-				<h6 className="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-1 mb-1 text-muted">
-					COURSES
-				</h6>
+				{courseList.length ? (
+					<h6 className="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-1 mb-1 text-muted">
+						COURSES
+					</h6>
+				) : null}
 				<ul className="nav flex-column">
 					{courseList}
 				</ul>
