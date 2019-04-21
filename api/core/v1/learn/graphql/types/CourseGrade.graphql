@@ -6,4 +6,5 @@ type CourseGrade {
 	externalGrade: Boolean
 	created: String
 	contentId: String
+	content: Content
 }

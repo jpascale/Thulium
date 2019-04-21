@@ -71,7 +71,7 @@ class CourseTab extends React.Component {
 
 		if (!membership) return null;
 
-		const gradeList = membership.course.grades.map((g) => (
+		const gradeList = membership.course.grades.filter(g => g.content).map((g) => (
 			<li key={g.id}><a href="#">{g.name}</a></li>
 		));
 

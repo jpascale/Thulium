@@ -72,6 +72,7 @@ router.use('/',
 					http://localhost:3010/?exam=${exam._id}
 				</a>
 			</div>`;
+			req.body.description = 'Thulium Exam';
 			req.exam = exam;
 			next();
 		});

@@ -14,8 +14,10 @@ module.exports = {
 					console.error(err);
 					return reject(err);
 				}
-				debug(response.body.results);
-				resolve(response.body.results);
+				req.courseId = id;
+				const grades = response.body.results.filter(g => g.contentId);
+				debug(grades);
+				resolve(grades);
 			});
 		}),
 		contents: ({ id, }, args, req) => new Promise((resolve, reject) => {
