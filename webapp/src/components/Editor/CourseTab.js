@@ -118,7 +118,7 @@ class CourseTab extends React.Component {
 		const isTeacher = ~['Instructor', 'TeachingAssistant'].indexOf(membership.courseRoleId)
 
 		return (
-			<div className="thulium-tab course-tab">
+			<div className="thulium-tab course-tab full-height">
 				<Row>
 					<Col sm={6}>
 						<h1>Exams</h1>

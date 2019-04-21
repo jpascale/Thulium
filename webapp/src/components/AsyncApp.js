@@ -9,8 +9,8 @@ const AsyncApp = props => (
   <React.Fragment>
     <Navbar />
     <Files />
-    <div className="container-fluid">
-      <div className="row">
+    <div className="container-fluid full-height">
+      <div className="row full-height">
         <Sidebar />
         <Main />
       </div>
