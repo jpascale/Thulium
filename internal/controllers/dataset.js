@@ -2,7 +2,8 @@ const mongoose = require('mongoose')
 	, debug = require('debug')('internal:controllers:dataset')
 	, { Dataset } = require('../models')
 	, { DatasetTable } = require('../controllers')
-	, { Util } = require('@thulium/base');
+	, { Util } = require('@thulium/base')
+	, { DatabaseService } = require('@thulium/storage');
 
 debug('setting up dataset controller');
 
@@ -77,7 +78,11 @@ Dataset.methods.createInstance = function (title, owner, engine, cb) {
 			}
 
 			// Persist data on real database
-			// postgresService.createTable(tabla) // --> F(tabla) --> SQL  ||
+			const databaseService = DatabaseService.getEngineDatabaseService(engine.mimeType);
+			databaseService.createPhysicalDataset({
+				tables: res,
+				datasetInstance
+			});
 
 		});
 	});
