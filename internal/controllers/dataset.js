@@ -1,7 +1,8 @@
 const mongoose = require('mongoose')
 	, debug = require('debug')('internal:controllers:dataset')
 	, { Dataset } = require('../models')
-	, { DatasetTable } = require('../controllers');
+	, { DatasetTable } = require('../controllers')
+	, { Util } = require('@thulium/base');
 
 debug('setting up dataset controller');
 
@@ -46,8 +47,41 @@ Dataset.methods.getTables = function (cb) {
 Dataset.methods.deleteTable = function () {
 	throw new Error('Not implemented');
 };
-Dataset.methods.createInstance = function () {
-	throw new Error('Not implemented');
+Dataset.methods.createInstance = function (title, owner, engine, cb) {
+	const self = this;
+
+	DatasetTable.find({ dataset: dataset._id }, (err, res) => {
+
+		if (err) {
+			console.log(err);
+			return;
+		}
+
+		const tables = res.reduce((prev, curr) => {
+			prev[curr.table_name] = Util.generateId('table', [owner.email, engine.title, title, table_name])
+			return prev;
+		}, {})
+
+		const datasetInstance = new DatasetInstance({
+			title,
+			dataset: self._id,
+			owner: owner._id,
+			engine: engine._id,
+			tables: tables
+		});
+
+		datasetInstance.save((err) => {
+			if (err) {
+				console.log(err);
+				return;
+			}
+
+			// Persist data on real database
+			// postgresService.createTable(tabla) // --> F(tabla) --> SQL  ||
+
+		});
+	});
+
 };
 
 /**
