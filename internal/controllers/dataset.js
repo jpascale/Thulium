@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 	, debug = require('debug')('internal:controllers:dataset')
+	, async = require('async')
 	, { Dataset } = require('../models')
 	, { DatasetTable } = require('../controllers')
 	, { Util } = require('@thulium/base')
@@ -48,44 +49,73 @@ Dataset.methods.getTables = function (cb) {
 Dataset.methods.deleteTable = function () {
 	throw new Error('Not implemented');
 };
-Dataset.methods.createInstance = function (title, owner, engine, cb) {
+
+Dataset.methods.createInstance = function (title, owner, engine, done) {
 	const self = this;
 
-	DatasetTable.find({ dataset: dataset._id }, (err, res) => {
-
-		if (err) {
-			console.log(err);
-			return;
-		}
-
-		const tables = res.reduce((prev, curr) => {
-			prev[curr.table_name] = Util.generateId('table', [owner.email, engine.title, title, table_name])
-			return prev;
-		}, {})
-
-		const datasetInstance = new DatasetInstance({
-			title,
-			dataset: self._id,
-			owner: owner._id,
-			engine: engine._id,
-			tables: tables
-		});
-
-		datasetInstance.save((err) => {
-			if (err) {
-				console.log(err);
-				return;
-			}
-
+	async.waterfall([
+		cb => DatasetTable.find({ dataset: dataset._id }, cb),
+		(datasetTables, cb) => {
+			const tables = datasetTables.reduce((prev, curr) => {
+				prev[curr.table_name] = Util.generateId('table', [owner.email, engine.title, title, table_name])
+				return prev;
+			}, {});
+	
+			const datasetInstance = new DatasetInstance({
+				title,
+				dataset: self._id,
+				owner: owner._id,
+				engine: engine._id,
+				tables
+			});
+	
+			datasetInstance.save(cb)
+		},
+		(instance, cb) => {
 			// Persist data on real database
 			const databaseService = DatabaseService.getEngineDatabaseService(engine.mimeType);
 			databaseService.createPhysicalDataset({
 				tables: res,
 				datasetInstance
-			});
+			}, cb);
+		}
+	], done);
 
-		});
-	});
+	// DatasetTable.find({ dataset: dataset._id }, (err, res) => {
+
+	// 	if (err) {
+	// 		console.log(err);
+	// 		return;
+	// 	}
+
+	// 	const tables = res.reduce((prev, curr) => {
+	// 		prev[curr.table_name] = Util.generateId('table', [owner.email, engine.title, title, table_name])
+	// 		return prev;
+	// 	}, {})
+
+	// 	const datasetInstance = new DatasetInstance({
+	// 		title,
+	// 		dataset: self._id,
+	// 		owner: owner._id,
+	// 		engine: engine._id,
+	// 		tables: tables
+	// 	});
+
+	// 	datasetInstance.save((err) => {
+	// 		if (err) {
+	// 			console.log(err);
+	// 			return;
+	// 		}
+
+	// 		// Persist data on real database
+	// 		const databaseService = DatabaseService.getEngineDatabaseService(engine.mimeType);
+	// 		databaseService.createPhysicalDataset({
+	// 			tables: res,
+	// 			datasetInstance
+	// 		});
+
+	// 	});
+	// });
 
 };
 

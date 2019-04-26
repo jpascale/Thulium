@@ -2,15 +2,19 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
+import { Badge } from 'reactstrap';
 
 import { changeDatasetType } from '../../../../actions/datasets';
 
-const src = title => `https://placeholdit.imgix.net/~text?txtsize=33&txt=${title}&w=200&h=150`
+const src = title => `https://via.placeholder.com/200x150.png/eee/aaa?text=${title}`
 
 const PickType = ({ type, changeDatasetType }) => (
 	<div className="text-center pick-type">
 		<img onClick={() => changeDatasetType('SQL')} src={src('SQL')} className={classNames('rounded img-thumbnail', { selected: type === 'SQL' })}></img>
-		<img onClick={() => changeDatasetType('NoSQL')} src={src('NoSQL')} className={classNames('rounded img-thumbnail', { selected: type === 'NoSQL'})}></img>
+		<div>
+			<img src={src('NoSQL')} className="rounded img-thumbnail disabled"></img>
+			<Badge color="primary">SOON</Badge>
+		</div>
 	</div>
 );
 

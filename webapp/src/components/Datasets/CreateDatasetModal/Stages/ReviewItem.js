@@ -131,9 +131,7 @@ class ReviewItem extends React.Component {
 					rowsCount={Math.min(item.data.length, DISPLAYED_ROWS)}
 					minHeight={160}
 					rowHeight={20}
-					headerRowHeight={35}
-					onGridRowsUpdated={this.onGridRowsUpdated}
-					enableCellSelect={true} />
+					headerRowHeight={35} />
 				<small className="text-info">Double click to edit cell value or column name</small>
 				<h5>Column Types</h5>
 				<ReactDataGrid

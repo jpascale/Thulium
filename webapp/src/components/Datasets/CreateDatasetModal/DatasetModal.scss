@@ -20,12 +20,23 @@
 
 	.modal-body {
 		.pick-type {
+			div {
+				display: inline-block;
+				img {
+					display: block;
+				}
+			}
 			img {
 				transition: border .2s ease-in-out;
 				margin-left: 5px;
 				cursor: pointer;
-				&.selected, &:hover {
+				vertical-align: top;
+				&.selected, &:not(.disabled):hover {
 					border-color: #337ab7;
+				}
+				&.disabled {
+					cursor: not-allowed;
+					opacity: .7;
 				}
 			}
 		}
