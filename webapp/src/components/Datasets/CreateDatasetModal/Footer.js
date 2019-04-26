@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import { ModalFooter, Button } from 'reactstrap';
 import classNames from 'classnames';
 
-import { nextStage } from '../../../actions/datasets';
+import { nextStage, prevStage } from '../../../actions/datasets';
 
-const Footer = ({ stage, nextStage, closeModal, ok }) => {
+const Footer = ({ stage, prevStage, nextStage, closeModal, ok }) => {
 
 	if (stage === 'pick-type') {
 		return (
@@ -14,16 +14,27 @@ const Footer = ({ stage, nextStage, closeModal, ok }) => {
 				<Button color="secondary" onClick={closeModal}>Cancel</Button>{' '}
 				<Button color="primary" onClick={nextStage}>Next Step</Button>
 			</ModalFooter>
-		)
+		);
 	}
 
 	if (stage === 'upload-datasets') {
 		return (
 			<ModalFooter>
+				<Button color="link" className="back-button" onClick={prevStage}>Go Back</Button>{' '}
 				<Button color="secondary" onClick={closeModal}>Cancel</Button>{' '}
 				<Button color="primary" disabled={!ok} onClick={nextStage}>Next Step</Button>
 			</ModalFooter>
-		)
+		);
+	}
+
+	if (stage === 'review-datasets') {
+		return (
+			<ModalFooter>
+				<Button color="link" className="back-button" onClick={prevStage}>Go Back</Button>{' '}
+				<Button color="secondary" onClick={closeModal}>Cancel</Button>{' '}
+				<Button color="primary" disabled={!ok} onClick={nextStage}>Submit</Button>
+			</ModalFooter>
+		);
 	}
 
 	return null;
@@ -39,7 +50,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-	nextStage: () => dispatch(nextStage())
+	nextStage: () => dispatch(nextStage()),
+	prevStage: () => dispatch(prevStage())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Footer);

@@ -6,6 +6,11 @@ const nextStages = {
 	'upload-datasets': 'review-datasets'
 };
 
+const prevStages = {
+	'upload-datasets': 'pick-type',
+	'review-datasets': 'upload-datasets',
+};
+
 export default {
   [C.CHANGE_TITLE] : (state, title) => {
 		const create = objectAssign({}, state.create, { title });
@@ -20,6 +25,13 @@ export default {
 	[C.NEXT_STAGE] : (state) => {
 		const create = objectAssign({}, state.create, {
 			stage: nextStages[state.create.stage]
+		});
+		return objectAssign({}, state, { create });
+	},
+
+	[C.PREV_STAGE] : (state) => {
+		const create = objectAssign({}, state.create, {
+			stage: prevStages[state.create.stage]
 		});
 		return objectAssign({}, state, { create });
 	},

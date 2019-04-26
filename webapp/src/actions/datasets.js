@@ -46,6 +46,7 @@ export const changeDatasetType = type => ({
 });
 
 export const nextStage = () => ({ type: CD.NEXT_STAGE });
+export const prevStage = () => ({ type: CD.PREV_STAGE });
 
 export const addItemToDataset = title => ({
   type: CD.ADD_ITEM,
