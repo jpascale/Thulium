@@ -2,12 +2,12 @@ import C from '../../constants/dataset';
 import objectAssign from 'object-assign';
 
 const nextStages = {
-	'pick-type': 'upload-datasets',
+	'pick-paradigm': 'upload-datasets',
 	'upload-datasets': 'review-datasets'
 };
 
 const prevStages = {
-	'upload-datasets': 'pick-type',
+	'upload-datasets': 'pick-paradigm',
 	'review-datasets': 'upload-datasets',
 };
 
@@ -17,8 +17,8 @@ export default {
 		return objectAssign({}, state, { create });
 	},
 
-	[C.CHANGE_TYPE] : (state, type) => {
-		const create = objectAssign({}, state.create, { type });
+	[C.CHANGE_TYPE] : (state, paradigm) => {
+		const create = objectAssign({}, state.create, { paradigm });
 		return objectAssign({}, state, { create });
 	},
 

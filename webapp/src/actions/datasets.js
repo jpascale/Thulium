@@ -40,9 +40,9 @@ export const changeDatasetTitle = title => ({
   payload: title
 });
 
-export const changeDatasetType = type => ({
+export const changeDatasetParadigm = paradigm => ({
   type: CD.CHANGE_TYPE,
-  payload: type
+  payload: paradigm
 });
 
 export const nextStage = () => ({ type: CD.NEXT_STAGE });
@@ -110,3 +110,26 @@ export const updateTypeForItem = (id, delta) => ({
   type: CD.UPDATE_TYPE_FOR_ITEM,
   payload: { id, delta }
 });
+
+const creatingDataset = () => ({ type: CD.CREATING_DATASET });
+const createdDataset = () => ({ type: CD.CREATED_DATASET });
+
+export const createDataset = () => (dispatch, getState) => {
+  dispatch(creatingDataset());
+  const { paradigm, items, title } = getState().dataset.create
+  const data = {
+    paradigm,
+    title,
+    items: items.map(({ title, data, headers, types }) => ({
+      title,
+      data,
+      headers,
+      types
+    })),
+  };
+  DatasetService.create(data, {
+		token: getState().auth.token
+	}).then(dataset => {
+    return dispatch(createdDataset(dataset));
+  });
+};

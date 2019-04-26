@@ -3,25 +3,30 @@ const { Engine } = require('@thulium/internal')
 		, async = require('async')
 		, { Config } = require('@thulium/base');
 
+const findOrCreateEngine = ({ id, title, enabled }, next) => {
+	debug(`initializing ${title}`);
+	async.waterfall([
+		cb => Engine.collection.findOne({ _id: id }, cb),
+		(dbEngine, cb) => {
+			if (dbEngine) {
+				debug(`${title} was already created`);
+				return cb();
+			}
+			debug(`creating ${title}`);
+			Engine.collection.insertOne({
+				_id: id,
+				title,
+				enabled,
+				created: new Date(),
+				last_updated: new Date(),
+			}, cb);
+		}
+	], next);
+};
+
 const boot = (done) => {
 	debug('bootstraping engines');
-	async.each(Config.engines, (engine, next) => {
-		debug(`initializing ${engine.title}`);
-		async.waterfall([
-			cb => Engine.collection.findOne({ slug: engine.slug }, cb),
-			(dbEngine, cb) => {
-				if (dbEngine) {
-					debug(`${engine.title} was already created`);
-					return cb();
-				}
-				debug(`creating ${engine.title}`);
-				Engine.collection.insertOne(Object.assign({}, engine, {
-					created: new Date(),
-					last_updated: new Date(),
-				}), cb);
-			}
-		], next);
-	}, done);
+	async.each(Config.engines, findOrCreateEngine, done);
 };
 
 module.exports = {

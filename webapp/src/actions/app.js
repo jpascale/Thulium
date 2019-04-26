@@ -43,7 +43,7 @@ export const run = payload => (dispatch, getState) => {
 	dispatch(running());
 
 	const query = {
-		type: getState().app.engines[getState().app.currentEngine].slug,
+		type: getState().app.currentEngine,
 		payload: {
 			query: getState().app.files[getState().app.selectedFile].content
 		}

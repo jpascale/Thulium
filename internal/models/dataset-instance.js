@@ -4,11 +4,11 @@ const mongoose = require('mongoose')
 debug('configuring dataset_instance schema');
 
 const DatasetInstance = mongoose.Schema({
-  title: {
-    type: String,
-    index: true,
-    lowercase: true
-  },
+  // title: {
+  //   type: String,
+  //   index: true,
+  //   lowercase: true
+  // },
   dataset: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Dataset',
@@ -22,7 +22,7 @@ const DatasetInstance = mongoose.Schema({
     ref: 'User'
   },
   engine: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: 'Engine'
   },
   /**

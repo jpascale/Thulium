@@ -4,11 +4,11 @@ import { connect } from 'react-redux';
 import { ModalFooter, Button } from 'reactstrap';
 import classNames from 'classnames';
 
-import { nextStage, prevStage } from '../../../actions/datasets';
+import { nextStage, prevStage, createDataset } from '../../../actions/datasets';
 
-const Footer = ({ stage, prevStage, nextStage, closeModal, ok }) => {
+const Footer = ({ stage, prevStage, nextStage, createDataset, closeModal, ok }) => {
 
-	if (stage === 'pick-type') {
+	if (stage === 'pick-paradigm') {
 		return (
 			<ModalFooter>
 				<Button color="secondary" onClick={closeModal}>Cancel</Button>{' '}
@@ -32,7 +32,7 @@ const Footer = ({ stage, prevStage, nextStage, closeModal, ok }) => {
 			<ModalFooter>
 				<Button color="link" className="back-button" onClick={prevStage}>Go Back</Button>{' '}
 				<Button color="secondary" onClick={closeModal}>Cancel</Button>{' '}
-				<Button color="primary" disabled={!ok} onClick={nextStage}>Submit</Button>
+				<Button color="primary" disabled={!ok} onClick={createDataset}>Submit</Button>
 			</ModalFooter>
 		);
 	}
@@ -50,6 +50,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+	createDataset: () => dispatch(createDataset()),
 	nextStage: () => dispatch(nextStage()),
 	prevStage: () => dispatch(prevStage())
 });

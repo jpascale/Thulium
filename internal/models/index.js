@@ -1,7 +1,8 @@
 module.exports = {
 	Dataset: require('./dataset'),
-	DatasetTable: require('./dataset_table'),
-	DatasetInstance: require('./dataset_instance'),
+	DatasetItem: require('./dataset-item'),
+	DatasetEntry: require('./dataset-entry'),
+	DatasetInstance: require('./dataset-instance'),
 	Engine: require('./engine'),
 	File: require('./file'),
 	Session: require('./session'),

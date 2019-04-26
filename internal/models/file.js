@@ -16,7 +16,7 @@ const File = mongoose.Schema({
 		ref: 'User'
 	},
 	engine: {
-		type: mongoose.Schema.Types.ObjectId,
+		type: String,
 		ref: 'Engine'
 	},
 	dataset: {

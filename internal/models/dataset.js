@@ -4,7 +4,9 @@ const mongoose = require('mongoose')
 debug('configuring dataset schema');
 
 const Dataset = mongoose.Schema({
-	title: String,
+	title: {
+		type: String
+	},
 	created: {
 		type: Date,
 		default: Date.now
@@ -19,12 +21,20 @@ const Dataset = mongoose.Schema({
 	},
 	paradigm: {
 		type: String,
+		lowercase: true,
 		enum: ['sql', 'nosql']
 	},
+	items: [{
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'DatasetItem'
+	}],
 	access: {
 		/* defined access levels or 'owner'. 'admin' role should be always able to access. */
 		type: String,
 		enum: ['owner', 'student', 'teacher', 'anonymous']
+	},
+	persisted: {
+		type: Boolean
 	}
 });
 

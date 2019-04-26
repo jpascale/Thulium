@@ -4,6 +4,9 @@ const mongoose = require('mongoose')
 debug('configuring engine schema');
 
 const Engine = mongoose.Schema({
+	_id: {
+		type: String
+	},
 	created: {
 		type: Date,
 		default: Date.now
@@ -14,8 +17,8 @@ const Engine = mongoose.Schema({
 	title: {
 		type: String
 	},
-	slug: {
-		type: String
+	enabled: {
+		type: Boolean
 	},
 	mimeType: {
 		type: String

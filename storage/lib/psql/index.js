@@ -14,7 +14,9 @@ Module.config = (config) => {
 	pool = new Pool(config);
 };
 
-Module.getDatabaseId = () => 'psql';
+const ENGINE_ID = 'psql';
+
+Module.getDatabaseId = () => ENGINE_ID;
 
 Module.query = function () {
 	if (!pool) {
@@ -28,16 +30,27 @@ const generateTableName = (data) => crypto.createHash('md5').update(data).digest
 const toSQLColumnName = c => c.replace(/[^0-9a-zA-Z_]/g, '').replace(/^[^a-zA-Z_]+/, '');
 
 const chunk = (arr, chunkSize, cache = []) => {
-	const tmp = [...arr]
-	while (tmp.length) cache.push(tmp.splice(0, chunkSize))
-	return cache
+	const tmp = [...arr];
+	while (tmp.length) cache.push(tmp.splice(0, chunkSize));
+	return cache;
 };
 
 const range = (n, b = 0, fn = i => i) => new Array(n).fill(undefined).map((_, i) => fn(b + i));
 const flatten = arr => arr.reduce((memo, arr) => memo.concat(arr), []);
 
+const dataTypeMap = {
+	Int: 'INTEGER',
+	String: 'VARCHAR(255)',
+	Float: 'NUMERIC'
+};
+
+const zipObject = (headers, values) => headers.reduce((memo, h, i) => {
+	memo[h] = values[i];
+	return memo;
+}, {});
+
 // Deprecated
-Module.createDataset = ({ headers, data }, done) => {
+Module.createTable = ({ headers, data, types }, done) => {
 	if (!pool) {
 		throw new Error('module has no config');
 	}
@@ -51,7 +64,9 @@ Module.createDataset = ({ headers, data }, done) => {
 			Module.query(`DROP TABLE IF EXISTS ${tableName}`, next)
 		},
 		next => {
-			const headersSQL = columnHeaders.map(h => `${h} TEXT`).join(',\n');
+			const headersSQL = columnHeaders.map((h, i) => (
+				`${h} ${dataTypeMap[types[i]]}`
+			)).join(',\n');
 			const createTableSQL = `CREATE TABLE ${tableName} (
 				${headersSQL}
 			)`;
@@ -74,6 +89,24 @@ Module.createDataset = ({ headers, data }, done) => {
 	], err => {
 		if (err) return done(err);
 		done(null, { tableName });
+	});
+};
+
+Module.createDataset = ({ items, }, done) => {
+	debug('creating dataset in psql');
+	async.map(items, (item, cb) => {
+		debug(`creating table ${item.title}`);
+		Module.createTable(item, cb);
+	}, (err, results) => {
+		if (err) return done(err);
+		debug('created all tables');
+		done(null, {
+			engine: ENGINE_ID,
+			tables: items.reduce((memo, val, i) => {
+				memo[val.title] = results[i].tableName;
+				return memo;
+			}, {})
+		})
 	});
 };
 

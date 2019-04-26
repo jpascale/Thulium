@@ -2,9 +2,11 @@ const mongoose = require('mongoose')
 	, debug = require('debug')('internal:controllers:dataset')
 	, async = require('async')
 	, { Dataset } = require('../models')
-	, { DatasetTable } = require('../controllers')
+	, DatasetItem = require('./dataset-item')
+	, DatasetEntry = require('./dataset-entry')
+	, DatasetInstance = require('./dataset-instance')
 	, { Util } = require('@thulium/base')
-	, { DatabaseService } = require('@thulium/storage');
+	, { StorageService } = require('@thulium/storage');
 
 debug('setting up dataset controller');
 
@@ -15,6 +17,83 @@ Dataset.pre('save', function (next) {
 	this.last_updated = Date.now();
 	next();
 });
+
+/**
+ * Static methods
+ */
+
+const flatten = coll => coll.reduce((a, b) => a.concat(b), []);
+
+Dataset.statics.create = function ({ title, paradigm, items }, done) {
+	debug('creating dataset');
+	const self = this;
+	const dataset = new self({
+		_id: mongoose.Types.ObjectId(),
+		title,
+		paradigm,
+	});
+	debug('creating items and entries');
+	const datasetItems = items.map(({ title, data, headers, types }) => {
+		const item = new DatasetItem({
+			_id: mongoose.Types.ObjectId(),
+			dataset: dataset._id,
+			title,
+			headers: headers.reduce((memo, h, i) => {
+				memo[h] = types[i];
+				return memo;
+			}, {})
+		});
+		const entries = data.map((data, index) => (
+			new DatasetEntry({
+				dataset: dataset._id,
+				dataset_item: item._id,
+				index,
+				data
+			})
+		));
+		return [item, entries];
+	});
+	const persistableData = flatten([dataset].concat(datasetItems));
+	debug('persisting data');
+	async.each(persistableData, (doc, next) => {
+		if (Array.isArray(doc)) {
+			debug('persisting entries');
+			async.eachLimit(doc, 100, (d, cb) => {
+				d.save(cb);
+			}, next);
+			return;
+		}
+		doc.save(next);
+	}, done);
+
+	async.waterfall([
+		next => {
+			debug('creating physical dataset');
+			StorageService.createDataset({
+				// title,
+				// paradigm,
+				items
+			}, next);
+		},
+		(instances, next) => {
+			async.each(instances, ({ engine, tables }, cb) => {
+				const instance = new DatasetInstance({
+					dataset: dataset._id,
+					engine,
+					tables
+				});
+				instance.save(cb);
+			}, next);
+		}
+	], err => {
+		if (err) {
+			/// TODO: wtf do we do here?
+			console.error(err);
+			return;
+		}
+		debug('done persisting in storages');
+	});
+};
 
 /**
  * Instance methods

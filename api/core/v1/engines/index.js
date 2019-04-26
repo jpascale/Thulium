@@ -10,7 +10,7 @@ debug('setting up /core/v1/engines routes');
 router.get('/',
 	validateUser,
 	(req, res) => {
-		Engine.find().select('title slug').exec((err, engines) => {
+		Engine.find({ enabled: true }).select('title').exec((err, engines) => {
 			if (err) {
 				console.error(err);
 				return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });
@@ -23,7 +23,7 @@ router.get('/',
 router.get('/:id([a-f0-9]+)',
 	validateUser,
 	(req, res) => {
-		Engine.findById(req.params.id).select('title slug').exec((err, engine) => {
+		Engine.findById(req.params.id).select('title').exec((err, engine) => {
 			if (err) {
 				console.error(err);
 				return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });

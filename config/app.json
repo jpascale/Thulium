@@ -4,27 +4,33 @@
       "REDIRECT_URI": "http://localhost:3000/core/v1/auth/social/blackboard"
 		},
     "engines": [{
+      "id": "psql",
       "title": "PostgreSQL",
-      "slug": "psql"
+      "enabled": true
     }, {
+      "id": "mongo",
       "title": "MongoDB",
-      "slug": "mongo"
+      "enabled": false
     }, {
+      "id": "mysql",
       "title": "MySQL",
-      "slug": "mysql"
+      "enabled": true
     }],
     "defaultEngine": "psql"
   },
   "production": {
     "engines": [{
+      "id": "psql",
       "title": "PostgreSQL",
-      "slug": "psql"
+      "enabled": true
     }, {
+      "id": "mongo",
       "title": "MongoDB",
-      "slug": "mongo"
+      "enabled": false
     }, {
+      "id": "mysql",
       "title": "MySQL",
-      "slug": "mysql"
+      "enabled": true
     }],
     "defaultEngine": "psql"
   }

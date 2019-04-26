@@ -16,6 +16,9 @@ export default constants('dataset', [
 
   'next stage',
   'prev stage',
+
+  'creating dataset',
+  'created dataset'
 ], {
     separator: '/',
     transform: v => v.replace(/ /g, '_').toUpperCase()
