@@ -24,13 +24,14 @@ Dataset.pre('save', function (next) {
 
 const flatten = coll => coll.reduce((a, b) => a.concat(b), []);
 
-Dataset.statics.create = function ({ title, paradigm, items }, done) {
+Dataset.statics.create = function ({ title, paradigm, items, userId }, done) {
 	debug('creating dataset');
 	const self = this;
 	const dataset = new self({
 		_id: mongoose.Types.ObjectId(),
 		title,
 		paradigm,
+		userId
 	});
 	debug('creating items and entries');
 	const datasetItems = items.map(({ title, data, headers, types }) => {
@@ -139,7 +140,7 @@ Dataset.methods.createInstance = function (title, owner, engine, done) {
 				prev[curr.table_name] = Util.generateId('table', [owner.email, engine.title, title, table_name])
 				return prev;
 			}, {});
-	
+
 			const datasetInstance = new DatasetInstance({
 				title,
 				dataset: self._id,
@@ -147,7 +148,7 @@ Dataset.methods.createInstance = function (title, owner, engine, done) {
 				engine: engine._id,
 				tables
 			});
-	
+
 			datasetInstance.save(cb)
 		},
 		(instance, cb) => {

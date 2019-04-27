@@ -16,7 +16,7 @@ router.post('/',
     const { paradigm, title, items } = req.body;
     debug({ paradigm, title });
     debug(items);
-    Dataset.create({ paradigm, title, items }, (err, dataset) => {
+    Dataset.create({ paradigm, title, items, userId: req.user.sub }, (err, dataset) => {
       if (err) {
         console.error(err);
         return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });
