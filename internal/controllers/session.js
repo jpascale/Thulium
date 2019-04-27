@@ -1,11 +1,11 @@
 const mongoose = require('mongoose')
-		, debug = require('debug')('internal:controllers:session')
-		, { Session } = require('../models')
-		, File = require('./file')
-		, Engine = require('./engine')
-		, async = require('async')
-		, omit = require('lodash/omit')
-		, { Config } =require('@thulium/base');
+	, debug = require('debug')('internal:controllers:session')
+	, { Session } = require('../models')
+	, File = require('./file')
+	, Engine = require('./engine')
+	, async = require('async')
+	, omit = require('lodash/omit')
+	, { Config } = require('@thulium/base');
 
 debug('setting up session controller');
 
@@ -27,7 +27,7 @@ Session.pre('save', function (next) {
 	file.isDefaultFile = true;
 
 	async.waterfall([
-		cb => Engine.findOne({ slug: Config.defaultEngine }, cb),
+		cb => Engine.findOne({ _id: Config.defaultEngine }, cb),
 		(engine, cb) => {
 			file.engine = engine._id;
 			file.save(cb);

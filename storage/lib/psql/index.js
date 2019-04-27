@@ -26,7 +26,7 @@ Module.query = function () {
 	return pool.query.apply(pool, arguments);
 };
 
-const generateTableName = (data) => crypto.createHash('md5').update(data).digest('hex');
+const generateTableName = (data) => 'table_' + crypto.createHash('md5').update(data).digest('hex');
 const toSQLColumnName = c => c.replace(/[^0-9a-zA-Z_]/g, '').replace(/^[^a-zA-Z_]+/, '');
 
 const chunk = (arr, chunkSize, cache = []) => {
