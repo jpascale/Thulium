@@ -1,6 +1,6 @@
 const { Session } = require('@thulium/internal')
-		, ThuliumHandler = require('./handlers')
-		, debug = require('debug')('ws:routes');
+	, ThuliumHandler = require('./handlers')
+	, debug = require('debug')('ws:routes');
 
 const resolveSession = (ws, req, cb) => {
 	const sessionID = (() => {
@@ -20,7 +20,7 @@ const resolveSession = (ws, req, cb) => {
 	});
 };
 
-const route = (ws, req, rawMessage, done) => {
+const route = (ws, req, rawMessage, session, done) => {
 
 	const message = (() => {
 		try {
@@ -37,7 +37,7 @@ const route = (ws, req, rawMessage, done) => {
 	debug(`parsed message successfully`);
 	debug(message);
 
-	ThuliumHandler.handle(ws, req, message, done);
+	ThuliumHandler.handle(ws, req, message, session, done);
 };
 
 module.exports = {

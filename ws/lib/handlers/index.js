@@ -1,6 +1,6 @@
 const PostgresHandler = require('./psql')
-		, MySQLHandler = require('./mysql')
-		, debug = require('debug')('ws:handlers');
+	, MySQLHandler = require('./mysql')
+	, debug = require('debug')('ws:handlers');
 
 const handlersList = [
 	PostgresHandler,
@@ -17,13 +17,13 @@ const handlers = handlersList.reduce((memo, val) => {
 debug('registered handlers');
 debug(handlers);
 
-const handle = (ws, req, message, done) => {
+const handle = (ws, req, message, session, done) => {
 	debug(`handling message of type ${message.type}`);
 	const handler = handlers[message.type];
 	if (!handler) {
 		return done(new Error('No such handler'));
 	}
-	return handler(ws, req, message.payload, done);
+	return handler(ws, req, message.payload, session, done);
 }
 
 module.exports = {

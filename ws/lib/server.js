@@ -1,9 +1,9 @@
 const http = require('http')
-		, debug = require('debug')('ws')
-		, WebSocket = require('ws')
-		, routeHandler = require('./routes')
-	// , {Manager} = require("../manager/manager")
-	// , {PSQLManager} = require("../manager/postgres_manager");
+	, debug = require('debug')('ws')
+	, WebSocket = require('ws')
+	, routeHandler = require('./routes')
+// , {Manager} = require("../manager/manager")
+// , {PSQLManager} = require("../manager/postgres_manager");
 
 
 const createWebSocketServer = server => {
@@ -34,7 +34,7 @@ const createWebSocketServer = server => {
 			ws.on('message', message => {
 				debug(`Received message from ${id}: ${message}`);
 				debug(typeof message);
-				routeHandler.route(ws, req, message, (err, response) => {
+				routeHandler.route(ws, req, message, session, (err, response) => {
 					if (err) {
 						console.error(err);
 					}
