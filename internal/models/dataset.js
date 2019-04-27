@@ -19,10 +19,6 @@ const Dataset = mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'User'
 	},
-	ownerId: {
-		type: String,
-		index: true
-	},
 	paradigm: {
 		type: String,
 		lowercase: true,

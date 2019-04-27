@@ -30,8 +30,7 @@ Dataset.statics.create = function ({ title, paradigm, items, userId }, done) {
 	const dataset = new self({
 		_id: mongoose.Types.ObjectId(),
 		title,
-		paradigm,
-		userId
+		paradigm
 	});
 	debug('creating items and entries');
 	const datasetItems = items.map(({ title, data, headers, types }) => {
