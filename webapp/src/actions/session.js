@@ -65,3 +65,9 @@ export const hello = () => (dispatch, getState) => {
 		});
 	});
 }
+
+export const fetchSession = () => (dispatch, getState) => {
+	return SessionService.fetchSession({
+		token: getState().auth.token
+	})
+}

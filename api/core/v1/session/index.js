@@ -65,4 +65,44 @@ const isUserValidWrapper = (req, res, next) => isUserValid(req, res, err => next
 router.post('/hello', isUserValidWrapper, handleSessionHello);
 router.post('/hello/:id([a-f0-9]+)', isUserValidWrapper, handleSessionHello);
 
+router.get('/mine',
+  isUserValid,
+  (req, res, next) => {
+    Session.findOne({ owner: req.user.sub }, (err, session) => {
+      if (err) {
+        console.error(err);
+        return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });
+      }
+      req.session = session;
+      next();
+    });
+  },
+  (req, res, next) => {
+    if (req.session) {
+      return next();
+    }
+
+    Session.create({ owner: req.user.sub }, (err, session) => {
+      if (err) {
+        console.error(err);
+        return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });
+      }
+      req.session = session;
+      next();
+    });
+  },
+  (req, res) => {
+    req.session.populate({
+      path: 'files',
+      select: 'engine title content'
+    }, err => {
+      if (err) {
+        console.error(err);
+        return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });
+      }
+      res.status(Status.OK).json(req.session.dto());
+    });
+  }
+)
+
 module.exports = router;
