@@ -1,4 +1,4 @@
-import { post, get } from './queryBuilder';
+import { post, get, extractBody } from './queryBuilder';
 import objectAssign from 'object-assign';
 
 export const hello = (sessionId, options) => {
@@ -12,5 +12,5 @@ export const hello = (sessionId, options) => {
 
 export const fetchSession = (options) => {
 	const queryOptions = objectAssign({}, options);
-	return get(`/core/v1/session/mine`, {}, queryOptions);
+	return get(`/core/v1/session/mine`, {}, queryOptions).then(extractBody);
 }
