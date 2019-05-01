@@ -2,6 +2,7 @@ import C from '../constants/app';
 import { fetchProfile } from './auth';
 import { fetchEngines } from './engines';
 import { fetchCourses } from './courses';
+import { fetchSession } from './session';
 
 import { hello, ws } from './session';
 
@@ -16,17 +17,27 @@ const booted = () => ({
 export const boot = () => (dispatch, getState) => {
 	dispatch(booting());
 
-	dispatch(
-		hello()
-	).then(() => {
-		return Promise.all([
-			dispatch(fetchProfile()),
-			dispatch(fetchEngines()),
-			dispatch(fetchCourses())
-		]);
-	}).then(() => {
+	Promise.all([
+		dispatch(fetchEngines()),
+		dispatch(fetchCourses()),
+		dispatch(fetchSession())
+	]).then(() => {
 		return dispatch(booted());
 	});
+
+
+	// dispatch(
+	// 	hello()
+	// ).then(() => {
+	// 	return Promise.all([
+	// 		dispatch(fetchProfile()),
+	// 		dispatch(fetchEngines()),
+	// 		dispatch(fetchCourses()),
+	// 		dispatch(fetchSession())
+	// 	]);
+	// }).then(() => {
+	// 	return dispatch(booted());
+	// });
 };
 
 const running = () => ({

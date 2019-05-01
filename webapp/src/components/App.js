@@ -12,30 +12,38 @@ import Loadable from 'react-loadable';
 const AsyncApp = Loadable({
   loader: () => import(/* webpackChunkName: "App" */ './AsyncApp'),
   /* eslint-disable react/display-name */
-  loading: () => <h1 style={{ lineHeight: '100%', textAlign: 'center', display: 'table-cell', verticalAlign: 'middle' }}>Loading...</h1>
+  loading: () => (
+    <h1 style={{ lineHeight: '100%', textAlign: 'center', display: 'table-cell', verticalAlign: 'middle' }}>
+      Loading...
+    </h1>
+  )
 });
 
-class App extends React.Component {
+const AsyncLogin = Loadable({
+  loader: () => import(/* webpackChunkName: "Login" */ './containers/Login'),
+  /* eslint-disable react/display-name */
+  loading: () => (
+    <h1 style={{ lineHeight: '100%', textAlign: 'center', display: 'table-cell', verticalAlign: 'middle' }}>
+      Loading...
+    </h1>
+  )
+})
 
-  render() {
-    const { booting } = this.props;
+const App = ({ profile }) => {
 
-    if (booting) {
-      return (
-        <h1 style={{ lineHeight: '100%', textAlign: 'center', display: 'table-cell', verticalAlign: 'middle' }}>Loading...</h1>
-      );
-    }
-
-    return <AsyncApp />;
+  if (!profile) {
+    return <AsyncLogin />;
   }
-}
+
+  return <AsyncApp />;
+};
 
 App.propTypes = {
   children: PropTypes.element
 };
 
 const mapStateToProps = state => ({
-  booting: state.app.booting
+  profile: state.auth.profile
 });
 
 const mapDispatchToProps = dispatch => ({

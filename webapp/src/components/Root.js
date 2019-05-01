@@ -1,32 +1,16 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-// import { ConnectedRouter } from 'react-router-redux';
 import { Provider } from 'react-redux';
 import App from './App';
 
-import { boot } from '../actions/app';
-
-export default class Root extends Component {
-  
-  componentWillMount = () => {
-    const { store } = this.props;
-    store.dispatch(boot());
-  }
-  
-  render() {
-    const { store, history } = this.props;
-    return (
-      <Provider store={store}>
-        <App />
-        {/*<ConnectedRouter history={history}>
-          
-    </ConnectedRouter>*/}
-      </Provider>
-    );
-  }
-}
+const Root = ({ store }) => (
+  <Provider store={store}>
+    <App />
+  </Provider>
+);
 
 Root.propTypes = {
-  store: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired
+  store: PropTypes.object.isRequired
 };
+
+export default Root;

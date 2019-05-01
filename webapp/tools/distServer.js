@@ -2,7 +2,6 @@
 // on your local machine.
 
 import browserSync from 'browser-sync';
-import historyApiFallback from 'connect-history-api-fallback';
 import {chalkProcessing} from './chalkConfig';
 
 /* eslint-disable no-console */
@@ -23,5 +22,5 @@ browserSync({
     'src/*.html'
   ],
 
-  middleware: [historyApiFallback()]
+  middleware: []
 });
