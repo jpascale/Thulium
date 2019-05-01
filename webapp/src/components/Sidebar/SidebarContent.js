@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import Loadable from 'react-loadable';
+import { Badge } from 'reactstrap'
 
 import { changeFile, showCreateFileModal } from '../../actions/files';
 import { changeCourse } from '../../actions/courses';
@@ -32,13 +33,16 @@ class SidebarContent extends React.Component {
 			</li>
 		));
 
-		const courseList = courses.map((membership, i) => (
-			<li key={membership.courseId} className="nav-item ml-2 mr-4">
-				<a className={classNames('nav-link', 'course', { active: membership.courseId === selectedCourse })} href="#" onClick={this.changeCourse(membership.courseId)}>
-					{membership.course.name}
-				</a>
-			</li>
-		));
+		const courseList = courses.map((membership, i) => {
+			const exams = membership.course.grades.filter(g => g.content).length;
+			return (
+				<li key={membership.courseId} className="nav-item ml-2 mr-4">
+					<a className={classNames('nav-link', 'course', { active: membership.courseId === selectedCourse })} href="#" onClick={this.changeCourse(membership.courseId)}>
+					{exams ? <Badge title={`${exams} exam${exams > 1 ? 's' : ''} available`} color="danger">{exams}</Badge> : null} {membership.course.name}
+					</a>
+				</li>
+			);
+		});
 
 		return (
 			<React.Fragment>

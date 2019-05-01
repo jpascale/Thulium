@@ -123,12 +123,12 @@ class CourseTab extends React.Component {
 					<Col sm={6}>
 						<h1>Exams</h1>
 						{!gradeList.length ? (
-							<span>No exams for this course. Create one clicking the button below</span>
+							<span>No exams for this course.{isTeacher ? ' Create one clicking the button below' : ''}</span>
 						) : null}
 						<ul className="list-unstyled">
 							{gradeList}
 						</ul>
-						<Button onClick={this.createExam}>New Exam</Button>
+						{isTeacher ? <Button onClick={this.createExam}>New Exam</Button> : null}
 					</Col>
 					{isTeacher ? createExamColumn : null}
 				</Row>
