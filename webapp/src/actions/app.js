@@ -1,5 +1,4 @@
 import C from '../constants/app';
-import { fetchProfile } from './auth';
 import { fetchEngines } from './engines';
 import { fetchCourses } from './courses';
 import { fetchSession } from './session';

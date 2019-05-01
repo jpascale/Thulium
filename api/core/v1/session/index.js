@@ -60,6 +60,27 @@ const handleSessionHello = [
   }
 ];
 
+/*
+
+exam
+- [questions]
+    - id
+    - dataset
+    - engine
+    - content
+    - type
+    - correct answer
+    
+
+- userresponse
+  - exam
+  - question
+  - user
+  - response
+
+
+*/
+
 const isUserValidWrapper = (req, res, next) => isUserValid(req, res, err => next());
 
 router.post('/hello', isUserValidWrapper, handleSessionHello);

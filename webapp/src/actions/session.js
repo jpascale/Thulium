@@ -24,14 +24,7 @@ const COOKIE_NAME = 'X-Access-Token';
 
 export const hello = () => (dispatch, getState) => {
 	
-	const token = (() => {
-		if (getState().auth.token) return getState().auth.token;
-		const value = `; ${document.cookie}`;
-		const parts = value.split(`; ${COOKIE_NAME}=`);
-		if (parts.length === 2) return parts.pop().split(';').shift();
-		const localStorageToken = localStorage.getItem(THULIUM_LOCALSTORAGE_TOKEN_KEY);
-		if (localStorageToken) return localStorageToken;
-	})();
+	const token = getState().auth.token;
 	const sessionId = localStorage.getItem(THULIUM_LOCALSTORAGE_SESSION_KEY) || '';
 
 	return SessionService.hello(sessionId, { token }).then(({ session, ws, token }) => {
