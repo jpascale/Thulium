@@ -1,5 +1,6 @@
 const crypto = require('crypto')
-    , Config = require('./config');
+    , Config = require('./config')
+    , jwt = require('jsonwebtoken');
 
 const generateId = (key, ids) => {
   const auxKey = ids.join('|||||');

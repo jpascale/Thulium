@@ -16,7 +16,7 @@ module.exports = {
 				}
 				req.courseId = id;
 				const grades = response.body.results.filter(g => g.contentId);
-				debug(grades);
+				// debug(grades);
 				resolve(grades);
 			});
 		}),
@@ -29,7 +29,7 @@ module.exports = {
 					console.error(err);
 					return reject(err);
 				}
-				debug(response.body.results);
+				// debug(response.body.results);
 				resolve(response.body.results);
 			});
 		})

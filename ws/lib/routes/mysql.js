@@ -4,7 +4,7 @@ const { MySQLStorage } = require('@thulium/storage')
 
 MySQLStorage.config(Config.storage.mysql);
 
-const handle = (ws, req, message, done) => {
+const handler = (ws, req, message, done) => {
 	debug(`querying mysql: ${message.query}`);
 	MySQLStorage.query(message.query, (err, results, fields) => {
 		if (err) return done(err);
@@ -12,12 +12,9 @@ const handle = (ws, req, message, done) => {
 			columns: fields.map(v => v.name),
 			records: results,
 			count: results.length
-		}
-		done(null, response);
+		};
+		ws.send(JSON.stringify(response), done);
 	});
 };
 
-module.exports = {
-	handle,
-	TYPE: 'mysql'
-};
+module.exports = handler;

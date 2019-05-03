@@ -9,6 +9,7 @@ import path from 'path';
 const GLOBALS = {
   'process.env.NODE_ENV': JSON.stringify('production'),
   __DEV__: false,
+  'WS_URL': JSON.stringify('wss://api.thulium.xyz'),
   'SERVICE_URL': JSON.stringify('https://api.thulium.xyz')
 };
 

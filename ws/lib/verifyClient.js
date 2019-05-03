@@ -1,9 +1,8 @@
 const debug = require('debug')('ws:verify-client')
 		, Status = require('http-status-codes')
+		, async = require('async')
 		, { Env, Util } = require('@thulium/base')
 		, { User, Session } = require('@thulium/internal');
-
-// const isMongoId = str => str.length === 24 && /^[a-f0-9]+$/.test(str);
 
 const verifyClient = ({ origin, req, secure }, done) => {
 
@@ -23,7 +22,7 @@ const verifyClient = ({ origin, req, secure }, done) => {
 		}
 	}
 
-	const { headers } = req;
+	const { headers, url } = req;
 	const parsedURL = new URL(`http://localhost${url}`);
 	const token = (() => {
 		if (headers && headers.authorization) {
@@ -51,7 +50,7 @@ const verifyClient = ({ origin, req, secure }, done) => {
 			User.findById(token.sub, cb);
 		}],
 		session: ['token', ({ token }, cb) => {
-			Session.findOne({ user: token.sub }, cb);
+			Session.findOne({ owner: token.sub }, cb);
 		}]
 	}, (err, { token, user, session }) => {
 		if (err) {

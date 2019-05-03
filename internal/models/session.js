@@ -11,6 +11,9 @@ const Session = mongoose.Schema({
 	last_updated: {
 		type: Date
 	},
+	ws: [{
+		type: String
+	}],
 	owner: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'User'

@@ -15,7 +15,7 @@ module.exports = {
 					console.error(err);
 					return reject(err);
 				}
-				debug(response.body);
+				// debug(response.body);
 				if (response.body.description === 'Thulium Exam') {
 					return resolve(response.body);
 				}
