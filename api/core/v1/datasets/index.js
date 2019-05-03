@@ -5,7 +5,7 @@ const express = require('express')
   , { PostgresStorage } = require('@thulium/storage')
   , async = require('async')
   , validateUser = require('../../../middleware/validateUser')
-  , debug = require('debug')('api:core:v1:session')
+  , debug = require('debug')('api:core:v1:datasets')
   , crypto = require('crypto');
 
 const hash = (data) => crypto.createHash('md5').update(data).digest("hex");
