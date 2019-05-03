@@ -29,6 +29,7 @@ Dataset.statics.create = function ({ title, paradigm, items, userId }, done) {
 	const self = this;
 	const dataset = new self({
 		_id: mongoose.Types.ObjectId(),
+		publisher: userId,
 		title,
 		paradigm
 	});
