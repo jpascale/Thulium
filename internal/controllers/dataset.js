@@ -80,6 +80,7 @@ Dataset.statics.create = function ({ paradigm, title, items, userId }, done) {
 			async.each(instances, ({ engine, tables }, cb) => {
 				const instance = new DatasetInstance({
 					dataset: dataset._id,
+					owner: userId,
 					engine,
 					tables
 				});
