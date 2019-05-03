@@ -27,7 +27,20 @@ router.post('/',
   }
 );
 
-//TODO: Check auth
+router.post('/datasets',
+  validateUser,
+  (req, res) => {
+    Dataset.find({ publisher: req.user.sub }, (err, response) => {
+      if (err) {
+        console.error(err);
+        return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });
+      }
+      res.status(Status.OK).json(response);
+    });
+  });
+
+// TODO: Check auth
+// Deprecated
 router.post('/create', (req, res, next) => {
   //TODO: check teacher role
   next();
