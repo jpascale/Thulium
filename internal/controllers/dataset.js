@@ -24,7 +24,7 @@ Dataset.pre('save', function (next) {
 
 const flatten = coll => coll.reduce((a, b) => a.concat(b), []);
 
-Dataset.statics.create = function ({ title, paradigm, items, userId }, done) {
+Dataset.statics.create = function ({ paradigm, title, items, userId }, done) {
 	debug('creating dataset');
 	const self = this;
 	const dataset = new self({

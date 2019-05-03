@@ -10,6 +10,9 @@ const express = require('express')
 
 const hash = (data) => crypto.createHash('md5').update(data).digest("hex");
 
+/**
+ * Create dataset
+ */
 router.post('/',
   validateUser,
   (req, res, next) => {
@@ -27,6 +30,25 @@ router.post('/',
   }
 );
 
+/**
+ * Retrieve all the datasets
+ */
+router.post('/all',
+  validateUser,
+  (req, res) => {
+    Dataset.find({}, (err, response) => {
+      if (err) {
+        console.error(err);
+        return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });
+      }
+      res.status(Status.OK).json(response);
+    });
+  });
+
+
+/**
+ * Retrieve user datasets;
+ */
 router.post('/datasets',
   validateUser,
   (req, res) => {
