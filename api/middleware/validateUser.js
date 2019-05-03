@@ -1,8 +1,7 @@
 const Status = require('http-status-codes')
-		, jwt = require('jsonwebtoken')
-		, { Config } = require('@thulium/base');
+		, { Util } = require('@thulium/base');
 
-const extractToken = (req, res) => {
+const extractToken = req => {
 	if (req.headers.authorization) {
 		return req.headers.authorization.replace(/^\s*Bearer/i, '').trim();
 	}
@@ -12,12 +11,10 @@ const extractToken = (req, res) => {
 	return req.query.token;
 };
 
-const verify = (token, next) => jwt.verify(token, Config.secret, Config.jwt, next);
-
 const isUserValid = (req, res, next) => {
 	const token = extractToken(req, res);
 	if (!token) return next();
-	verify(token, (err, user) => {
+	Util.verifyToken(token, (err, user) => {
 		if (err) return next(err);
 		req.user = user;
 		next();

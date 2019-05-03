@@ -24,14 +24,7 @@ const COOKIE_NAME = 'X-Access-Token';
 
 export const hello = () => (dispatch, getState) => {
 	
-	const token = (() => {
-		if (getState().auth.token) return getState().auth.token;
-		const value = `; ${document.cookie}`;
-		const parts = value.split(`; ${COOKIE_NAME}=`);
-		if (parts.length === 2) return parts.pop().split(';').shift();
-		const localStorageToken = localStorage.getItem(THULIUM_LOCALSTORAGE_TOKEN_KEY);
-		if (localStorageToken) return localStorageToken;
-	})();
+	const token = getState().auth.token;
 	const sessionId = localStorage.getItem(THULIUM_LOCALSTORAGE_SESSION_KEY) || '';
 
 	return SessionService.hello(sessionId, { token }).then(({ session, ws, token }) => {
@@ -40,6 +33,19 @@ export const hello = () => (dispatch, getState) => {
 		
 		dispatch(startSession(session));
 		dispatch(authenticated({ token }));
+		
+	});
+};
+
+console.log(WS_URL);
+
+export const fetchSession = () => (dispatch, getState) => {
+	return SessionService.fetchSession({
+		token: getState().auth.token
+	}).then(session => {
+		dispatch(startSession(session));
+
+		const ws = `${WS_URL}?token=${getState().auth.token}`;
 		wsc = new WebSocket(ws);
 		wsc.onmessage = event => {
 			console.log(event.data);
@@ -57,19 +63,8 @@ export const hello = () => (dispatch, getState) => {
 			}
 			dispatch(doneRunning(JSON.parse(event.data)));
 		};
-		return new Promise((resolve, reject) => {
-			wsc.onopen = () => {
-				console.log(`Opened websocket connection to ${ws}`);
-				resolve();
-			};
-		});
-	});
-}
-
-export const fetchSession = () => (dispatch, getState) => {
-	return SessionService.fetchSession({
-		token: getState().auth.token
-	}).then(session => {
-		dispatch(startSession(session));
+		wsc.onopen = () => {
+			console.log(`Opened websocket connection to ${ws}`);
+		};
 	})
 }

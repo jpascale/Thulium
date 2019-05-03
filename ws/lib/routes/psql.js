@@ -7,12 +7,11 @@ const { PostgresStorage } = require('@thulium/storage')
 
 PostgresStorage.config(Config.storage.postgres);
 
-const handle = (ws, req, message, session, done) => {
+const handler = (ws, req, message, session, done) => {
 	debug(`querying psql: ${message.query}`);
 
 	// TODO: It should come with the message
 	const hardcodedDatasetInstanceId = '5cc4a0f70da37fc68ff14d11';
-
 
 	DatasetInstance.findOne({ _id: hardcodedDatasetInstanceId }, (err, res) => {
 		if (err) return done(err);
@@ -43,14 +42,9 @@ const handle = (ws, req, message, session, done) => {
 				records: result.rows,
 				count: result.rowCount
 			}
-			done(null, response);
+			ws.send(JSON.stringify(response), done);
 		});
-
-	})
-
+	});
 };
 
-module.exports = {
-	handle,
-	TYPE: 'psql'
-};
+module.exports = handler;
