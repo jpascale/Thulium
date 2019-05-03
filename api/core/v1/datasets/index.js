@@ -1,6 +1,6 @@
 const express = require('express')
   , router = express.Router({ mergeParams: true })
-  , { User, Dataset } = require('@thulium/internal')
+  , { DatasetInstance, Dataset } = require('@thulium/internal')
   , Status = require('http-status-codes')
   , { PostgresStorage } = require('@thulium/storage')
   , async = require('async')
@@ -61,8 +61,25 @@ router.post('/datasets',
     });
   });
 
-// TODO: Check auth
-// Deprecated
+
+/**
+ * Retrieve user instances
+ */
+router.post('/instances',
+  validateUser,
+  (req, res) => {
+    DatasetInstance.find({ owner: req.user.sub }, (err, response) => {
+      if (err) {
+        console.error(err);
+        return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });
+      }
+      res.status(Status.OK).json(response);
+    });
+  });
+
+
+
+// Deprecated_______________________________________________________________________________--
 router.post('/create', (req, res, next) => {
   //TODO: check teacher role
   next();
