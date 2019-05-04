@@ -1,6 +1,9 @@
 import constants from 'namespace-constants';
 
 export default constants('dataset', [
+  'fetching',
+  'fetched',
+  
   'uploading file',
   'upload failed',
   'uploaded',

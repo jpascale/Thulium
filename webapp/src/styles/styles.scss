@@ -14,12 +14,14 @@
 $modal-lg: 1000px;
 @import "~bootstrap/scss/_modal.scss";
 @import "~bootstrap/scss/_buttons.scss";
+@import "~bootstrap/scss/_button-group.scss";
 @import "~bootstrap/scss/_forms.scss";
 @import "~bootstrap/scss/_tooltip.scss";
 @import "~bootstrap/scss/_images.scss";
 @import "~bootstrap/scss/_badge.scss";
 @import "~bootstrap/scss/_card.scss";
 @import "~bootstrap/scss/_transitions.scss";
+@import "~bootstrap/scss/_list-group.scss";
 
 // body {
   // font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -91,4 +93,8 @@ $border-radius: .25rem;
 			}
 		}
 	}
+}
+
+.btn-toolbar > .btn + .btn {
+	margin-left: 5px;
 }

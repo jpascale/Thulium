@@ -33,7 +33,7 @@ router.post('/',
 /**
  * Retrieve all the datasets
  */
-router.post('/all',
+router.get('/all',
   validateUser,
   (req, res) => {
     Dataset.find({}, (err, response) => {
@@ -43,13 +43,14 @@ router.post('/all',
       }
       res.status(Status.OK).json(response);
     });
-  });
+  }
+);
 
 
 /**
  * Retrieve user datasets;
  */
-router.post('/datasets',
+router.get('/datasets',
   validateUser,
   (req, res) => {
     Dataset.find({ publisher: req.user.sub }, (err, response) => {
@@ -59,7 +60,8 @@ router.post('/datasets',
       }
       res.status(Status.OK).json(response);
     });
-  });
+  }
+);
 
 
 /**

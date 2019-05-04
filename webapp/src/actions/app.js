@@ -2,6 +2,7 @@ import C from '../constants/app';
 import { fetchEngines } from './engines';
 import { fetchCourses } from './courses';
 import { fetchSession } from './session';
+import { fetchDatasets } from './datasets';
 
 import { hello, ws } from './session';
 
@@ -19,7 +20,8 @@ export const boot = () => (dispatch, getState) => {
 	Promise.all([
 		dispatch(fetchEngines()),
 		dispatch(fetchCourses()),
-		dispatch(fetchSession())
+		dispatch(fetchSession()),
+		dispatch(fetchDatasets())
 	]).then(() => {
 		return dispatch(booted());
 	});

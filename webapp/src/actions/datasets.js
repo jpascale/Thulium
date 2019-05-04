@@ -5,6 +5,25 @@ import isInt from 'validator/lib/isInt';
 import isFloat from 'validator/lib/isFloat';
 import isBoolean from 'validator/lib/isBoolean';
 
+const fetchingDatasets = () => ({
+	type: CD.FETCHING
+});
+
+const fetchedDatasets = (payload) => ({
+	type: CD.FETCHED,
+	payload
+});
+
+export const fetchDatasets = () => (dispatch, getState) => {
+	dispatch(fetchingDatasets());
+
+	return DatasetService.fetchAll({}, {
+		token: getState().auth.token
+	}).then(datasets => {
+		return dispatch(fetchedDatasets(datasets));
+	});
+};
+
 Papa.parsePromise = (file, options) => new Promise((complete, error) => {
   Papa.parse(file, Object.assign(options, { complete, error }))
 });

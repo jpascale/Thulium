@@ -3,6 +3,7 @@ import CS from '../../constants/session';
 import CE from '../../constants/engine';
 import CF from '../../constants/file';
 import CC from '../../constants/course';
+import CD from '../../constants/dataset';
 import objectAssign from 'object-assign';
 
 export default {
@@ -73,6 +74,14 @@ export default {
       return memo;
     }, {});
     return objectAssign({}, state, { engines, currentEngine });
+  },
+  [CD.FETCHED] : (state, datasetList) => {
+    // const currentEngine = datasetList.length ? datasetList[0]._id : void 8;
+    const datasets = datasetList.reduce((memo, val) => {
+      memo[val._id] = val;
+      return memo;
+    }, {});
+    return objectAssign({}, state, { datasets });
   },
   [CC.FETCHED] : (state, data) => {
     const courses = data.memberships.reduce((memo, val) => {
