@@ -27,12 +27,25 @@ class CourseTab extends React.Component {
 		selectedQuestion: null
 	}
 
+	componentWillUpdate = (nextProps, nextState) => {
+		if (nextState.type !== this.state.type) {
+			nextState.correctAnswer = '';
+			nextState.numberOfOptions = '';
+		}
+	}
+
 	createExam = () => this.setState({ createExam: true })
 
 	handleChange = key => e => this.setState({ [key]: e.target ? e.target.value : e })
 	handleSubmit = () => {
 		const { membership, createExam } = this.props;
-		const { title, section, since, until } = this.state;
+		const {
+			title,
+			section,
+			since,
+			until,
+			questions
+		} = this.state;
 
 		const exam = {
 			parentId: section,
@@ -47,7 +60,15 @@ class CourseTab extends React.Component {
 			},
 			score: {
 				possible: 10
-			}
+			},
+			questions: questions.map(q => ({
+				content: q.content,
+				type: q.type,
+				dataset: q.dataset,
+				engine: q.engine,
+				correct_answer: q.correctAnswer || undefined,
+				options: q.numberOfOptions ? { total: q.numberOfOptions } : undefined
+			}))
 		};
 
 		createExam(membership.courseId, exam).then(() => {
@@ -83,7 +104,9 @@ class CourseTab extends React.Component {
 			content: '',
 			dataset: '',
 			engine: '',
-			type: ''
+			type: '',
+			numberOfOptions: '',
+			correctAnswer: ''
 		});
 	}
 
@@ -96,19 +119,23 @@ class CourseTab extends React.Component {
 	}
 
 	saveQuestion = (i, close) => () => {
-		const { content, dataset, engine, type, questions: prevQuestions, selectedQuestion } = this.state;
+		const { content, dataset, engine, type, correctAnswer, numberOfOptions, questions: prevQuestions, selectedQuestion } = this.state;
 		const questions = prevQuestions.slice();
 		questions[i].content = content;
 		questions[i].dataset = dataset;
 		questions[i].engine = engine;
 		questions[i].type = type;
+		questions[i].correctAnswer = correctAnswer;
+		questions[i].numberOfOptions = numberOfOptions;
 		this.setState({
 			questions,
 			selectedQuestion: close ? null : selectedQuestion,
 			content: close ? '' : content,
 			dataset: close ? '' : dataset,
 			engine: close ? '' : engine,
-			type: close ? '' : type
+			type: close ? '' : type,
+			numberOfOptions: close ? '' : numberOfOptions,
+			correctAnswer: close ? '' : correctAnswer
 		});
 	}
 
@@ -123,7 +150,9 @@ class CourseTab extends React.Component {
 			dataset,
 			content,
 			engine,
-			type
+			type,
+			correctAnswer,
+			numberOfOptions
 		} = this.state;
 
 		if (!membership) return null;
@@ -140,11 +169,11 @@ class CourseTab extends React.Component {
 						<h2>New Exam</h2>
 						<FormGroup>
 							<Label>Title</Label>
-							<Input type="text" placeholder="Title" onChange={this.handleChange('title')} />
+							<Input bsSize="sm" type="text" placeholder="Title" onChange={this.handleChange('title')} />
 						</FormGroup>
 						<FormGroup>
 							<Label>Section</Label>
-							<Input type="select" onChange={this.handleChange('section')}>
+							<Input bsSize="sm" type="select" onChange={this.handleChange('section')}>
 								{membership.course.contents.map(c => (
 									<option key={c.id} value={c.id}>{c.title}</option>
 								))}
@@ -173,7 +202,7 @@ class CourseTab extends React.Component {
 									<ListGroupItem tag="a">
 										<ListGroupItemHeading>No questions for this exam</ListGroupItemHeading>
 										<ListGroupItemText>
-											<Button onClick={this.addQuestion}>Add question</Button>
+											<Button size="sm" onClick={this.addQuestion}>Add question</Button>
 										</ListGroupItemText>
 									</ListGroupItem>
 								) : null}
@@ -191,16 +220,71 @@ class CourseTab extends React.Component {
 								{questions.length ? (
 									<ListGroupItem tag="a">
 										<ListGroupItemText>
-											<Button onClick={this.addQuestion}>Add another question</Button>
+											<Button size="sm" onClick={this.addQuestion}>Add another question</Button>
 										</ListGroupItemText>
 									</ListGroupItem>
 								) : null}
 							</ListGroup>
 						</FormGroup>
-						<Button>Create</Button>
+						<Button size="sm">Create</Button>
 					</Form>
 				</Col>
 			)
+		})();
+
+		const correctAnswerForm = (() => {
+			if (!type) return null;
+
+			if (type === 'written-answer') return null;
+
+			if (type === 'true-false') {
+				return (
+					<FormGroup>
+						<Label>Correct Answer</Label>
+						<Input bsSize="sm" type="select" value={correctAnswer} onChange={this.handleChange('correctAnswer')}>
+							<option value={''}>Select Correct Answer</option>
+							<option value={true}>True</option>
+							<option value={false}>False</option>
+						</Input>
+					</FormGroup>
+				);
+			}
+
+			if (type === 'query-response') {
+				return (
+					<FormGroup>
+						<Label>Correct Answer</Label>
+						<Input bsSize="sm" type="textarea" rows={4} placeholder="SELECT * FROM ..." value={correctAnswer} onChange={this.handleChange('correctAnswer')} />
+					</FormGroup>
+				);
+			}
+
+			if (type === 'multiple-choice') {
+				return (
+					<React.Fragment>
+						<FormGroup>
+							<Label>Number of Options</Label>
+							<Input bsSize="sm" type="select" value={numberOfOptions} onChange={this.handleChange('numberOfOptions')}>
+								<option value={''}>Select Number of Options</option>
+								{[3, 4, 5, 6].map(n => (
+									<option key={n} value={n}>{n}</option>
+								))}
+							</Input>
+						</FormGroup>
+						{numberOfOptions && (
+							<FormGroup>
+								<Label>Correct Answer</Label>
+								<Input bsSize="sm" type="select" value={correctAnswer} onChange={this.handleChange('correctAnswer')}>
+									<option value={''}>Select Correct Answer</option>
+									{Array.from({ length: numberOfOptions }).map((v, i) => (
+										<option key={i} value={String.fromCharCode(65 + i)}>{String.fromCharCode(65 + i)}</option>
+									))}
+								</Input>
+							</FormGroup>
+						)}
+					</React.Fragment>
+				);
+			}
 		})();
 
 		const editQuestionColumn = (() => {
@@ -211,7 +295,7 @@ class CourseTab extends React.Component {
 						<h2>Question #{selectedQuestion + 1}</h2>
 						<FormGroup>
 							<Label>Engine</Label>
-							<Input type="select" value={engine} onChange={this.handleChange('engine')}>
+							<Input bsSize="sm" type="select" value={engine} onChange={this.handleChange('engine')}>
 								<option value={''}>Select Engine</option>
 								{Object.values(engines).map(d => (
 									<option key={d._id} value={d._id}>{d.title}</option>
@@ -220,7 +304,7 @@ class CourseTab extends React.Component {
 						</FormGroup>
 						<FormGroup>
 							<Label>Dataset</Label>
-							<Input type="select" value={dataset} onChange={this.handleChange('dataset')}>
+							<Input bsSize="sm" type="select" value={dataset} onChange={this.handleChange('dataset')}>
 							<option value={''}>Select Dataset</option>
 								{Object.values(datasets).map(d => (
 									<option key={d._id} value={d._id}>{d.title}</option>
@@ -229,20 +313,21 @@ class CourseTab extends React.Component {
 						</FormGroup>
 						<FormGroup>
 							<Label>Content</Label>
-							<Input type="textarea" rows={4} placeholder="Question content..." value={content} onChange={this.handleChange('content')} />
+							<Input bsSize="sm" type="textarea" rows={4} placeholder="Question content..." value={content} onChange={this.handleChange('content')} />
 						</FormGroup>
 						<FormGroup>
 							<Label>Type</Label>
-							<Input type="select" value={type} onChange={this.handleChange('type')}>
+							<Input bsSize="sm" type="select" value={type} onChange={this.handleChange('type')}>
 								<option value={''}>Select Question Type</option>
 								{Object.keys(examTypes).map(k => (
 									<option key={k} value={k}>{examTypes[k]}</option>
 								))}
 							</Input>
 						</FormGroup>
+						{correctAnswerForm}
 						<ButtonToolbar>
-							<Button onClick={this.saveQuestion(selectedQuestion, false)}>Save</Button>
-							<Button onClick={this.saveQuestion(selectedQuestion, true)}>Save and close</Button>
+							<Button size="sm" onClick={this.saveQuestion(selectedQuestion, false)}>Save</Button>
+							<Button size="sm" onClick={this.saveQuestion(selectedQuestion, true)}>Save and close</Button>
 						</ButtonToolbar>
 					</Form>
 				</Col>
@@ -262,7 +347,7 @@ class CourseTab extends React.Component {
 						<ul className="list-unstyled">
 							{gradeList}
 						</ul>
-						{isTeacher ? <Button onClick={this.createExam}>New Exam</Button> : null}
+						{isTeacher ? <Button size="sm" onClick={this.createExam}>New Exam</Button> : null}
 					</Col>
 					{isTeacher ? createExamColumn : null}
 					{editQuestionColumn}

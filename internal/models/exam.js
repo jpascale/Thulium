@@ -27,7 +27,7 @@ const Exam = mongoose.Schema({
 			ref: 'Dataset'
 		},
 		engine: {
-			type: mongoose.Schema.Types.ObjectId,
+			type: String,
 			ref: 'Engine'
 		},
 		/**
@@ -39,6 +39,11 @@ const Exam = mongoose.Schema({
 		 * If type is query-response => 'SELECT * FROM ..'
 		 **/
 		correct_answer: {
+			type: mongoose.Schema.Types.Mixed
+		},
+
+		/// Store optional information
+		options: {
 			type: mongoose.Schema.Types.Mixed
 		}
 	}],

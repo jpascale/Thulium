@@ -59,8 +59,10 @@ router.use('/',
 	(req, res, next) => {
 		const isPublishingExam = /createAssignment$/.test(req.path);
 		if (!isPublishingExam) return next();
+		const { questions } = req.body;
 		req.publishExam = true;
-		Exam.create({}, (err, exam) => {
+		debug(questions);
+		Exam.create({ questions, owner: req.user.sub }, (err, exam) => {
 			if (err) {
 				console.error(err);
 				return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });
@@ -74,6 +76,7 @@ router.use('/',
 			</div>`;
 			req.body.description = 'Thulium Exam';
 			req.exam = exam;
+			delete req.body.questions;
 			next();
 		});
 	},

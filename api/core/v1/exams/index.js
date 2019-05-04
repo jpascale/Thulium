@@ -11,11 +11,26 @@ const express = require('express')
 router.post('/',
   validateUser,
   (req, res, next) => {
-    const { title, contentId, gradeColumnId, questions } = req.body;
-    debug({ title, contentId, gradeColumnId });
-    debug(questions);
+    const {
+      title,
+      contentId,
+      gradeColumnId,
+      questions
+    } = req.body;
+    debug({
+      title,
+      contentId,
+      gradeColumnId,
+      questions
+    });
 
-    Exam.create({ title, contentId, gradeColumnId, questions, userId: req.user.sub }, (err, exam) => {
+    Exam.create({
+      title,
+      contentId,
+      gradeColumnId,
+      questions,
+      userId: req.user.sub
+    }, (err, exam) => {
       if (err) {
         console.error(err);
         return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });
