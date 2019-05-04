@@ -61,8 +61,8 @@ router.use('/',
 		if (!isPublishingExam) return next();
 		const { questions } = req.body;
 		req.publishExam = true;
-		debug(questions);
-		Exam.create({ questions, owner: req.user.sub }, (err, exam) => {
+		const exam = new Exam({ questions, owner: req.user.sub });
+		exam.save(err => {
 			if (err) {
 				console.error(err);
 				return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });

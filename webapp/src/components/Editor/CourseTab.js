@@ -73,12 +73,14 @@ class CourseTab extends React.Component {
 
 		createExam(membership.courseId, exam).then(() => {
 			console.log('created exam');
-			alert('Created exam success fully');
+			alert('Created exam successfully');
 			this.setState({
 				createExam: false,
+				selectedQuestion: null,
 				title: '',
 				since: moment(),
-				until: moment().add(3, 'hours')
+				until: moment().add(3, 'hours'),
+				questions: []
 			})
 		}, err => {
 			console.error(err);
@@ -196,7 +198,7 @@ class CourseTab extends React.Component {
 								isValidDate={this.isValidUntil}/>
 						</FormGroup>
 						<FormGroup>
-							<Label>Items</Label>
+							<Label>Questions</Label>
 							<ListGroup flush>
 								{!questions.length ? (
 									<ListGroupItem tag="a">
