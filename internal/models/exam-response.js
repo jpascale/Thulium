@@ -9,9 +9,6 @@ debug('configuring exam response');
  */
 
 const ExamResponse = mongoose.Schema({
-  task: {
-    type: String,
-  },
   type: {
     type: String,
     lowercase: true,
@@ -23,7 +20,7 @@ const ExamResponse = mongoose.Schema({
      */
     enum: ['tf', 'mc', 'wa', 'qr']
   },
-  // Maybe we should support an array of datasets?
+  // If this is a correct answer, this field can be left empty
   exam: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Exam'
@@ -33,12 +30,13 @@ const ExamResponse = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
+  // If this is a correct answer, this field can be left empty
   question: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'ExamQuestion'
   },
   /** This field should be filled with:
-   *  - 'true' or 'false' if type is tf
+   *  - 't' or 'f' if type is tf
    *  - A letter (a, b, c, etc) if type is mc
    *  - Text if type is wa
    *  - A query if type is qr
@@ -48,4 +46,4 @@ const ExamResponse = mongoose.Schema({
   }
 });
 
-module.exports = ExamReponse;
+module.exports = ExamResponse;

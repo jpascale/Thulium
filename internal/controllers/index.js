@@ -7,4 +7,6 @@ module.exports = {
 	Engine: require('./engine'),
 	File: require('./file'),
 	Exam: require('./exam'),
+	ExamQuestion: require('./exam-question'),
+	ExamResponse: require('./exam-response'),
 };

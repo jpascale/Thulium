@@ -5,7 +5,7 @@ debug('configuring exam schema');
 
 const Exam = mongoose.Schema({
 	title: {
-		type: String,
+		type: String
 	},
 	questions: [{
 		type: mongoose.Schema.Types.ObjectId,
@@ -15,7 +15,6 @@ const Exam = mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'User'
 	},
-
 	contentId: {
 		type: String
 	},

@@ -7,5 +7,7 @@ module.exports = {
 	File: require('./file'),
 	Session: require('./session'),
 	User: require('./user'),
-	Exam: require('./exam')
+	Exam: require('./exam'),
+	ExamQuestion: require('./exam-question'),
+	ExamResponse: require('./exam-response'),
 };

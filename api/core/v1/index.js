@@ -12,5 +12,6 @@ router.use('/engines', require('./engines'));
 router.use('/files', require('./files'));
 router.use('/datasets', require('./datasets'));
 router.use('/learn', require('./learn'));
+router.use('/exams', require('./exams'));
 
 module.exports = router;
