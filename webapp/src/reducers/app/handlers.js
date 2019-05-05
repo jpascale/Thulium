@@ -4,6 +4,7 @@ import CE from '../../constants/engine';
 import CF from '../../constants/file';
 import CC from '../../constants/course';
 import CD from '../../constants/dataset';
+import CEX from '../../constants/exams';
 import objectAssign from 'object-assign';
 
 export default {
@@ -93,4 +94,7 @@ export default {
   [CC.CHANGE] : (state, course) => {
     return objectAssign({}, state, { selectedCourse: course, selectedTab: 'course' });
   },
+  [CEX.SET_EXAM_MODE] : (state, on) => {
+    return objectAssign({}, state, { examMode: on });
+  }
 }

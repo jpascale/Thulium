@@ -3,6 +3,7 @@ import { fetchEngines } from './engines';
 import { fetchCourses } from './courses';
 import { fetchSession } from './session';
 import { fetchDatasets } from './datasets';
+import { loadExam } from './exams';
 
 import { hello, ws } from './session';
 
@@ -14,7 +15,29 @@ const booted = () => ({
 	type: C.BOOTED
 });
 
+const params = location.search.substr(1).split('&').reduce((memo, val) => {
+	const [key, value] = val.split('=');
+	memo[key] = value;
+	return memo;
+}, {});
+
+const bootExam = examId => (dispatch, getState) => {
+	dispatch(booting());
+
+	return Promise.all([
+		dispatch(loadExam(examId)),
+		dispatch(fetchEngines()),
+	]).then(() => {
+		return dispatch(booted());
+	})
+}
+
 export const boot = () => (dispatch, getState) => {
+
+	if (params.exam) {
+		return dispatch(bootExam(params.exam));
+	}
+
 	dispatch(booting());
 
 	Promise.all([

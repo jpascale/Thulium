@@ -1,0 +1,37 @@
+import C from '../constants/exams';
+import * as ExamService from '../services/exams';
+import { startSession } from './session';
+
+const creatingExam = () => ({
+	type: C.CREATING
+});
+
+const createdExam = (payload) => ({
+	type: C.CREATED,
+	payload
+});
+
+export const createExam = (course, exam) => (dispatch, getState) => {
+	dispatch(creatingExam());
+
+	return ExamService.createExam(course, exam, {
+		token: getState().auth.token
+	}).then(exam => {
+		return dispatch(createdExam(exam));
+	});
+};
+
+const examMode = on => ({
+	type: C.SET_EXAM_MODE,
+	payload: on
+});
+
+export const loadExam = examId => (dispatch, getState) => {
+	dispatch(examMode(true));
+
+	return ExamService.loadExam(examId, {
+		token: getState().auth.token
+	}).then(session => {
+		return dispatch(startSession(session));
+	});
+};

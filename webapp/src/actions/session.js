@@ -11,7 +11,7 @@ export const negotiateSession = () => (dispatch, getState) => {
 	
 }
 
-const startSession = (payload) => ({
+export const startSession = (payload) => ({
 	type: C.START,
 	payload
 });

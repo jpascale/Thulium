@@ -10,11 +10,6 @@ import './styles/styles.scss'; // Yep, that's right. You can import SASS/CSS fil
 require('./favicon.ico'); // Tell webpack to load favicon.ico
 
 const THULIUM_LOCALSTORAGE_TOKEN_KEY = 'thulium:token';
-const THULIUM_LOCALSTORAGE_SESSION_KEY = 'thulium:session';
-
-let wsc;
-
-export const ws = () => wsc;
 
 const COOKIE_NAME = 'X-Access-Token';
 	
@@ -28,7 +23,7 @@ const token = (() => {
 const resolveProfile = (() => {
   if (!token) return Promise.resolve();
   return fetchProfile({ token }).catch(v => undefined);
-})()
+})();
 
 resolveProfile.then(profile => {
   const initialState = {

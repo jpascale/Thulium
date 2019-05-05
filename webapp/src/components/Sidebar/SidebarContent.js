@@ -23,7 +23,10 @@ class SidebarContent extends React.Component {
 	changeCourse = course => () => this.props.changeCourse(course)
     
 	render() {
-		const { profile, files, courses, selectedFile, selectedCourse } = this.props;
+		const { filesRepo = {}, coursesRepo = {}, selectedFile, selectedCourse, examMode } = this.props;
+
+		const files = Object.values(filesRepo);
+		const courses = Object.values(coursesRepo);
 
 		const fileList = files.map((file, i) => (
 			<li key={file._id} className="nav-item ml-2 mr-4">
@@ -48,32 +51,36 @@ class SidebarContent extends React.Component {
 			<React.Fragment>
 				<AsyncDatasetMenuItem />
 				<h6 className="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-1 mb-1 text-muted">OPEN FILES
-					<a className="d-flex align-items-center text-muted" href="#" onClick={this.createFile}>
-						<AddIcon  />
-					</a>
+					{!examMode ? (
+						<a className="d-flex align-items-center text-muted" href="#" onClick={this.createFile}>
+							<AddIcon  />
+						</a>
+					) : null}
 				</h6>
 				<ul className="nav flex-column">
 					{fileList}
 				</ul>
-				{courseList.length ? (
+				{!examMode && courseList.length ? (
 					<h6 className="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-1 mb-1 text-muted">
 						COURSES
 					</h6>
 				) : null}
-				<ul className="nav flex-column">
-					{courseList}
-				</ul>
+				{!examMode ? (
+					<ul className="nav flex-column">
+						{courseList}
+					</ul>
+				) : null}
 			</React.Fragment>
 		)
 	}
 }
 
 const mapStateToProps = state => ({
-	profile: state.auth.profile,
-	files: Object.values(state.app.files),
-	courses: Object.values(state.app.courses),
+	filesRepo: state.app.files,
+	coursesRepo: state.app.courses,
 	selectedCourse: state.app.selectedCourse,
-	selectedFile: state.app.selectedFile
+	selectedFile: state.app.selectedFile,
+	examMode: state.app.examMode
 });
 
 const mapDispatchToProps = dispatch => ({

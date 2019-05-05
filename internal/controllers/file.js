@@ -13,12 +13,26 @@ File.pre('save', function (next) {
 
 File.pre('save', function (next) {
 	const self = this;
-	if (!self.isNew || self.isDefaultFile) return next();
+	if (!self.isNew || self.isDefaultFile || self.examFile) return next();
 
 	async.waterfall([
 		cb => self.model('Session').findById(self.session, cb),
 		(session, cb) => {
 			session.files.push(self._id);
+			session.markModified('files');
+			session.save(cb)
+		}
+	], next);
+});
+
+File.pre('save', function (next) {
+	const self = this;
+	if (!self.isNew || !self.examFile) return next();
+
+	async.waterfall([
+		cb => self.model('Session').findById(self.session, cb),
+		(session, cb) => {
+			session.examFiles.push(self._id);
 			session.markModified('files');
 			session.save(cb)
 		}

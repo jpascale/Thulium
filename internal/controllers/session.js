@@ -25,14 +25,9 @@ Session.pre('save', function (next) {
 	});
 
 	file.isDefaultFile = true;
+	file.engine = Config.defaultEngine;
 
-	async.waterfall([
-		cb => Engine.findOne({ _id: Config.defaultEngine }, cb),
-		(engine, cb) => {
-			file.engine = engine._id;
-			file.save(cb);
-		}
-	], (err) => {
+	file.save(err => {
 		if (err) return next(err);
 		self.files = [file._id];
 		next();
@@ -51,13 +46,25 @@ Session.statics.findOrCreateById = function (id, { owner }, done) {
 	], done);
 };
 
+Session.statics.findOrCreateByOwner = function (owner, done) {
+	const self = this;
+	async.waterfall([
+		cb => self.findOne({ owner }).exec(cb),
+		(session, cb) => {
+			if (session) return cb(null, session);
+			const s = new self({ owner });
+			s.save(cb);
+		}
+	], done);
+};
+
 Session.methods.dto = function () {
 	const self = this;
 	const dto = self.toObject()
 	if (self.populated('files')) {
 		dto.files = self.files.map(file => file.dto());
 	}
-	return omit(dto, '__v', 'created', 'last_updated');
+	return omit(dto, 'ws', '__v', 'created', 'last_updated');
 }
 
 module.exports = mongoose.model('Session', Session);

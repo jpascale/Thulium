@@ -21,6 +21,10 @@ const Session = mongoose.Schema({
 	files: [{
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'File'
+	}],
+	examFiles: [{
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'File'
 	}]
 });
 

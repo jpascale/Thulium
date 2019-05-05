@@ -8,7 +8,7 @@ import DateTime from 'react-datetime';
 import 'react-datetime/css/react-datetime.css';
 import './editor.scss';
 
-import { createExam } from '../../actions/courses';
+import { createExam } from '../../actions/exams';
 
 const examTypes = {
 	"true-false": "True/False",
