@@ -24,13 +24,10 @@ const params = location.search.substr(1).split('&').reduce((memo, val) => {
 const bootExam = examId => (dispatch, getState) => {
 	dispatch(booting());
 
-	return Promise.all([
-		dispatch(loadExam(examId)),
-		dispatch(fetchEngines()),
-	]).then(() => {
+	dispatch(loadExam(examId)).then(() => {
 		return dispatch(booted());
-	})
-}
+	});
+};
 
 export const boot = () => (dispatch, getState) => {
 
