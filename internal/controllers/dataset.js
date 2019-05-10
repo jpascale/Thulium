@@ -67,34 +67,32 @@ Dataset.statics.create = function ({ paradigm, title, items, userId }, done) {
 		doc.save(next);
 	}, done);
 
-	async.waterfall([
-		next => {
-			debug('creating physical dataset');
-			StorageService.createDataset({
-				// title,
-				// paradigm,
-				items
-			}, next);
-		},
-		(instances, next) => {
-			async.each(instances, ({ engine, tables }, cb) => {
-				const instance = new DatasetInstance({
-					dataset: dataset._id,
-					owner: userId,
-					engine,
-					tables
-				});
-				instance.save(cb);
-			}, next);
-		}
-	], err => {
-		if (err) {
-			/// TODO: wtf do we do here?
-			console.error(err);
-			return;
-		}
-		debug('done persisting in storages');
-	});
+	// async.waterfall([
+	// 	next => {
+	// 		debug('creating physical dataset');
+	// 		StorageService.createDataset({
+	// 			items
+	// 		}, next);
+	// 	},
+	// 	(instances, next) => {
+	// 		async.each(instances, ({ engine, tables }, cb) => {
+	// 			const instance = new DatasetInstance({
+	// 				dataset: dataset._id,
+	// 				owner: userId,
+	// 				engine,
+	// 				tables
+	// 			});
+	// 			instance.save(cb);
+	// 		}, next);
+	// 	}
+	// ], err => {
+	// 	if (err) {
+	// 		/// TODO: wtf do we do here?
+	// 		console.error(err);
+	// 		return;
+	// 	}
+	// 	debug('done persisting in storages');
+	// });
 };
 
 /**
@@ -131,36 +129,78 @@ Dataset.methods.deleteTable = function () {
 	throw new Error('Not implemented');
 };
 
-Dataset.methods.createInstance = function (title, owner, engine, done) {
+Dataset.methods.createInstances = function ({ owner, engine }, done) {
 	const self = this;
 
-	async.waterfall([
-		cb => DatasetTable.find({ dataset: dataset._id }, cb),
-		(datasetTables, cb) => {
-			const tables = datasetTables.reduce((prev, curr) => {
-				prev[curr.table_name] = Util.generateId('table', [owner.email, engine.title, title, table_name])
-				return prev;
-			}, {});
-
-			const datasetInstance = new DatasetInstance({
-				title,
-				dataset: self._id,
-				owner: owner._id,
-				engine: engine._id,
-				tables
-			});
-
-			datasetInstance.save(cb)
+	async.auto({
+		dbItems: next => {
+			debug('fetching mongo items');
+			DatasetItem.find({ dataset: self._id }).select('title headers').exec(next);
 		},
-		(instance, cb) => {
-			// Persist data on real database
-			const databaseService = DatabaseService.getEngineDatabaseService(engine.mimeType);
-			databaseService.createPhysicalDataset({
-				tables: res,
-				datasetInstance
-			}, cb);
-		}
-	], done);
+		dbEntries: next => {
+			debug('fetching mongo entries');
+			DatasetEntry.find({ dataset: self._id }).select('dataset_item index data').sort({ index: 1}).exec(next);
+		},
+		instances: ['dbItems', 'dbEntries', ({ dbItems, dbEntries }, next) => {
+			debug('creating physical dataset');
+			const entriesPerItem = dbEntries.reduce((memo, v) => {
+				if (!memo[v.dataset_item])
+					memo[v.dataset_item] = [];
+				memo[v.dataset_item].push(v);
+				return memo;
+			}, {});
+			const items = dbItems.map(i => ({
+				title: i.title,
+				headers: Array.from(i.headers.keys()),
+				types: Array.from(i.headers.values()),
+				data: entriesPerItem[i._id].map(e => e.data)
+			}));
+			StorageService.createDataset({ items }, { engines: [engine] }, next);
+		}],
+		create: ['instances', ({ instances }, next) => {
+			async.each(instances, ({ engine, tables }, cb) => {
+				const instance = new DatasetInstance({
+					dataset: self._id,
+					owner,
+					engine,
+					tables
+				});
+				instance.save(cb);
+			}, next);
+		}]
+	}, err => {
+		debug('done persisting in storages');
+		if (err) console.error(err);
+		done(err);
+	});
+
+	// async.waterfall([
+	// 	cb => DatasetTable.find({ dataset: dataset._id }, cb),
+	// 	(datasetTables, cb) => {
+	// 		const tables = datasetTables.reduce((prev, curr) => {
+	// 			prev[curr.table_name] = Util.generateId('table', [owner.email, engine.title, title, table_name])
+	// 			return prev;
+	// 		}, {});
+
+	// 		const datasetInstance = new DatasetInstance({
+	// 			title,
+	// 			dataset: self._id,
+	// 			owner: owner._id,
+	// 			engine: engine._id,
+	// 			tables
+	// 		});
+
+	// 		datasetInstance.save(cb)
+	// 	},
+	// 	(instance, cb) => {
+	// 		// Persist data on real database
+	// 		const databaseService = DatabaseService.getEngineDatabaseService(engine.mimeType);
+	// 		databaseService.createPhysicalDataset({
+	// 			tables: res,
+	// 			datasetInstance
+	// 		}, cb);
+	// 	}
+	// ], done);
 
 	// DatasetTable.find({ dataset: dataset._id }, (err, res) => {
 

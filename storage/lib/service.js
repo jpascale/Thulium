@@ -4,7 +4,7 @@ const Storages = require('./storages')
 
 const Module = {};
 
-const storages = [Storages.PostgresStorage];
+const allStorages = [Storages.PostgresStorage];
 
 // Object.values(Storages);
 
@@ -16,7 +16,11 @@ Module.getEngineDatabaseService = function (engine) {
   return mimeMap[engine];
 };
 
-Module.createDataset = (dataset, done) => {
+Module.createDataset = (dataset, { engines }, done) => {
+  const storages = (() => {
+    if (!engines.length) return allStorages;
+    return allStorages.filter(s => ~engines.indexOf(s.id()));
+  })();
   debug(`creating dataset in ${storages.length} storage engines`);
   async.map(storages, (storage, cb) => {
     storage.createDataset(dataset, cb);
