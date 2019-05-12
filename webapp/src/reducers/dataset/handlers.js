@@ -12,31 +12,31 @@ const prevStages = {
 };
 
 export default {
-  [C.CHANGE_TITLE] : (state, title) => {
+	[C.CHANGE_TITLE]: (state, title) => {
 		const create = objectAssign({}, state.create, { title });
 		return objectAssign({}, state, { create });
 	},
 
-	[C.CHANGE_TYPE] : (state, paradigm) => {
+	[C.CHANGE_TYPE]: (state, paradigm) => {
 		const create = objectAssign({}, state.create, { paradigm });
 		return objectAssign({}, state, { create });
 	},
 
-	[C.NEXT_STAGE] : (state) => {
+	[C.NEXT_STAGE]: (state) => {
 		const create = objectAssign({}, state.create, {
 			stage: nextStages[state.create.stage]
 		});
 		return objectAssign({}, state, { create });
 	},
 
-	[C.PREV_STAGE] : (state) => {
+	[C.PREV_STAGE]: (state) => {
 		const create = objectAssign({}, state.create, {
 			stage: prevStages[state.create.stage]
 		});
 		return objectAssign({}, state, { create });
 	},
 
-	[C.ADD_ITEM] : (state, title) => {
+	[C.ADD_ITEM]: (state, title) => {
 		const create = objectAssign({}, state.create, {
 			items: state.create.items.concat({
 				id: state.create.items.length,
@@ -46,14 +46,14 @@ export default {
 		return objectAssign({}, state, { create });
 	},
 
-	[C.ASSIGN_FILE_TO_ITEM] : (state, { id, data, headers, types, error }) => {
+	[C.ASSIGN_FILE_TO_ITEM]: (state, { id, data, headers, types, reduced, error, errorText }) => {
 		const nextItems = state.create.items.slice();
-		nextItems[id] = objectAssign({}, nextItems[id], { data, headers, types, error });
+		nextItems[id] = objectAssign({}, nextItems[id], { data, headers, types, reduced, error, errorText });
 		const create = objectAssign({}, state.create, { items: nextItems });
 		return objectAssign({}, state, { create });
 	},
 
-	[C.UPDATE_DATA_FOR_ITEM] : (state, { id, delta }) => {
+	[C.UPDATE_DATA_FOR_ITEM]: (state, { id, delta }) => {
 		const { row, index, value } = delta;
 		const nextItems = state.create.items.slice();
 		const nextData = nextItems[id].data.slice();
@@ -65,7 +65,7 @@ export default {
 		return objectAssign({}, state, { create });
 	},
 
-	[C.UPDATE_HEADER_FOR_ITEM] : (state, { id, delta }) => {
+	[C.UPDATE_HEADER_FOR_ITEM]: (state, { id, delta }) => {
 		const { index, value } = delta;
 		const nextItems = state.create.items.slice();
 		const nextHeaders = nextItems[id].headers.slice();
@@ -75,13 +75,18 @@ export default {
 		return objectAssign({}, state, { create });
 	},
 
-	[C.UPDATE_TYPE_FOR_ITEM] : (state, { id, delta }) => {
+	[C.UPDATE_TYPE_FOR_ITEM]: (state, { id, delta }) => {
 		const { index, value } = delta;
 		const nextItems = state.create.items.slice();
 		const nextTypes = nextItems[id].types.slice();
 		nextTypes.splice(index, 1, value);
 		nextItems[id] = objectAssign({}, nextItems[id], { types: nextTypes });
 		const create = objectAssign({}, state.create, { items: nextItems });
+		return objectAssign({}, state, { create });
+	},
+
+	[C.USE_EXAM_TYPE_DATASET]: (state, { examDataset }) => {
+		const create = objectAssign({}, state.create, { examDataset: examDataset });
 		return objectAssign({}, state, { create });
 	}
 }

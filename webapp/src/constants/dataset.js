@@ -3,7 +3,7 @@ import constants from 'namespace-constants';
 export default constants('dataset', [
   'fetching',
   'fetched',
-  
+
   'uploading file',
   'upload failed',
   'uploaded',
@@ -21,7 +21,9 @@ export default constants('dataset', [
   'prev stage',
 
   'creating dataset',
-  'created dataset'
+  'created dataset',
+
+  'use exam type dataset'
 ], {
     separator: '/',
     transform: v => v.replace(/ /g, '_').toUpperCase()
