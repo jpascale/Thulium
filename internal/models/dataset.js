@@ -35,6 +35,13 @@ const Dataset = mongoose.Schema({
 	},
 	persisted: {
 		type: Boolean
+	},
+	examDataset: {
+		type: Boolean
+	},
+	reduced: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Dataset'
 	}
 });
 

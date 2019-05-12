@@ -26,15 +26,30 @@ const flatten = coll => coll.reduce((a, b) => a.concat(b), []);
 
 Dataset.statics.create = function ({ paradigm, title, items, userId }, done) {
 	debug('creating dataset');
+	const usesReducedDataset = !!(items.length > 0 && items[0].reduced);
 	const self = this;
 	const dataset = new self({
 		_id: mongoose.Types.ObjectId(),
 		publisher: userId,
 		title,
-		paradigm
+		paradigm,
+		examDataset: usesReducedDataset
 	});
+
+	let reducedDataset;
+	if (usesReducedDataset) {
+		reducedDataset = new self({
+			_id: mongoose.Types.ObjectId(),
+			publisher: userId,
+			title,
+			paradigm
+		});
+		dataset.reduced = reducedDataset._id
+	}
+
 	debug('creating items and entries');
-	const datasetItems = items.map(({ title, data, headers, types }) => {
+
+	const datasetItems = items.map(({ title, data, headers, types, reduced }) => {
 		const item = new DatasetItem({
 			_id: mongoose.Types.ObjectId(),
 			dataset: dataset._id,
@@ -52,9 +67,46 @@ Dataset.statics.create = function ({ paradigm, title, items, userId }, done) {
 				data
 			})
 		));
-		return [item, entries];
+
+		const returnData = [item, entries];
+
+		// Create reduced elements - TODO: Modularize
+		if (usesReducedDataset) {
+			const reducedData = reduced.data;
+			const reducedHeaders = reduced.headers;
+			const reducedTypes = reduced.types;
+
+			const reducedItem = new DatasetItem({
+				_id: mongoose.Types.ObjectId(),
+				dataset: reducedDataset._id,
+				title,
+				headers: reducedHeaders.reduce((memo, h, i) => {
+					memo[h] = reducedTypes[i];
+					return memo;
+				}, {})
+			});
+			const reducedEntries = reducedData.map((reducedData, index) => (
+				new DatasetEntry({
+					dataset: reducedDataset._id,
+					dataset_item: reducedItem._id,
+					index,
+					data: reducedData
+				})
+			));
+
+			returnData.push(reducedItem);
+			returnData.push(reducedEntries);
+		}
+
+		return returnData;
 	});
-	const persistableData = flatten([dataset].concat(datasetItems));
+
+	let unflattenedData = [dataset].concat(datasetItems);
+	if (usesReducedDataset) {
+		unflattenedData = unflattenedData.concat([reducedDataset]);
+	}
+	const persistableData = flatten(unflattenedData);
+
 	debug('persisting data');
 	async.each(persistableData, (doc, next) => {
 		if (Array.isArray(doc)) {
@@ -139,7 +191,7 @@ Dataset.methods.createInstances = function ({ owner, engine }, done) {
 		},
 		dbEntries: next => {
 			debug('fetching mongo entries');
-			DatasetEntry.find({ dataset: self._id }).select('dataset_item index data').sort({ index: 1}).exec(next);
+			DatasetEntry.find({ dataset: self._id }).select('dataset_item index data').sort({ index: 1 }).exec(next);
 		},
 		instances: ['dbItems', 'dbEntries', ({ dbItems, dbEntries }, next) => {
 			debug('creating physical dataset');
