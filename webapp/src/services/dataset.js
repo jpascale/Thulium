@@ -3,7 +3,7 @@ import objectAssign from 'object-assign';
 
 
 export const upload = (data) => {
-  return post(`/core/v1/datasets/create`, { data }).then(extractBody);
+	return post(`/core/v1/datasets/create`, { data }).then(extractBody);
 };
 
 export const create = (data, options) => {
@@ -14,4 +14,9 @@ export const create = (data, options) => {
 export const fetchAll = (data, options) => {
 	const queryOptions = objectAssign({}, options);
 	return get(`/core/v1/datasets/all`, data, queryOptions).then(extractBody);
+};
+
+export const fetchAllInstances = (data, options) => {
+	const queryOptions = objectAssign({}, options);
+	return get(`/core/v1/datasets/instances`, data, queryOptions).then(extractBody);
 };

@@ -29,10 +29,10 @@ export const createFile = (filename) => (dispatch, getState) => {
 		engine: getState().app.currentEngine,
 		session: getState().app.session._id
 	}, {
-		token: getState().auth.token
-	}).then(file => {
-		return dispatch(createdFile(file));
-	});
+			token: getState().auth.token
+		}).then(file => {
+			return dispatch(createdFile(file));
+		});
 };
 
 const autosaving = () => ({
@@ -44,13 +44,18 @@ const autosaved = () => ({
 
 export const autosave = sql => (dispatch, getState) => {
 	dispatch(autosaving());
-
 	return FileService.update(getState().app.selectedFile, {
 		content: sql
 	}, {
-		token: getState().auth.token
-	}).then(file => {
-		return dispatch(autosaved(file));
-	});
+			token: getState().auth.token
+		}).then(file => {
+			return dispatch(autosaved(file));
+		});
+};
+
+export const selectForQuery = tableName => (dispatch, getState) => {
+	const defaultQuery = `SELECT * FROM ${tableName};`;
+	dispatch(autosave(defaultQuery));
+
 };
 

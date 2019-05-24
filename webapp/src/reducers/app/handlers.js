@@ -8,31 +8,31 @@ import CEX from '../../constants/exams';
 import objectAssign from 'object-assign';
 
 export default {
-  [C.BOOTING] : (state) => {
+  [C.BOOTING]: (state) => {
     return objectAssign({}, state, { booting: true });
   },
-  [C.BOOTED] : (state) => {
+  [C.BOOTED]: (state) => {
     return objectAssign({}, state, { booting: false });
   },
-  [CE.CHANGE] : (state, engine) => {
+  [CE.CHANGE]: (state, engine) => {
     if (state.currentEngine === engine) return state;
     return objectAssign({}, state, { currentEngine: engine });
   },
-  [CF.CHANGE] : (state, selectedFile) => {
+  [CF.CHANGE]: (state, selectedFile) => {
     return objectAssign({}, state, { selectedFile, selectedTab: 'file' });
   },
-  [CF.SHOW_CREATE_MODAL] : (state) => {
+  [CF.SHOW_CREATE_MODAL]: (state) => {
     if (state.createFileModal) return state;
     return objectAssign({}, state, { createFileModal: true });
   },
-  [CF.CLOSE_CREATE_MODAL] : (state) => {
+  [CF.CLOSE_CREATE_MODAL]: (state) => {
     if (!state.createFileModal) return state;
     return objectAssign({}, state, { createFileModal: false });
   },
-  [CF.CREATING] : (state) => {
+  [CF.CREATING]: (state) => {
     return objectAssign({}, state, { creatingFile: true });
   },
-  [CF.CREATED] : (state, file) => {
+  [CF.CREATED]: (state, file) => {
     const nextFiles = objectAssign({}, state.files, {
       [file._id]: file
     });
@@ -41,20 +41,20 @@ export default {
       files: nextFiles
     });
   },
-  [CF.AUTOSAVING] : (state, query) => {
-  	return objectAssign({}, state, { autosaving: true });
+  [CF.AUTOSAVING]: (state, query) => {
+    return objectAssign({}, state, { autosaving: true });
   },
-  [CF.AUTOSAVED] : (state, query) => {
-  	return objectAssign({}, state, { autosaving: false });
+  [CF.AUTOSAVED]: (state, query) => {
+    return objectAssign({}, state, { autosaving: false });
   },
-  [C.RUNNING] : (state) => {
-  	return objectAssign({}, state, { running: true });
+  [C.RUNNING]: (state) => {
+    return objectAssign({}, state, { running: true });
   },
-  [C.RUN] : (state, results) => {
-  	return objectAssign({}, state, { running: false, results });
+  [C.RUN]: (state, results) => {
+    return objectAssign({}, state, { running: false, results });
   },
 
-  [CS.START] : (state, sessionData) => {
+  [CS.START]: (state, sessionData) => {
     const { files: fileList, ...session } = sessionData;
     const selectedFile = fileList.length ? fileList[0]._id : void 8;
     const files = fileList.reduce((memo, file) => {
@@ -68,7 +68,7 @@ export default {
     });
   },
 
-  [CE.FETCHED] : (state, engineList) => {
+  [CE.FETCHED]: (state, engineList) => {
     const currentEngine = engineList.length ? engineList[0]._id : void 8;
     const engines = engineList.reduce((memo, val) => {
       memo[val._id] = val;
@@ -76,7 +76,7 @@ export default {
     }, {});
     return objectAssign({}, state, { engines, currentEngine });
   },
-  [CD.FETCHED] : (state, datasetList) => {
+  [CD.FETCHED]: (state, datasetList) => {
     // const currentEngine = datasetList.length ? datasetList[0]._id : void 8;
     const datasets = datasetList.reduce((memo, val) => {
       memo[val._id] = val;
@@ -84,17 +84,24 @@ export default {
     }, {});
     return objectAssign({}, state, { datasets });
   },
-  [CC.FETCHED] : (state, data) => {
+  [CD.FETCHED_DATASET_INSTANCES]: (state, list) => {
+    const instances = list.reduce((memo, val) => {
+      memo[val._id] = val;
+      return memo;
+    }, {});
+    return objectAssign({}, state, { instances });
+  },
+  [CC.FETCHED]: (state, data) => {
     const courses = data.memberships.reduce((memo, val) => {
       memo[val.courseId] = val;
       return memo;
     }, {});
     return objectAssign({}, state, { courses });
   },
-  [CC.CHANGE] : (state, course) => {
+  [CC.CHANGE]: (state, course) => {
     return objectAssign({}, state, { selectedCourse: course, selectedTab: 'course' });
   },
-  [CEX.SET_EXAM_MODE] : (state, on) => {
+  [CEX.SET_EXAM_MODE]: (state, on) => {
     return objectAssign({}, state, { examMode: on });
   }
 }

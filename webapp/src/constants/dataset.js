@@ -4,6 +4,9 @@ export default constants('dataset', [
   'fetching',
   'fetched',
 
+  'fetching dataset instances',
+  'fetched dataset instances',
+
   'uploading file',
   'upload failed',
   'uploaded',

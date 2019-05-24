@@ -67,7 +67,7 @@ router.get('/datasets',
 /**
  * Retrieve user instances
  */
-router.post('/instances',
+router.get('/instances',
   validateUser,
   (req, res) => {
     DatasetInstance.find({ owner: req.user.sub }, (err, response) => {

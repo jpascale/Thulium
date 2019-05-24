@@ -25,6 +25,26 @@ export const fetchDatasets = () => (dispatch, getState) => {
   });
 };
 
+// Dataset instances
+const fetchingDatasetInstances = () => ({
+  type: CD.FETCHING_DATASET_INSTANCES
+});
+
+const fetchedDatasetInstances = (payload) => ({
+  type: CD.FETCHED_DATASET_INSTANCES,
+  payload
+});
+
+export const fetchDatasetInstances = () => (dispatch, getState) => {
+  dispatch(fetchingDatasetInstances());
+
+  return DatasetService.fetchAllInstances({}, {
+    token: getState().auth.token
+  }).then(datasetInstances => {
+    return dispatch(fetchedDatasetInstances(datasetInstances));
+  });
+};
+
 Papa.parsePromise = (file, options) => new Promise((complete, error) => {
   Papa.parse(file, Object.assign(options, { complete, error }))
 });

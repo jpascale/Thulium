@@ -2,7 +2,7 @@ import C from '../constants/app';
 import { fetchEngines } from './engines';
 import { fetchCourses } from './courses';
 import { fetchSession } from './session';
-import { fetchDatasets } from './datasets';
+import { fetchDatasets, fetchDatasetInstances } from './datasets';
 import { loadExam } from './exams';
 
 import { hello, ws } from './session';
@@ -41,7 +41,8 @@ export const boot = () => (dispatch, getState) => {
 		dispatch(fetchEngines()),
 		dispatch(fetchCourses()),
 		dispatch(fetchSession()),
-		dispatch(fetchDatasets())
+		dispatch(fetchDatasets()),
+		dispatch(fetchDatasetInstances())
 	]).then(() => {
 		return dispatch(booted());
 	});
