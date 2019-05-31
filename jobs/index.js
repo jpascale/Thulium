@@ -1,43 +1,33 @@
-const { connect, User } = require("@thulium/internal")
-		, { Config } = require('@thulium/base')
-		, debug = require('debug')('jobs')
-		, async = require('async')
-		, superagent = require('superagent')
-		, Agenda = require('agenda');
+const { Config } = require('@thulium/base')
+		, zmq = require('zeromq');
 
-const agenda = new Agenda();
+const sock = zmq.socket('pull')
+		, pub = zmq.socket('pub');
 
-connect((err, connection) => {
-	if (err) {
-		console.error(err);
-		debug('failed to connect to internal storage');
-		process.exit(1);
-	}
+sock.connect(`tcp://${Config.storage.mq.host}:${Config.storage.mq.port}`);
+console.log(`Worker listening to port ${Config.storage.mq.port}`);
 
-	agenda.mongo(connection).processEvery('30 seconds');
+pub.bindSync(`tcp://${Config.storage.pubsub.host}:${Config.storage.pubsub.port}`);
+console.log(`Publisher bound to port ${Config.storage.pubsub.port}`);
 
-	agenda.on('ready', () => {
-		debug('agenda is ready');
-		agenda.now('refresh blackboard tokens');
+const jobs = require('./lib/');
+
+sock.on('message', raw => {
+	const rawMessage = raw.toString();
+	const parsedMessage = (() => {
+		try {
+			return JSON.parse(rawMessage);
+		} catch (e) {
+			return null;
+		}
+	})();
+	if (!parsedMessage.job) return;
+	const job = jobs[parsedMessage.job];
+	if (!job) return;
+	job(parsedMessage.params, (err, announce) => {
+		if (err) {
+			return pub.send([`${parsedMessage.job}:error`, JSON.stringify(err)]);
+		}
+		pub.send([parsedMessage.job, JSON.stringify(announce)]);
 	});
-
-	agenda.on('fail', (err, job) => {
-		debug(`[${job.attrs.name}] FAILED`);
-		console.error(err);
-	});
-
-	agenda.on('start', job => {
-		debug(`Job ${job.attrs.name} starting`);
-	});
-
-	agenda.on('complete', job => {
-		debug(`Job ${job.attrs.name} finished`);
-	});
-
-	agenda.on('error', (err) => {
-		debug('agenda setup failed with error %o', err);
-		console.error(err);
-	});
-
-	agenda.start();
 });

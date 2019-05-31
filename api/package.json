@@ -49,7 +49,6 @@
     "@thulium/internal": "../internal",
     "@thulium/storage": "../storage",
     "@thulium/ws": "../ws",
-    "agenda": "^2.0.2",
     "async": "^2.6.1",
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
@@ -64,7 +63,8 @@
     "jsonwebtoken": "^8.3.0",
     "lodash.omit": "^4.5.0",
     "merge-graphql-schemas": "^1.5.8",
-    "superagent": "^5.0.2"
+    "superagent": "^5.0.2",
+    "zeromq": "^5.1.0"
   },
   "devDependencies": {
     "better-npm-run": "^0.1.1"

@@ -13,6 +13,7 @@
     "@thulium/internal": "../internal",
     "agenda": "^2.0.2",
     "async": "^2.6.2",
-    "superagent": "^5.0.2"
+    "superagent": "^5.0.2",
+    "zeromq": "^5.1.0"
   }
 }

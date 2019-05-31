@@ -4,8 +4,9 @@ const express = require('express')
 	, Status = require('http-status-codes')
 	, validateUser = require('../../../middleware/validateUser')
 	, debug = require('debug')('api:core:v1:exams')
-	, async = require('async');
-
+	, async = require('async')
+	, mq = require('../../../mq');
+	
 /**
  * Create exams
  */
@@ -19,7 +20,7 @@ router.post('/:id([a-f0-9]+)/load',
 			},
 			exam: cb => {
 				debug('fetching exam');
-				Exam.findById(req.params.id).populate('questions.dataset').exec(cb);
+				Exam.findById(req.params.id).exec(cb);
 			},
 		}, (err, { session, exam }) => {
 			if (err) {
@@ -64,12 +65,24 @@ router.post('/:id([a-f0-9]+)/load',
 			},
 			instances: cb => {
 				debug('creating instances');
-				async.map(req.exam.questions, (question, cb) => {
-					question.dataset.createInstances({
-						owner: req.user.sub,
-						engine: question.engine
-					}, cb);
-				}, cb);
+				req.exam.questions.forEach(q => {
+					mq.send({
+						dataset: q.dataset,
+						engine: q.engine,
+						owner: req.user.sub
+					});
+				});
+				cb();
+				
+
+
+
+				// async.map(req.exam.questions, (question, cb) => {
+				// 	question.dataset.createInstances({
+				// 		owner: req.user.sub,
+				// 		engine: question.engine
+				// 	}, cb);
+				// }, cb);
 			}
 		}, (err, { files, instances }) => {
 			if (err) {
