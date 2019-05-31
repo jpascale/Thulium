@@ -36,7 +36,7 @@ const Dataset = mongoose.Schema({
 	persisted: {
 		type: Boolean
 	},
-	examDataset: {
+	exam: {
 		type: Boolean
 	},
 	reduced: {

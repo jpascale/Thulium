@@ -95,7 +95,7 @@ export const addItemToDataset = title => ({
 
 const range = (n, b = 0, fn = i => i) => new Array(n).fill(undefined).map((_, i) => fn(i + b));
 
-export const assignFileToItem = (id, file, { firstLine, examDataset, reducedFile }) => dispatch => {
+export const assignFileToItem = (id, file, { firstLine, exam, reducedFile }) => dispatch => {
   return Papa.parsePromise(file, { skipEmptyLines: true }).then(({ data: _data }) => {
     const headers = firstLine ? _data[0] : [];
     const data = firstLine ? _data.slice(1) : _data;
@@ -119,54 +119,48 @@ export const assignFileToItem = (id, file, { firstLine, examDataset, reducedFile
 
     const types = range(data[0].length, 0, mapToTypes(data));
 
-    if (!examDataset) {
+    if (!exam) {
+      return dispatch({
+        type: CD.ASSIGN_FILE_TO_ITEM,
+        payload: { id, data, headers, types }
+      });
+    }
+    Papa.parsePromise(reducedFile, { skipEmptyLines: true }).then(({ data: _reducedData }) => {
+      const reducedHeaders = firstLine ? _reducedData[0] : [];
+      const reducedData = firstLine ? _reducedData.slice(1) : _data;
+      if (!data.length) {
+        return dispatch({
+          type: CD.ASSIGN_FILE_TO_ITEM,
+          payload: { id, error: true, errorText: 'Reduced file is empty' }
+        });
+      }
+
+      const reducedTypes = range(data[0].length, 0, mapToTypes(reducedData));
+
+      // Compare file schema
+      if (!_.isEqual(types, reducedTypes) || !_.isEqual(headers, reducedHeaders)) {
+        return dispatch({
+          type: CD.ASSIGN_FILE_TO_ITEM,
+          payload: { id, error: true, errorText: 'Schema provided in the reduced file does not repect main schema' }
+        });
+      }
+
       return dispatch({
         type: CD.ASSIGN_FILE_TO_ITEM,
         payload: {
           id,
           data,
           headers,
-          types
-        }
-      });
-    } else {
-      Papa.parsePromise(reducedFile, { skipEmptyLines: true }).then(({ data: _reducedData }) => {
-        const reducedHeaders = firstLine ? _reducedData[0] : [];
-        const reducedData = firstLine ? _reducedData.slice(1) : _data;
-        if (!data.length) {
-          return dispatch({
-            type: CD.ASSIGN_FILE_TO_ITEM,
-            payload: { id, error: true, errorText: 'Reduced file is empty' }
-          });
-        }
-
-        const reducedTypes = range(data[0].length, 0, mapToTypes(reducedData));
-
-        // Compare file schema
-        if (!_.isEqual(types, reducedTypes) || !_.isEqual(headers, reducedHeaders)) {
-          return dispatch({
-            type: CD.ASSIGN_FILE_TO_ITEM,
-            payload: { id, error: true, errorText: 'Schema provided in the reduced file does not repect main schema' }
-          });
-        }
-
-        return dispatch({
-          type: CD.ASSIGN_FILE_TO_ITEM,
-          payload: {
-            id,
-            data,
-            headers,
-            types,
-            reduced: {
-              data: reducedData,
-              headers: reducedHeaders,
-              types: reducedTypes
-            }
+          types,
+          reduced: {
+            data: reducedData,
+            headers: reducedHeaders,
+            types: reducedTypes
           }
-        });
-
+        }
       });
-    }
+
+    });
   }, err => {
     console.error(err);
     return dispatch({
@@ -191,9 +185,9 @@ export const updateTypeForItem = (id, delta) => ({
   payload: { id, delta }
 });
 
-export const useExamTypeDataset = (examDataset) => ({
+export const useExamTypeDataset = (exam) => ({
   type: CD.USE_EXAM_TYPE_DATASET,
-  payload: { examDataset }
+  payload: { exam }
 });
 
 const creatingDataset = () => ({ type: CD.CREATING_DATASET });
@@ -201,10 +195,11 @@ const createdDataset = () => ({ type: CD.CREATED_DATASET });
 
 export const createDataset = () => (dispatch, getState) => {
   dispatch(creatingDataset());
-  const { paradigm, items, title } = getState().dataset.create
+  const { paradigm, items, title, exam } = getState().dataset.create;
   const data = {
     paradigm,
     title,
+    exam,
     items: items.map(({ title, data, headers, types, reduced }) => ({
       title,
       data,

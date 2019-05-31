@@ -8,13 +8,13 @@ import { changeDatasetTitle, upload, useExamTypeDataset } from '../../../../acti
 import UploadItem from './UploadItem';
 
 
-const UploadDatasets = ({ items, examDataset, updateExamDataset }) => (
+const UploadDatasets = ({ items, exam, updateExamDataset }) => (
   <div className="upload-datasets">
     <UploadItem adding />
     <Form>
       <FormGroup check>
         <Label check>
-          <Input type="checkbox" onChange={() => updateExamDataset(!examDataset)} /> Dataset will be used in exam
+          <Input type="checkbox" onChange={() => updateExamDataset(!exam)} /> Dataset will be used in exam
         </Label>
       </FormGroup>
     </Form>
@@ -22,18 +22,18 @@ const UploadDatasets = ({ items, examDataset, updateExamDataset }) => (
       <UploadItem
         key={item.id}
         item={item}
-        options={{ examDataset }} />
+        options={{ exam }} />
     ))}
   </div>
 )
 
 const mapStateToProps = state => ({
   items: state.dataset.create.items,
-  examDataset: state.dataset.create.examDataset
+  exam: state.dataset.create.exam
 });
 
 const mapDispatchToProps = dispatch => ({
-  updateExamDataset: (examDataset) => dispatch(useExamTypeDataset(examDataset))
+  updateExamDataset: exam => dispatch(useExamTypeDataset(exam))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(UploadDatasets);

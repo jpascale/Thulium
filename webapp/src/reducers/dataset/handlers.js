@@ -85,8 +85,8 @@ export default {
 		return objectAssign({}, state, { create });
 	},
 
-	[C.USE_EXAM_TYPE_DATASET]: (state, { examDataset }) => {
-		const create = objectAssign({}, state.create, { examDataset: examDataset });
+	[C.USE_EXAM_TYPE_DATASET]: (state, { exam }) => {
+		const create = objectAssign({}, state.create, { exam });
 		return objectAssign({}, state, { create });
 	}
 }

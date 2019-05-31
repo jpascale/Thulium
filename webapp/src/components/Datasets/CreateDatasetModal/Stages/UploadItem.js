@@ -17,7 +17,7 @@ class UploadItem extends React.Component {
 
   handleChange = key => e => this.setState({ [key]: e.target.value })
   toggleFirstLine = e => this.setState({ firstLine: e.target.checked })
-  toggleExamDataset = e => this.setState({ examDataset: e.target.checked })
+  toggleExamDataset = e => this.setState({ exam: e.target.checked })
   toggleCollapsed = e => this.setState({ collapsed: !this.state.collapsed })
   toggleTitleEdit = e => {
     if (e) {
@@ -60,7 +60,7 @@ class UploadItem extends React.Component {
     const { file, reducedFile, firstLine } = this.state;
     assignFileToItem(item.id, file, {
       firstLine,
-      examDataset: options && options.examDataset || false,
+      exam: options && options.exam || false,
       reducedFile: reducedFile || false
     });
   }
@@ -114,7 +114,7 @@ class UploadItem extends React.Component {
                     <Input type="file" accept=".csv, text/csv" onChange={this.handleFileChange} />
                     <FormText color="muted">We only accept CSV Files</FormText>
                   </FormGroup>
-                  {this.props.options && this.props.options.examDataset &&
+                  {this.props.options && this.props.options.exam &&
                     <FormGroup>
                       <Label>Reduced file</Label>
                       <Input type="file" accept=".csv, text/csv" onChange={this.handleReducedFileChange} />
@@ -125,7 +125,7 @@ class UploadItem extends React.Component {
                       <Input type="checkbox" onChange={this.toggleFirstLine} /> First line contains column names
                     </Label>
                   </FormGroup>
-                  <Button size="sm" disabled={!file || (options && options.examDataset && !reducedFile)} onClick={this.process}>Process File</Button>
+                  <Button size="sm" disabled={!file || (options && options.exam && !reducedFile)} onClick={this.process}>Process File</Button>
                 </Form>
               </CardBody>
             </Collapse>

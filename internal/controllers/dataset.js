@@ -24,9 +24,8 @@ Dataset.pre('save', function (next) {
 
 const flatten = coll => coll.reduce((a, b) => a.concat(b), []);
 
-Dataset.statics.create = function ({ paradigm, title, items, userId }, done) {
+Dataset.statics.create = function ({ paradigm, title, exam, items, userId }, done) {
 	debug('creating dataset');
-	const usesReducedDataset = !!(items.length > 0 && items[0].reduced);
 	const self = this;
 	const dataset = new self({
 		_id: mongoose.Types.ObjectId(),
@@ -36,14 +35,16 @@ Dataset.statics.create = function ({ paradigm, title, items, userId }, done) {
 		examDataset: usesReducedDataset
 	});
 
-	let reducedDataset;
-	if (usesReducedDataset) {
-		reducedDataset = new self({
+	const reducedDataset = (() => {
+		if (!exam) return null;
+		return new self({
 			_id: mongoose.Types.ObjectId(),
 			publisher: userId,
 			title,
 			paradigm
 		});
+	});
+	if (reducedDataset) { 
 		dataset.reduced = reducedDataset._id
 	}
 
@@ -68,44 +69,32 @@ Dataset.statics.create = function ({ paradigm, title, items, userId }, done) {
 			})
 		));
 
-		const returnData = [item, entries];
-
-		// Create reduced elements - TODO: Modularize
-		if (usesReducedDataset) {
-			const reducedData = reduced.data;
-			const reducedHeaders = reduced.headers;
-			const reducedTypes = reduced.types;
-
-			const reducedItem = new DatasetItem({
-				_id: mongoose.Types.ObjectId(),
-				dataset: reducedDataset._id,
-				title,
-				headers: reducedHeaders.reduce((memo, h, i) => {
-					memo[h] = reducedTypes[i];
-					return memo;
-				}, {})
-			});
-			const reducedEntries = reducedData.map((reducedData, index) => (
-				new DatasetEntry({
-					dataset: reducedDataset._id,
-					dataset_item: reducedItem._id,
-					index,
-					data: reducedData
-				})
-			));
-
-			returnData.push(reducedItem);
-			returnData.push(reducedEntries);
+		if (!exam) {
+			return [item, entries];
 		}
 
-		return returnData;
-	});
+		const reducedItem = new DatasetItem({
+			_id: mongoose.Types.ObjectId(),
+			dataset: reducedDataset._id,
+			title,
+			headers: reduced.headers.reduce((memo, h, i) => {
+				memo[h] = reduced.types[i];
+				return memo;
+			}, {})
+		});
+		const reducedEntries = reduced.data.map((reducedData, index) => (
+			new DatasetEntry({
+				dataset: reducedDataset._id,
+				dataset_item: reducedItem._id,
+				index,
+				data: reducedData
+			})
+		));
 
-	let unflattenedData = [dataset].concat(datasetItems);
-	if (usesReducedDataset) {
-		unflattenedData = unflattenedData.concat([reducedDataset]);
-	}
-	const persistableData = flatten(unflattenedData);
+		return [item, entries, reducedItem, reducedEntries];
+	});
+	
+	const persistableData = flatten([dataset, reducedDataset].filter(Boolean).concat(datasetItems));
 
 	debug('persisting data');
 	async.each(persistableData, (doc, next) => {
