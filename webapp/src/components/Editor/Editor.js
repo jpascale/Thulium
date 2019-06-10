@@ -8,6 +8,7 @@ import 'brace/mode/sql';
 import 'brace/theme/monokai';
 
 import { autosave } from '../../actions/files';
+import { changeText } from '../../actions/editor';
 
 class Editor extends React.Component {
 
@@ -15,19 +16,20 @@ class Editor extends React.Component {
 		super(props);
 
 		this.autosave = debounce(this.autosave, 400);
-		this.state = { queryText: props.file.content };
+		this.props.changeText(props.file.content)
 	}
 
 	componentDidUpdate = ({ file: prevFile }) => {
 		const { file } = this.props;
-		if (prevFile !== file) {
-			this.setState({ queryText: file.content });
+		console.log(prevFile);
+		console.log(file);
+		if (prevFile.content !== file.content) {
+			this.props.changeText(file.content);
 		}
 	}
 
 	autosave = () => {
-		const { autosave } = this.props;
-		const { queryText } = this.state;
+		const { autosave, queryText } = this.props;
 		autosave(queryText);
 	}
 
@@ -36,12 +38,13 @@ class Editor extends React.Component {
 	}
 
 	onChange = (value, diff) => {
-		this.setState({ queryText: value });
-		this.autosave();
+		const { autosave } = this.props;
+		this.props.changeText(value);
+		autosave(value);
 	}
 
 	render = () => {
-		const { queryText } = this.state;
+		const { queryText } = this.props;
 
 		return (
 			<AceEditor
@@ -67,12 +70,16 @@ class Editor extends React.Component {
 	}
 }
 
-const mapStateToProps = state => ({
-	file: state.app.files[state.app.selectedFile],
-});
+const mapStateToProps = state => {
+	return {
+		file: state.app.files[state.app.selectedFile],
+		queryText: state.app.currentText
+	};
+};
 
 const mapDispatchToProps = dispatch => ({
-	autosave: sql => dispatch(autosave(sql))
+	autosave: sql => dispatch(autosave(sql)),
+	changeText: sql => dispatch(changeText(sql))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Editor);

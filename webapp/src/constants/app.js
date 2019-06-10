@@ -6,7 +6,8 @@ export default constants('app', [
 	'running',
 	'run',
 	'query changed',
+	'change text'
 ], {
-	separator: '/',
-	transform: v => v.replace(/ /g, '_').toUpperCase()
-});
+		separator: '/',
+		transform: v => v.replace(/ /g, '_').toUpperCase()
+	});

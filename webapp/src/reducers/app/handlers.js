@@ -21,6 +21,15 @@ export default {
   [CF.CHANGE]: (state, selectedFile) => {
     return objectAssign({}, state, { selectedFile, selectedTab: 'file' });
   },
+  [C.CHANGE_TEXT]: (state, currentText) => {
+    // Modify current file
+    const modifiedFile = objectAssign({}, state.files[state.selectedFile], { content: currentText });
+    const files = objectAssign({}, state.files, { [modifiedFile._id]: modifiedFile });
+    const stateWithModifiedFile = objectAssign({}, state, { files });
+
+    // Modify current text
+    return objectAssign({}, stateWithModifiedFile, { currentText });
+  },
   [CF.SHOW_CREATE_MODAL]: (state) => {
     if (state.createFileModal) return state;
     return objectAssign({}, state, { createFileModal: true });
