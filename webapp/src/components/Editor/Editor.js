@@ -21,8 +21,6 @@ class Editor extends React.Component {
 
 	componentDidUpdate = ({ file: prevFile }) => {
 		const { file } = this.props;
-		console.log(prevFile);
-		console.log(file);
 		if (prevFile.content !== file.content) {
 			this.props.changeText(file.content);
 		}
