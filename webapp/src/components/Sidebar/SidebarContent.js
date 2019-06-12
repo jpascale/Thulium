@@ -25,11 +25,11 @@ class SidebarContent extends React.Component {
 	selectForQuery = tableName => () => this.props.selectForQuery(tableName);
 
 	render() {
-		const { filesRepo = {}, coursesRepo = {}, selectedFile, selectedCourse, examMode, instances } = this.props;
+		const { filesRepo = {}, coursesRepo = {}, selectedFile, selectedCourse, examMode, instances, datasets } = this.props;
 
 		const files = Object.values(filesRepo);
 		const courses = Object.values(coursesRepo);
-		const availableInstances = Object.values(instances);
+		const availableDatasets = Object.values(datasets);
 
 		const fileList = files.map((file, i) => (
 			<li key={file._id} className="nav-item ml-2 mr-4">
@@ -50,11 +50,11 @@ class SidebarContent extends React.Component {
 			);
 		});
 
-		const instanceList = flatten(availableInstances.map(i => Object.keys(i.tables))).map(tableName => {
+		const datasetList = availableDatasets.map(dataset => {
 			return (
-				<li key={tableName} className="nav-item ml-2 mr-4">
-					<a className={classNames('nav-link', 'course')} href="#" onClick={this.selectForQuery(tableName)}>
-						{tableName}
+				<li key={dataset._id} className="nav-item ml-2 mr-4">
+					<a className={classNames('nav-link', 'course')} href="#" /*onClick={this.selectForQuery(tableName)}*/>
+						{dataset.title}
 					</a>
 				</li>
 			);
@@ -80,7 +80,7 @@ class SidebarContent extends React.Component {
 				) : null}
 				{!examMode ? (
 					<ul className="nav flex-column">
-						{instanceList}
+						{datasetList}
 					</ul>
 				) : null}
 				{!examMode && courseList.length ? (
@@ -104,6 +104,7 @@ const mapStateToProps = state => ({
 	selectedCourse: state.app.selectedCourse,
 	selectedFile: state.app.selectedFile,
 	examMode: state.app.examMode,
+	datasets: state.app.datasets,
 	instances: state.app.instances
 });
 
