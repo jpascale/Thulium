@@ -32,7 +32,7 @@ Dataset.statics.create = function ({ paradigm, title, exam, items, userId }, don
 		publisher: userId,
 		title,
 		paradigm,
-		examDataset: usesReducedDataset
+		examDataset: exam
 	});
 
 	const reducedDataset = (() => {
@@ -43,8 +43,8 @@ Dataset.statics.create = function ({ paradigm, title, exam, items, userId }, don
 			title,
 			paradigm
 		});
-	});
-	if (reducedDataset) { 
+	})();
+	if (reducedDataset) {
 		dataset.reduced = reducedDataset._id
 	}
 
