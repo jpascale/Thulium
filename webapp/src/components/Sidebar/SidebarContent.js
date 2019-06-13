@@ -29,7 +29,7 @@ class SidebarContent extends React.Component {
 
 		const files = Object.values(filesRepo);
 		const courses = Object.values(coursesRepo);
-		const availableDatasets = Object.values(datasets);
+		const availableDatasets = Object.values(datasets || {});
 
 		const fileList = files.map((file, i) => (
 			<li key={file._id} className="nav-item ml-2 mr-4">

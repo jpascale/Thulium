@@ -66,7 +66,7 @@ router.post('/:id([a-f0-9]+)/load',
 			instances: cb => {
 				debug('creating instances');
 				req.exam.questions.forEach(q => {
-					mq.send({
+					mq.createDatasetInstance({
 						dataset: q.dataset,
 						engine: q.engine,
 						owner: req.user.sub

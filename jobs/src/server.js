@@ -1,5 +1,6 @@
 const { Config } = require('@thulium/base')
-		, zmq = require('zeromq');
+		, zmq = require('zeromq')
+		, debug = require('debug')('jobs:server');
 
 const sock = zmq.socket('pull')
 		, pub = zmq.socket('pub');
@@ -21,10 +22,13 @@ sock.on('message', raw => {
 			return null;
 		}
 	})();
+	debug('received new message %o', parsedMessage);
 	if (!parsedMessage.job) return;
 	const job = jobs[parsedMessage.job];
 	if (!job) return;
+	debug('routing to job handler %s', parsedMessage.job);
 	job(parsedMessage.params, (err, announce) => {
+		debug('job executed with error: %o', err);
 		if (err) {
 			return pub.send([`${parsedMessage.job}:error`, JSON.stringify(err)]);
 		}

@@ -173,6 +173,8 @@ Dataset.methods.deleteTable = function () {
 Dataset.methods.createInstances = function ({ owner, engine }, done) {
 	const self = this;
 
+	debug('creating instance for dataset %s (owner: %s, engine: %s)', self._id, owner, engine);
+
 	async.auto({
 		dbItems: next => {
 			debug('fetching mongo items');
