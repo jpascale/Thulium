@@ -10,7 +10,7 @@ console.log(`Worker listening to port ${Config.storage.mq.port}`);
 pub.bindSync(`tcp://${Config.storage.pubsub.host}:${Config.storage.pubsub.port}`);
 console.log(`Publisher bound to port ${Config.storage.pubsub.port}`);
 
-const jobs = require('./lib');
+const jobs = require('./jobs');
 
 sock.on('message', raw => {
 	const rawMessage = raw.toString();
