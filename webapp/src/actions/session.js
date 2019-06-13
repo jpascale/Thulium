@@ -2,6 +2,7 @@ import C from '../constants/session';
 import * as SessionService from '../services/session';
 import { authenticated } from './auth';
 import { doneRunning } from './app';
+import EventEmitter from '../utils/EventEmitter';
 
 
 const THULIUM_LOCALSTORAGE_TOKEN_KEY = 'thulium:token';
@@ -39,12 +40,15 @@ export const hello = () => (dispatch, getState) => {
 
 console.log(WS_URL);
 
-export const connectUsingToken = (token, { onMessage }) => {
-	return new Promise((resolve, reject) => {
-		const ws = `${WS_URL}?token=${token}`;
-		wsc = new WebSocket(ws);
-		wsc.onmessage = event => {
-			console.log(event.data);
+class ThuliumWebSocket extends EventEmitter {
+	constructor(url) {
+		super();
+		this.wsc = new WebSocket(url);
+	}
+
+	connect() {
+		const self = this;
+		self.wsc.onmessage = event => {
 			const data = (() => {
 				try {
 					return JSON.parse(event.data);
@@ -57,14 +61,15 @@ export const connectUsingToken = (token, { onMessage }) => {
 				console.error(data);
 				return;
 			}
-			onMessage(data);
+			self.emit('message', data);
 		};
-		wsc.onopen = () => {
-			console.log(`Opened websocket connection to ${ws}`);
-			resolve();
+		self.wsc.onopen = () => {
+			self.emit('connected');
 		};
-	});
-};
+	}
+}
+
+export const connectUsingToken = token => new ThuliumWebSocket(`${WS_URL}?token=${token}`);
 
 export const fetchSession = () => (dispatch, getState) => {
 	return SessionService.fetchSession({
@@ -72,13 +77,10 @@ export const fetchSession = () => (dispatch, getState) => {
 	}).then(session => {
 		dispatch(startSession(session));
 
-		connectUsingToken(getState().auth.token, {
-			onMessage: data => {
-				console.log(data);
-			// dispatch(doneRunning(data));
-			}
-		}).then(() => {
+		const thuliumWebSocket = connectUsingToken(getState().auth.token);
+		thuliumWebSocket.on('connected', () => {
 			console.log('connected to ws');
 		});
+		thuliumWebSocket.connect();
 	})
 }

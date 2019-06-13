@@ -147,6 +147,10 @@ const createWebSocketServer = server => {
 			debug('discarding message');
 			return;
 		}
+		if (!message.scope) {
+			debug('no scope defined in message');
+			return;
+		}
 
 		debug('TOPIC=%s MESSAGE=%o', topic, message);
 		

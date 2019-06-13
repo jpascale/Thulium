@@ -29,24 +29,41 @@ const examMode = on => ({
 export const loadExam = examId => (dispatch, getState) => {
 	dispatch(examMode(true));
 
-	return connectUsingToken(getState().auth.token, {
-		onMessage: data => {
-			console.log(data);
-		// dispatch(doneRunning(data));
-		}
-	}).then(() => {
-		console.log('connected to ws');
-		return ExamService.loadExam(examId, {
-			token: getState().auth.token
+	const thuliumWebSocket = connectUsingToken(getState().auth.token);
+	const createdDatasets = [];
+	return new Promise((resolve, reject) => {
+		const messageHandler = ({ topic, message }) => {
+			if (topic !== 'create dataset instance') return;
+			createdDatasets.push(message.id);
+		};
+		thuliumWebSocket.on('connected', () => {
+			console.log('connected to ws');
+			ExamService.loadExam(examId, {
+				token: getState().auth.token
+			}).then(session => {
+
+				if (session.expect.length === createdDatasets.length) {
+					dispatch(startSession(session));
+					return resolve();
+				}
+
+				thuliumWebSocket.removeListener('message', messageHandler);
+				const handler = ({ topic, message }) => {
+					if (topic !== 'create dataset instance') return;
+					createdDatasets.push(message.id);
+					if (session.expect.length === createdDatasets.length) {
+						dispatch(startSession(session));
+						thuliumWebSocket.removeListener('message', handler);
+						return resolve();
+					}
+				};
+				thuliumWebSocket.on('message', handler);
+			});
 		});
-	}).then(session => {
-
-		const { expect } = session;
-		console.log(expect);
-
-
-		return dispatch(startSession(session));	
-	});;
-
-	
+		thuliumWebSocket.on('message', messageHandler);
+		thuliumWebSocket.on('message', ({ topic, message }) => {
+			console.log({ topic, message });
+		});
+		thuliumWebSocket.connect();
+	});
 };
