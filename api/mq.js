@@ -15,12 +15,15 @@ sock.send = function () {
 	return _send.apply(sock, args);
 };
 
+sock.KEYS = {};
+
 Object.values(jobs).forEach(key => { 
 	sock[camelCase(key)] = function () {
 		const args = Array.prototype.slice.apply(arguments);
 		args[0] = { job: key, params: args[0] };
 		return sock.send.apply(sock, args);
-	}
+	};
+	sock.KEYS[key.toUpperCase().replace(/\ /g, '_')] = key;
 });
 
 module.exports = sock;

@@ -1,5 +1,7 @@
 const { Config } = require('@thulium/base')
+		, { Job } =require('@thulium/internal')
 		, zmq = require('zeromq')
+		, async = require('async')
 		, debug = require('debug')('jobs:server');
 
 const sock = zmq.socket('pull')
@@ -24,14 +26,41 @@ sock.on('message', raw => {
 	})();
 	debug('received new message %o', parsedMessage);
 	if (!parsedMessage.job) return;
-	const job = jobs[parsedMessage.job];
-	if (!job) return;
+	const jobHandler = jobs[parsedMessage.job];
+	if (!jobHandler) return;
 	debug('routing to job handler %s', parsedMessage.job);
-	job(parsedMessage.params, (err, announce) => {
-		debug('job executed with error: %o', err);
+	async.auto({
+		job: cb => {
+			debug('fetching job with id %s', parsedMessage.params);
+			Job.findById(parsedMessage.params).exec(cb);
+		},
+		markReceived: ['job', ({ job }, cb) => {
+			debug('marking as received');
+			job.status = 'received';
+			job.save(cb);
+		}],
+		announce: ['job', ({ job }, cb) => {
+			debug('running job');
+			jobHandler(job.params, cb);
+		}]
+	}, (err, { announce, job }) => {
 		if (err) {
-			return pub.send([`${parsedMessage.job}:error`, JSON.stringify(err)]);
+			console.error(err);
+			job.status = 'failed';
+			job.save(_err => {
+				if (err) {
+					console.error(_err);
+				}
+				pub.send([`${parsedMessage.job}:error`, JSON.stringify(err)]);
+			})
+			return;
 		}
-		pub.send([parsedMessage.job, JSON.stringify(announce)]);
+		job.status = 'completed';
+		job.save(_err => {
+			if (_err) {
+				console.error(_err)
+			}
+			pub.send([parsedMessage.job, JSON.stringify(announce)]);
+		});
 	});
 });

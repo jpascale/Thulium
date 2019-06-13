@@ -10,4 +10,5 @@ module.exports = {
 	Exam: require('./exam'),
 	ExamQuestion: require('./exam-question'),
 	ExamResponse: require('./exam-response'),
+	Job: require('./job'),
 };

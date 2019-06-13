@@ -170,12 +170,15 @@ Dataset.methods.deleteTable = function () {
 	throw new Error('Not implemented');
 };
 
-Dataset.methods.createInstances = function ({ owner, engine }, done) {
+Dataset.methods.createInstances = function ({ owner, engine, exam }, done) {
 	const self = this;
 
 	debug('creating instance for dataset %s (owner: %s, engine: %s)', self._id, owner, engine);
 
 	async.auto({
+		instance: next => {
+			DatasetInstance.findOne({ dataset: self._id, owner, exam, engine }).exec(next);
+		},
 		dbItems: next => {
 			debug('fetching mongo items');
 			DatasetItem.find({ dataset: self._id }).select('title headers').exec(next);

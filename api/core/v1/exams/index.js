@@ -1,6 +1,6 @@
 const express = require('express')
 	, router = express.Router({ mergeParams: true })
-	, { Exam, Session, File, Dataset } = require('@thulium/internal')
+	, { Exam, Session, File, Dataset, Job } = require('@thulium/internal')
 	, Status = require('http-status-codes')
 	, validateUser = require('../../../middleware/validateUser')
 	, debug = require('debug')('api:core:v1:exams')
@@ -65,14 +65,40 @@ router.post('/:id([a-f0-9]+)/load',
 			},
 			instances: cb => {
 				debug('creating instances');
-				req.exam.questions.forEach(q => {
-					mq.createDatasetInstance({
+
+				const jobs = req.exam.questions.map(q => ({
+					key: mq.KEYS.CREATE_DATASET_INSTANCE,
+					params: {
 						dataset: q.dataset,
 						engine: q.engine,
-						owner: req.user.sub
+						owner: req.user.sub,
+						exam: req.exam._id
+					}
+				}));
+
+				Job.insertMany(jobs, (err, jobs) => {
+					if (err) return cb(err);
+					jobs.forEach(job => {
+						mq.createDatasetInstance(job._id);
 					});
+					cb(null, jobs);
 				});
-				cb();
+
+				
+
+				
+
+
+
+				// req.exam.questions.forEach(q => {
+				// 	mq.createDatasetInstance({
+				// 		dataset: q.dataset,
+				// 		engine: q.engine,
+				// 		owner: req.user.sub,
+				// 		exam: req.exam._id
+				// 	});
+				// });
+				// cb();
 				
 
 

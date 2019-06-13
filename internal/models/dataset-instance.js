@@ -14,6 +14,10 @@ const DatasetInstance = mongoose.Schema({
     ref: 'Dataset',
     index: true
   },
+  exam: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Exam',
+  },
   /**
    * Used to check permission on tables.
    */
