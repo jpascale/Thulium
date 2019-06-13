@@ -50,8 +50,8 @@ const verifyClient = ({ origin, req, secure }, done) => {
 			User.findById(token.sub, cb);
 		}],
 		session: ['token', ({ token }, cb) => {
-			Session.findOne({ owner: token.sub }, cb);
-		}]
+			Session.findOrCreateByOwner(token.sub, cb);
+		}],
 	}, (err, { token, user, session }) => {
 		if (err) {
 			console.error(err);

@@ -21,4 +21,23 @@
 			}
 		}
 	}
+
+	.task {
+		position: absolute;
+		top: 0;
+		right: 0;
+		height: 100%;
+		width: 0px;
+		background-color: white;
+		transition: width ease-in .3s;
+		z-index: 1029;
+		padding: 10px;
+		overflow: hidden;
+		visibility: hidden;
+
+		&.open {
+			width: 300px;
+			visibility: visible;
+		}
+	}
 }

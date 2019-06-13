@@ -30,6 +30,9 @@ export default {
     // Modify current text
     return objectAssign({}, stateWithModifiedFile, { currentText });
   },
+  [C.TOGGLE_TASK]: state => {
+    return objectAssign({}, state, { showTask: !state.showTask });
+  },
   [CF.SHOW_CREATE_MODAL]: (state) => {
     if (state.createFileModal) return state;
     return objectAssign({}, state, { createFileModal: true });

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import brace from 'brace';
 import AceEditor from 'react-ace';
 import debounce from 'lodash.debounce';
+import { Button } from 'reactstrap';
 
 import 'brace/mode/sql';
 import 'brace/theme/monokai';
@@ -42,28 +43,35 @@ class Editor extends React.Component {
 	}
 
 	render = () => {
-		const { queryText } = this.props;
+		const { queryText, showTask, file } = this.props;
 
 		return (
-			<AceEditor
-				mode="sql"
-				theme="monokai"
-				name="blah2"
-				onLoad={this.onLoad}
-				onChange={this.onChange}
-				fontSize={14}
-				showPrintMargin={false}
-				showGutter={true}
-				highlightActiveLine={true}
-				width="100%"
-				value={queryText}
-				setOptions={{
-					enableBasicAutocompletion: true,
-					enableLiveAutocompletion: true,
-					enableSnippets: false,
-					showLineNumbers: true,
-					tabSize: 2,
-				}} />
+			<div style={{position:'relative'}}>
+				<AceEditor
+					mode="sql"
+					theme="monokai"
+					name="blah2"
+					onLoad={this.onLoad}
+					onChange={this.onChange}
+					fontSize={14}
+					showPrintMargin={false}
+					showGutter={true}
+					highlightActiveLine={true}
+					width="100%"
+					value={queryText}
+					setOptions={{
+						enableBasicAutocompletion: true,
+						enableLiveAutocompletion: true,
+						enableSnippets: false,
+						showLineNumbers: true,
+						tabSize: 2,
+					}} />
+					<div className={`task bg-light ${showTask && 'open' }`}>
+						<h3>{file.title}</h3>
+						<p>{file.task}</p>
+						<Button color="success">Submit</Button>
+					</div>
+				</div>
 		);
 	}
 }
@@ -71,7 +79,8 @@ class Editor extends React.Component {
 const mapStateToProps = state => {
 	return {
 		file: state.app.files[state.app.selectedFile],
-		queryText: state.app.currentText
+		queryText: state.app.currentText,
+		showTask: state.app.showTask
 	};
 };
 
