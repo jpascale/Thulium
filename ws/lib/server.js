@@ -7,6 +7,8 @@ const debug = require('debug')('ws')
 		, messageAdapter = require('./messageAdapter')
 		, { Config } = require('@thulium/base');
 
+/// setup zeroMQ
+
 const sub = redis.createClient({
 	host: Config.storage.cache.host,
 	password: Config.storage.cache.password
@@ -119,6 +121,9 @@ const createWebSocketServer = server => {
 	});
 	
 	sub.subscribe('sent-message');
+
+
+	// subscribe to zeromq topics here using jobs export
 
 	return wss;
 };
