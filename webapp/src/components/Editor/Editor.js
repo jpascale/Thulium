@@ -16,7 +16,7 @@ class Editor extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.autosave = debounce(this.autosave, 400);
+		this.autosave = debounce(this.autosave, 2000);
 		this.props.changeText(props.file.content)
 	}
 
@@ -37,9 +37,9 @@ class Editor extends React.Component {
 	}
 
 	onChange = (value, diff) => {
-		const { autosave } = this.props;
+		// const { autosave } = this.props;
 		this.props.changeText(value);
-		autosave(value);
+		this.autosave(value);
 	}
 
 	render = () => {

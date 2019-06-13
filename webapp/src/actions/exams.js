@@ -1,6 +1,6 @@
 import C from '../constants/exams';
 import * as ExamService from '../services/exams';
-import { startSession, connectUsingToken } from './session';
+import { startSession, connectUsingToken, ws } from './session';
 
 const creatingExam = () => ({
 	type: C.CREATING
@@ -30,6 +30,7 @@ export const loadExam = examId => (dispatch, getState) => {
 	dispatch(examMode(true));
 
 	const thuliumWebSocket = connectUsingToken(getState().auth.token);
+	ws(thuliumWebSocket);
 	const createdDatasets = [];
 	return new Promise((resolve, reject) => {
 		const messageHandler = ({ topic, message }) => {

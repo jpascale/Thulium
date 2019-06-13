@@ -82,5 +82,5 @@ export const run = payload => (dispatch, getState) => {
 		}
 	};
 
-	ws().send(JSON.stringify(query));
+	ws().send(query);
 };

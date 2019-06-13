@@ -19,7 +19,11 @@ export const startSession = (payload) => ({
 
 let wsc;
 
-export const ws = () => wsc;
+export const ws = _wsc => {
+	if (wsc) return wsc;
+	if (_wsc) wsc = _wsc;
+	return wsc;
+}
 
 const COOKIE_NAME = 'X-Access-Token';
 
@@ -67,6 +71,10 @@ class ThuliumWebSocket extends EventEmitter {
 			self.emit('connected');
 		};
 	}
+
+	send(data) {
+		this.wsc.send(JSON.stringify(data));
+	}
 }
 
 export const connectUsingToken = token => new ThuliumWebSocket(`${WS_URL}?token=${token}`);
@@ -78,6 +86,7 @@ export const fetchSession = () => (dispatch, getState) => {
 		dispatch(startSession(session));
 
 		const thuliumWebSocket = connectUsingToken(getState().auth.token);
+		wsc = thuliumWebSocket;
 		thuliumWebSocket.on('connected', () => {
 			console.log('connected to ws');
 		});
