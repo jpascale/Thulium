@@ -35,9 +35,7 @@ sock.on('message', raw => {
 			Job.findById(parsedMessage.params).exec(cb);
 		},
 		markReceived: ['job', ({ job }, cb) => {
-			if (!job) {
-				return cb('no such job');
-			}
+			if (!job) return cb('no such job');
 			debug('marking as received');
 			job.status = 'received';
 			job.save(cb);
@@ -48,7 +46,10 @@ sock.on('message', raw => {
 		}]
 	}, (err, { announce, job }) => {
 		if (err) {
-			if (!job) return;
+			if (!job) {
+				debug('no such job');
+				return;
+			}
 			console.error(err);
 			job.status = 'failed';
 			job.save(_err => {
@@ -64,7 +65,13 @@ sock.on('message', raw => {
 			if (_err) {
 				console.error(_err)
 			}
-			pub.send([parsedMessage.job, JSON.stringify(announce)]);
+			debug('announcing %o', announce);
+			const publishMessage = JSON.stringify({
+				id: parsedMessage.params,
+				result: announce
+			});
+			debug(publishMessage);
+			pub.send([parsedMessage.job, publishMessage]);
 		});
 	});
 });

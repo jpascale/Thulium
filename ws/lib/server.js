@@ -5,9 +5,15 @@ const debug = require('debug')('ws')
 		, createRouter = require('./router')
 		, redis = require('redis')
 		, messageAdapter = require('./messageAdapter')
-		, { Config } = require('@thulium/base');
+		, { Config } = require('@thulium/base')
+		, { jobs } = require('@thulium/jobs')
+		, zmq = require('zeromq');
 
-/// setup zeroMQ
+
+const subscriber = zmq.socket('sub');
+
+subscriber.connect(`tcp://${Config.storage.pubsub.host}:${Config.storage.pubsub.port}`);
+debug(`Subscriber connected to port ${Config.storage.pubsub.port}`);
 
 const sub = redis.createClient({
 	host: Config.storage.cache.host,
@@ -122,8 +128,30 @@ const createWebSocketServer = server => {
 	
 	sub.subscribe('sent-message');
 
-
 	// subscribe to zeromq topics here using jobs export
+	Object.values(jobs).forEach(key => {
+		debug('subscribing to key %s', key);
+		subscriber.subscribe(key);
+		subscriber.subscribe(`${key}:error`);
+	});
+	subscriber.on('message', function(topic, message) {
+		console.log('received a message related to:', topic.toString(), 'containing message:', message.toString());
+	});
+	
+	
+	// 	subscriber
+	// 	subscriber.on(key, function () {
+	// 		debug(key);
+	// 		const msg = Array.prototype.slice.call(arguments).map(arg => arg.toString());
+	// 		console.log(msg);
+	// 	});
+	// 	subscriber.on(`${key}:error`, function () {
+	// 		debug(`${key}:error`);
+	// 		const msg = Array.prototype.slice.call(arguments).map(arg => arg.toString());
+	// 		console.log(msg);
+	// 	});
+	// });
+	
 
 	return wss;
 };

@@ -8,6 +8,7 @@
   "dependencies": {
     "@thulium/base": "../base",
     "@thulium/internal": "../internal",
+    "@thulium/jobs": "../jobs",
     "@thulium/storage": "../storage",
     "async": "^2.6.2",
     "debug": "^4.0.1",

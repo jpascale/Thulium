@@ -38,6 +38,7 @@ router.post('/:id([a-f0-9]+)/load',
 	(req, res, next) => {
 		debug('cleaning up session');
 		req._session.examFiles = [];
+		req._session.exam = req.exam._id;
 		req._session.markModified('examFiles');
 		req._session.save(err => {
 			if (err) {

@@ -223,7 +223,7 @@ Dataset.methods.createInstances = function ({ owner, engine, exam }, done) {
 	}, err => {
 		debug('done persisting in storages');
 		if (err) console.error(err);
-		done(err);
+		done(err, true);
 	});
 
 	// async.waterfall([
