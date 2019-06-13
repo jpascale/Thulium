@@ -16,14 +16,14 @@ Module.getEngineDatabaseService = function (engine) {
   return mimeMap[engine];
 };
 
-Module.createDataset = (dataset, { engines }, done) => {
+Module.createDataset = (dataset, { engines, nonce }, done) => {
   const storages = (() => {
     if (!engines.length) return allStorages;
     return allStorages.filter(s => ~engines.indexOf(s.id()));
   })();
   debug(`creating dataset in ${storages.length} storage engines`);
   async.map(storages, (storage, cb) => {
-    storage.createDataset(dataset, cb);
+    storage.createDataset({ ...dataset, nonce }, cb);
   }, done);
 };
 
