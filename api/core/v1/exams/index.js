@@ -53,15 +53,16 @@ router.post('/:id([a-f0-9]+)/load',
 			files: cb => {
 				debug('creating files');
 				let i = 1;
-				async.map(req.exam.questions, (question, cb) => {
-					File.create({
-						examFile: true,
+				async.mapSeries(req.exam.questions, (question, cb) => {
+					const file = new File({
 						owner: req.user.sub,
 						engine: question.engine,
 						dataset: question.dataset,
 						session: req._session._id,
 						title: `Question #${i++}`
-					}, cb);
+					});
+					file.examFile = true;
+					file.save(cb);
 				}, cb);
 			},
 			instances: cb => {
