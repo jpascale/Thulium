@@ -93,7 +93,13 @@ router.post('/:id([a-f0-9]+)/load',
 				return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });
 			}
 			const response = req._session.dto();
-			response.files = files.map(f => f.dto());
+			response.files = files.map((f, i) => {
+				const dto = f.dto();
+				dto.task = req.exam.questions[i].content;
+				dto.options = req.exam.questions[i].options;
+				dto.type = req.exam.questions[i].type;
+				return dto;
+			});
 			response.expect = instances.map(i => i._id);
 
 			res.status(Status.OK).json(response);
