@@ -68,6 +68,7 @@ sock.on('message', raw => {
 			debug('announcing %o', announce);
 			const publishMessage = JSON.stringify({
 				id: parsedMessage.params,
+				scope: job.scope,
 				result: announce
 			});
 			debug(publishMessage);

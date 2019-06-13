@@ -22,6 +22,9 @@ const Job = mongoose.Schema({
 	params: {
 		type: mongoose.Schema.Types.Mixed
 	},
+	scope: [{
+		type: String
+	}],
 	received: {
 		type: Date
 	},

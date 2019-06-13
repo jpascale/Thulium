@@ -134,23 +134,31 @@ const createWebSocketServer = server => {
 		subscriber.subscribe(key);
 		subscriber.subscribe(`${key}:error`);
 	});
-	subscriber.on('message', function(topic, message) {
-		console.log('received a message related to:', topic.toString(), 'containing message:', message.toString());
+	subscriber.on('message', (rawTopic, rawMessage) => {
+		const topic = rawTopic.toString();
+		const message = (() => {
+			try {
+				return JSON.parse(rawMessage.toString());
+			} catch (err) {
+				return null;
+			}
+		})();
+		if (!message) {
+			debug('discarding message');
+			return;
+		}
+
+		debug('TOPIC=%s MESSAGE=%o', topic, message);
+		
+		message.scope.forEach(uid => {
+			if (!clients[uid]) return;
+			debug('client %s is here', uid);
+			clients[uid].send(JSON.stringify({
+				topic,
+				message
+			}));
+		});
 	});
-	
-	
-	// 	subscriber
-	// 	subscriber.on(key, function () {
-	// 		debug(key);
-	// 		const msg = Array.prototype.slice.call(arguments).map(arg => arg.toString());
-	// 		console.log(msg);
-	// 	});
-	// 	subscriber.on(`${key}:error`, function () {
-	// 		debug(`${key}:error`);
-	// 		const msg = Array.prototype.slice.call(arguments).map(arg => arg.toString());
-	// 		console.log(msg);
-	// 	});
-	// });
 	
 
 	return wss;

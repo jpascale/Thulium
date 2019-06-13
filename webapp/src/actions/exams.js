@@ -1,6 +1,6 @@
 import C from '../constants/exams';
 import * as ExamService from '../services/exams';
-import { startSession } from './session';
+import { startSession, connectUsingToken } from './session';
 
 const creatingExam = () => ({
 	type: C.CREATING
@@ -29,9 +29,24 @@ const examMode = on => ({
 export const loadExam = examId => (dispatch, getState) => {
 	dispatch(examMode(true));
 
-	return ExamService.loadExam(examId, {
-		token: getState().auth.token
+	return connectUsingToken(getState().auth.token, {
+		onMessage: data => {
+			console.log(data);
+		// dispatch(doneRunning(data));
+		}
+	}).then(() => {
+		console.log('connected to ws');
+		return ExamService.loadExam(examId, {
+			token: getState().auth.token
+		});
 	}).then(session => {
-		return dispatch(startSession(session));
-	});
+
+		const { expect } = session;
+		console.log(expect);
+
+
+		return dispatch(startSession(session));	
+	});;
+
+	
 };

@@ -74,7 +74,8 @@ router.post('/:id([a-f0-9]+)/load',
 						engine: q.engine,
 						owner: req.user.sub,
 						exam: req.exam._id
-					}
+					},
+					scope: req._session.ws
 				}));
 
 				Job.insertMany(jobs, (err, jobs) => {
@@ -92,8 +93,7 @@ router.post('/:id([a-f0-9]+)/load',
 			}
 			const response = req._session.dto();
 			response.files = files.map(f => f.dto());
-
-			debug(instances);
+			response.expect = instances.map(i => i._id);
 
 			res.status(Status.OK).json(response);
 		});

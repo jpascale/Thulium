@@ -8,6 +8,8 @@ import Files from './Files';
 
 import { boot } from '../actions/app';
 
+const loadingStyle = { lineHeight: '100%', textAlign: 'center', display: 'table-cell', verticalAlign: 'middle' };
+
 class AsyncApp extends React.Component {
   componentDidMount = () => {
     this.props.boot();
@@ -16,9 +18,7 @@ class AsyncApp extends React.Component {
   render = () => {
     const { booting } = this.props;
     if (booting) {
-      return (
-        <h1 style={{ lineHeight: '100%', textAlign: 'center', display: 'table-cell', verticalAlign: 'middle' }}>Loading...</h1>
-      );
+      return <h1 style={loadingStyle}>Loading...</h1>;
     }
     return (
       <React.Fragment>

@@ -39,13 +39,9 @@ export const hello = () => (dispatch, getState) => {
 
 console.log(WS_URL);
 
-export const fetchSession = () => (dispatch, getState) => {
-	return SessionService.fetchSession({
-		token: getState().auth.token
-	}).then(session => {
-		dispatch(startSession(session));
-
-		const ws = `${WS_URL}?token=${getState().auth.token}`;
+export const connectUsingToken = (token, { onMessage }) => {
+	return new Promise((resolve, reject) => {
+		const ws = `${WS_URL}?token=${token}`;
 		wsc = new WebSocket(ws);
 		wsc.onmessage = event => {
 			console.log(event.data);
@@ -61,10 +57,28 @@ export const fetchSession = () => (dispatch, getState) => {
 				console.error(data);
 				return;
 			}
-			dispatch(doneRunning(JSON.parse(event.data)));
+			onMessage(data);
 		};
 		wsc.onopen = () => {
 			console.log(`Opened websocket connection to ${ws}`);
+			resolve();
 		};
+	});
+};
+
+export const fetchSession = () => (dispatch, getState) => {
+	return SessionService.fetchSession({
+		token: getState().auth.token
+	}).then(session => {
+		dispatch(startSession(session));
+
+		connectUsingToken(getState().auth.token, {
+			onMessage: data => {
+				console.log(data);
+			// dispatch(doneRunning(data));
+			}
+		}).then(() => {
+			console.log('connected to ws');
+		});
 	})
 }
