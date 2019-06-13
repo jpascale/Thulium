@@ -153,8 +153,8 @@ router.get('/',
 			res.cookie('X-Access-Token', token);
 
 			res.redirect(Env.select({
-				development: `http://localhost:3010${params.callback || '/'}?success=1`,
-				production: `https://thulium.xyz${params.callback || '/'}?success=1`
+				development: `http://localhost:3010${params.callback || '/'}`,
+				production: `https://thulium.xyz${params.callback || '/'}`
 			}));
 
 		});
