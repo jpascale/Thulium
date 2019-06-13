@@ -173,21 +173,25 @@ Dataset.methods.deleteTable = function () {
 Dataset.methods.createInstances = function ({ owner, engine, exam }, done) {
 	const self = this;
 
-	debug('creating instance for dataset %s (owner: %s, engine: %s)', self._id, owner, engine);
+	debug('creating instance for dataset %s (owner: %s, engine: %s, exam: %s)', self._id, owner, engine, exam);
 
 	async.auto({
 		instance: next => {
+			debug('fetching existing instance');
 			DatasetInstance.findOne({ dataset: self._id, owner, exam, engine }).exec(next);
 		},
-		dbItems: next => {
+		dbItems: ['instance', ({ instance }, next) => {
+			if (instance) return next(null, []);
 			debug('fetching mongo items');
 			DatasetItem.find({ dataset: self._id }).select('title headers').exec(next);
-		},
-		dbEntries: next => {
+		}],
+		dbEntries: ['instance', ({ instance }, next) => {
+			if (instance) return next(null, []);
 			debug('fetching mongo entries');
 			DatasetEntry.find({ dataset: self._id }).select('dataset_item index data').sort({ index: 1 }).exec(next);
-		},
-		instances: ['dbItems', 'dbEntries', ({ dbItems, dbEntries }, next) => {
+		}],
+		instances: ['dbItems', 'dbEntries', ({ instance, dbItems, dbEntries }, next) => {
+			if (instance) return next(null, []);
 			debug('creating physical dataset');
 			const entriesPerItem = dbEntries.reduce((memo, v) => {
 				if (!memo[v.dataset_item])
@@ -204,12 +208,14 @@ Dataset.methods.createInstances = function ({ owner, engine, exam }, done) {
 			StorageService.createDataset({ items }, { engines: [engine], nonce: owner }, next);
 		}],
 		create: ['instances', ({ instances }, next) => {
+			if (!instances.length) return next(null, []);
 			async.each(instances, ({ engine, tables }, cb) => {
 				const instance = new DatasetInstance({
 					dataset: self._id,
 					owner,
 					engine,
-					tables
+					tables,
+					exam
 				});
 				instance.save(cb);
 			}, next);

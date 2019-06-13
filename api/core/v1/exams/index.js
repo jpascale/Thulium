@@ -83,32 +83,6 @@ router.post('/:id([a-f0-9]+)/load',
 					});
 					cb(null, jobs);
 				});
-
-				
-
-				
-
-
-
-				// req.exam.questions.forEach(q => {
-				// 	mq.createDatasetInstance({
-				// 		dataset: q.dataset,
-				// 		engine: q.engine,
-				// 		owner: req.user.sub,
-				// 		exam: req.exam._id
-				// 	});
-				// });
-				// cb();
-				
-
-
-
-				// async.map(req.exam.questions, (question, cb) => {
-				// 	question.dataset.createInstances({
-				// 		owner: req.user.sub,
-				// 		engine: question.engine
-				// 	}, cb);
-				// }, cb);
 			}
 		}, (err, { files, instances }) => {
 			if (err) {

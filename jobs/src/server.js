@@ -35,16 +35,20 @@ sock.on('message', raw => {
 			Job.findById(parsedMessage.params).exec(cb);
 		},
 		markReceived: ['job', ({ job }, cb) => {
+			if (!job) {
+				return cb('no such job');
+			}
 			debug('marking as received');
 			job.status = 'received';
 			job.save(cb);
 		}],
 		announce: ['job', ({ job }, cb) => {
-			debug('running job');
+			debug('running job with params %o', job.params);
 			jobHandler(job.params, cb);
 		}]
 	}, (err, { announce, job }) => {
 		if (err) {
+			if (!job) return;
 			console.error(err);
 			job.status = 'failed';
 			job.save(_err => {
