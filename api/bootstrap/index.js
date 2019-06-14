@@ -5,9 +5,3 @@ module.exports = {
 		require('./dataset').boot({ admin }, cb);
 	}]
 };
-
-
-[
-	require('./engines'),
-	require('./dataset')
-];

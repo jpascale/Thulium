@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 	, { Session } = require('../models')
 	, File = require('./file')
 	, Engine = require('./engine')
+	, Dataset = require('./dataset')
 	, async = require('async')
 	, omit = require('lodash/omit')
 	, { Config } = require('@thulium/base');
@@ -18,20 +19,27 @@ Session.pre('save', function (next) {
 	const self = this;
 	if (!self.isNew) return next();
 
-	const file = new File({
-		owner: self.owner,
-		title: 'New File',
-		session: self._id,
-	});
-
-	file.isDefaultFile = true;
-	file.engine = Config.defaultEngine;
-
-	file.save(err => {
+	async.waterfall([
+		cb => Dataset.findOne({ default: true }, cb),
+		(dataset, cb) => {
+			const file = new File({
+				owner: self.owner,
+				title: 'New File',
+				session: self._id,
+				dataset: dataset._id
+			});
+		
+			file.isDefaultFile = true;
+			file.engine = Config.defaultEngine;
+		
+			file.save(cb);
+		}
+	], (err, file) => {
 		if (err) return next(err);
 		self.files = [file._id];
 		next();
 	});
+	
 });
 
 Session.statics.findOrCreateById = function (id, { owner }, done) {
