@@ -7,4 +7,5 @@ type CourseGrade {
 	created: String
 	contentId: String
 	content: Content
+	thuliumID: String
 }

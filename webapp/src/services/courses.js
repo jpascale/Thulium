@@ -14,6 +14,7 @@ export const fetchAll = (query, options) => {
 						grades {
 							id
 							name
+							thuliumID
 							content {
 								id
 								title

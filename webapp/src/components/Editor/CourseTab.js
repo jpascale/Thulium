@@ -1,14 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { Row, Col, Form, FormGroup, Label, Input, Button, Badge, ButtonToolbar, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText } from 'reactstrap';
+import { Row, Col, Form, FormGroup, Label, Input, Button, Badge, ButtonToolbar, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, Table } from 'reactstrap';
 import moment from 'moment';
 import DateTime from 'react-datetime';
 
 import 'react-datetime/css/react-datetime.css';
 import './editor.scss';
 
-import { createExam } from '../../actions/exams';
+import { createExam, fetchResponses } from '../../actions/exams';
 
 const examTypes = {
 	"true-false": "True/False",
@@ -21,6 +21,7 @@ class CourseTab extends React.Component {
 
 	state = {
 		createExam: false,
+		showResponses: false,
 		since: moment(),
 		until: moment().add(3, 'hours'),
 		questions: [],
@@ -34,7 +35,7 @@ class CourseTab extends React.Component {
 		}
 	}
 
-	createExam = () => this.setState({ createExam: true })
+	createExam = () => this.setState({ createExam: true, showResponses: false })
 
 	handleChange = key => e => this.setState({ [key]: e.target ? e.target.value : e })
 	handleSubmit = () => {
@@ -141,10 +142,22 @@ class CourseTab extends React.Component {
 		});
 	}
 
+	showResponses = id => () => {
+		this.props.fetchResponses(id).then(results => {
+			console.log(results);
+			this.setState({
+				createExam: false,
+				showResponses: true,
+				...results
+			});
+		});
+	}
+
 	render = () => {
 		const { membership, datasets, engines } = this.props;
 		const {
 			createExam,
+			showResponses,
 			since,
 			until,
 			questions,
@@ -154,13 +167,15 @@ class CourseTab extends React.Component {
 			engine,
 			type,
 			correctAnswer,
-			numberOfOptions
+			numberOfOptions,
+			exam,
+			responses,
 		} = this.state;
 
 		if (!membership) return null;
 
 		const gradeList = membership.course.grades.filter(g => g.content).map((g) => (
-			<li key={g.id}><a href="#">{g.name}</a></li>
+			<li key={g.id}><a onClick={this.showResponses(g.thuliumID)} href="#">{g.name}</a></li>
 		));
 
 		const createExamColumn = (() => {
@@ -336,6 +351,64 @@ class CourseTab extends React.Component {
 			);
 		})();
 
+		const responsesByUser = (() => {
+			if (!showResponses) return null;
+			return Object.values(
+				responses.reduce((memo, r) => {
+					if (!memo[r.user._id]) {
+						memo[r.user._id] = {
+							user: r.user,
+							responses: []
+						};
+					}
+					memo[r.user._id].responses.push(r);
+					return memo;
+				}, {})
+			);
+		})();
+
+		const responsesColumn = (() => {
+			if (!showResponses) return null;
+			return (
+				<Col sm={9}>
+					<h2>{membership.course.grades.find(g => g.thuliumID === exam._id).name}</h2>
+					<Table>
+						<thead>
+							<tr>
+								<th>Student</th>
+								{exam.questions.map((q, i) => (
+									<th key={q._id}>Question #{i + 1}</th>
+								))}
+							</tr>
+						</thead>
+						<tbody>
+							{responsesByUser.length ? null : (
+								<tr>
+									<td colSpan={1 + exam.question.length} className="text-center">No responses submitted so far</td>
+								</tr>
+							)}
+							{responsesByUser.map(item => (
+								<tr key={item._id}>
+									<td>{item.user.first_name} {item.user.last_name}</td>
+									{exam.questions.map(q => {
+										const r = item.responses.find(r => r.question === q._id);
+										if (!r) return <td key={q._id}></td>;
+										return (
+											<td key={r._id}>
+												{r.response}
+												{' '}
+												{r.response === q.correct_answer ? '✅' : '❌'}
+											</td>
+										);
+									})}
+								</tr>
+							))}
+						</tbody>
+					</Table>
+				</Col>
+			)
+		})();
+
 		const isTeacher = ~['Instructor', 'TeachingAssistant'].indexOf(membership.courseRoleId)
 
 		return (
@@ -353,6 +426,7 @@ class CourseTab extends React.Component {
 					</Col>
 					{isTeacher ? createExamColumn : null}
 					{editQuestionColumn}
+					{responsesColumn}
 				</Row>
 			</div>
 		);
@@ -366,7 +440,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-	createExam: (course, exam) => dispatch(createExam(course, exam))
+	createExam: (course, exam) => dispatch(createExam(course, exam)),
+	fetchResponses: (exam) => dispatch(fetchResponses(exam))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CourseTab);

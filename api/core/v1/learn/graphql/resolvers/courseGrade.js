@@ -1,5 +1,6 @@
 const superagent = require('superagent')
-			, debug = require('debug')('api:core:v1:learn:gql:membership')
+		, { Exam } = require('@thulium/internal')	
+		, debug = require('debug')('api:core:v1:learn:gql:membership')
 
 const BASE_URL = 'https://itba-test.blackboard.com/learn/api/public';
 
@@ -20,6 +21,20 @@ module.exports = {
 					return resolve(response.body);
 				}
 				resolve(null);
+			});
+		}),
+		thuliumID: ({ id }, args, req) => new Promise((resolve, reject) => {
+			Exam.collection.findOne({
+				gradeColumnId: id
+			}, {
+				projection: { _id: 1 }
+			}, (err, exam) => {
+				if (err) {
+					console.error(err);
+					return reject(err);
+				}
+				if (!exam) return resolve(null);
+				resolve(exam._id)
 			});
 		})
 	}

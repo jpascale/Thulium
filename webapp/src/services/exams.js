@@ -1,4 +1,4 @@
-import { post, extractBody } from './queryBuilder';
+import { post, extractBody, get } from './queryBuilder';
 import objectAssign from 'object-assign';
 
 export const createExam = (course, exam, options) => {
@@ -14,4 +14,9 @@ export const loadExam = (id, options) => {
 export const submitResponse = (eid, qid, form, options) => {
 	const queryOptions = objectAssign({}, options);
 	return post(`/core/v1/exams/${eid}/response/${qid}`, form, queryOptions).then(extractBody);
-}
+};
+
+export const fetchResponses = (eid, options) => {
+	const queryOptions = objectAssign({}, options);
+	return get(`/core/v1/exams/${eid}/responses`, {}, queryOptions).then(extractBody);
+};

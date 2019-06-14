@@ -95,3 +95,9 @@ export const submitExamResponse = () => (dispatch, getState) => {
 		return dispatch(submittedExamResponse(response));
 	});
 };
+
+export const fetchResponses = exam => (dispatch, getState) => {
+	return ExamService.fetchResponses(exam, {
+		token: getState().auth.token
+	});
+};

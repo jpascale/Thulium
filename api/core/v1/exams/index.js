@@ -147,22 +147,29 @@ router.post('/:eid([a-f0-9]+)/response/:qid([a-f0-9]+)',
 	}
 );
 
-router.post('/:eid([a-f0-9]+)/responses',
+router.get('/:id([a-f0-9]+)/responses',
 	validateUser,
 	(req, res, next) => {
-		ExamResponse.find({
-			exam: req.params.id,
-		})
-		.populate({
-			path: 'user',
-			select: 'email first_name last_name'
-		})
-		.exec((err, responses) => {
+		async.parallel({
+			exam: cb => {
+				Exam.findById(req.params.id).exec(cb);
+			},
+			responses: cb => {
+				ExamResponse.find({
+					exam: req.params.id
+				})
+				.populate({
+					path: 'user',
+					select: 'email first_name last_name'
+				})
+				.exec(cb)
+			}
+		}, (err, results) => {
 			if (err) {
 				console.error(err);
 				return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });
 			}
-			res.status(Status.OK).json(responses);
+			res.status(Status.OK).json(results);
 		});
 	}
 );
