@@ -1,6 +1,7 @@
 import C from '../constants/exams';
 import * as ExamService from '../services/exams';
 import { startSession, connectUsingToken, ws } from './session';
+import { wsMessageHandler } from './app'
 
 const creatingExam = () => ({
 	type: C.CREATING
@@ -62,9 +63,7 @@ export const loadExam = examId => (dispatch, getState) => {
 			});
 		});
 		thuliumWebSocket.on('message', messageHandler);
-		thuliumWebSocket.on('message', ({ topic, message }) => {
-			console.log({ topic, message });
-		});
+		thuliumWebSocket.on('message', wsMessageHandler({ getState, dispatch }));
 		thuliumWebSocket.connect();
 	});
 };

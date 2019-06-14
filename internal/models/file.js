@@ -23,6 +23,10 @@ const File = mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Dataset'
 	},
+	exam: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Exam',
+  },
 	session: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Session'

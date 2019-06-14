@@ -1,7 +1,7 @@
 import C from '../constants/session';
 import * as SessionService from '../services/session';
 import { authenticated } from './auth';
-import { doneRunning } from './app';
+import { doneRunning, wsMessageHandler } from './app';
 import EventEmitter from '../utils/EventEmitter';
 
 
@@ -90,6 +90,7 @@ export const fetchSession = () => (dispatch, getState) => {
 		thuliumWebSocket.on('connected', () => {
 			console.log('connected to ws');
 		});
+		thuliumWebSocket.on('message', wsMessageHandler({ getState, dispatch}))
 		thuliumWebSocket.connect();
 	})
 }

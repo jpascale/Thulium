@@ -8,8 +8,6 @@ const { PostgresStorage } = require('@thulium/storage')
 debug('setting up postgres config');
 PostgresStorage.config(Config.storage.postgres);
 
-const bootModule = (bootModule, next) => bootModule.boot(next);
-
 async.series([
   connect,
   cb => async.auto(bootstrapModules, cb)

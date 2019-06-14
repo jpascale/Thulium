@@ -5,7 +5,7 @@ const express = require('express')
 	, validateUser = require('../../../middleware/validateUser')
 	, debug = require('debug')('api:core:v1:exams')
 	, async = require('async')
-	, mq = require('../../../mq');
+	, { mq } = require('@thulium/jobs');
 	
 /**
  * Create exams
@@ -58,6 +58,7 @@ router.post('/:id([a-f0-9]+)/load',
 						owner: req.user.sub,
 						engine: question.engine,
 						dataset: question.dataset,
+						exam: req.exam._id,
 						session: req._session._id,
 						title: `Question #${i++}`
 					});

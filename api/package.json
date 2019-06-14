@@ -15,7 +15,7 @@
       "env": {
         "NODE_ENV": "development",
         "PORT": 3000,
-        "DEBUG": "api*,storage*,ws*,internal*"
+        "DEBUG": "api*,storage*,ws*,internal*,jobs*"
       }
     },
     "start:prod": {

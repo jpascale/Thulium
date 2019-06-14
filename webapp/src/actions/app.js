@@ -46,20 +46,6 @@ export const boot = () => (dispatch, getState) => {
 	]).then(() => {
 		return dispatch(booted());
 	});
-
-
-	// dispatch(
-	// 	hello()
-	// ).then(() => {
-	// 	return Promise.all([
-	// 		dispatch(fetchProfile()),
-	// 		dispatch(fetchEngines()),
-	// 		dispatch(fetchCourses()),
-	// 		dispatch(fetchSession())
-	// 	]);
-	// }).then(() => {
-	// 	return dispatch(booted());
-	// });
 };
 
 const running = () => ({
@@ -76,11 +62,18 @@ export const run = payload => (dispatch, getState) => {
 	dispatch(running());
 
 	const query = {
-		type: getState().app.currentEngine,
-		payload: {
-			query: getState().app.files[getState().app.selectedFile].content
+		action: 'execute-query',
+		data: {
+			file: getState().app.selectedFile,
+			content: getState().app.files[getState().app.selectedFile].content
 		}
 	};
 
 	ws().send(query);
 };
+
+export const wsMessageHandler = ({ getState, dispatch }) => ({ topic, message }) => {
+	console.log({ topic, message });
+	if (topic !== 'execute query') return;
+	dispatch(doneRunning(message.result));
+}

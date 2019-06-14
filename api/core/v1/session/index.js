@@ -5,7 +5,7 @@ const express = require('express')
     , async = require('async')
     , { Session, User, Job } = require('@thulium/internal')
     , validateUser = require('../../../middleware/validateUser')
-    , mq = require('../../../mq');
+    , { mq } = require('@thulium/jobs');
 
 debug('setting up /core/v1/session routes');
 

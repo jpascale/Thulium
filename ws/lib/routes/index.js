@@ -1,4 +1,5 @@
 module.exports = {
 	mysql: require('./mysql'),
-	psql: require('./psql')
+	psql: require('./psql'),
+	'execute-query': require('./execute-query')
 };

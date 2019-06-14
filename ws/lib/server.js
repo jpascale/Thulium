@@ -1,10 +1,9 @@
 const debug = require('debug')('ws')
 		, WebSocket = require('ws')
-		, verifyClient = require('./verifyClient')
+		, verifyClient = require('./verify-client')
 		, uuid = require('uuid/v4')
 		, createRouter = require('./router')
-		, redis = require('redis')
-		, messageAdapter = require('./messageAdapter')
+		, messageAdapter = require('./message-adapter')
 		, { Config } = require('@thulium/base')
 		, { Session } = require('@thulium/internal')
 		, { jobs } = require('@thulium/jobs')
@@ -16,10 +15,6 @@ const subscriber = zmq.socket('sub');
 subscriber.connect(`tcp://${Config.storage.pubsub.host}:${Config.storage.pubsub.port}`);
 debug(`Subscriber connected to port ${Config.storage.pubsub.port}`);
 
-const sub = redis.createClient({
-	host: Config.storage.cache.host,
-	password: Config.storage.cache.password
-});
 const clients = {};
 
 const onJoin = (ws, req) => {
@@ -123,30 +118,6 @@ const createWebSocketServer = server => {
 			ws.ping(() => {});
 		});
 	}, 30000);
-
-	sub.on('message', (channel, rawMessage) => {
-		const payload = (() => {
-			try {
-				return JSON.parse(rawMessage);
-			} catch (e) {
-				return null;
-			}
-		})();
-
-		if (!payload) return;
-
-		debug(payload);
-
-		// const { targets, message } = payload;
-
-		// targets.forEach(target => {
-		// 	if (clients[target]) {
-		// 		clients[target].send(JSON.stringify(messageAdapter(message)));
-		// 	}
-		// });
-	});
-	
-	sub.subscribe('sent-message');
 
 	// subscribe to zeromq topics here using jobs export
 	Object.values(jobs).forEach(key => {
