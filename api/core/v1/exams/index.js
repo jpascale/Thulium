@@ -145,6 +145,26 @@ router.post('/:eid([a-f0-9]+)/response/:qid([a-f0-9]+)',
 			res.status(Status.CREATED).json(response);
 		});
 	}
-)
+);
+
+router.post('/:eid([a-f0-9]+)/responses',
+	validateUser,
+	(req, res, next) => {
+		ExamResponse.find({
+			exam: req.params.id,
+		})
+		.populate({
+			path: 'user',
+			select: 'email first_name last_name'
+		})
+		.exec((err, responses) => {
+			if (err) {
+				console.error(err);
+				return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });
+			}
+			res.status(Status.OK).json(responses);
+		});
+	}
+);
 
 module.exports = router;
