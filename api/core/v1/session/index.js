@@ -3,8 +3,9 @@ const express = require('express')
     , Status = require('http-status-codes')
     , debug = require('debug')('api:core:v1:session')
     , async = require('async')
-    , { Session, User } = require("@thulium/internal")
-    , validateUser = require('../../../middleware/validateUser');
+    , { Session, User, Job } = require('@thulium/internal')
+    , validateUser = require('../../../middleware/validateUser')
+    , mq = require('../../../mq');
 
 debug('setting up /core/v1/session routes');
 
@@ -108,6 +109,30 @@ router.get('/mine',
         console.error(err);
         return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });
       }
+
+      session.populate('files').execPopulate(err => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        const jobs = session.files.map(f => ({
+          key: mq.KEYS.CREATE_DATASET_INSTANCE,
+          params: {
+            dataset: f.dataset,
+            engine: f.engine,
+            owner: req.user.sub,
+          },
+          scope: []
+        }));
+  
+        Job.insertMany(jobs, (err, jobs) => {
+          if (err) return cb(err);
+          jobs.forEach(job => {
+            mq.createDatasetInstance(job._id);
+          });
+        });
+      });
+
       req.session = session;
       next();
     });
