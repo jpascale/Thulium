@@ -12,7 +12,7 @@ const bootModule = (bootModule, next) => bootModule.boot(next);
 
 async.series([
   connect,
-  cb => async.each(bootstrapModules, bootModule, cb)
+  cb => async.auto(bootstrapModules, cb)
 ], (err) => {
   if (err) {
     console.error(err);

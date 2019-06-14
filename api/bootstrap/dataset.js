@@ -3,7 +3,7 @@ const { Dataset } = require('@thulium/internal')
 		, async = require('async')
 		, { Config } = require('@thulium/base');
 
-const findOrCreateDefaultDataset = ({ title, paradigm, items }, next) => {
+const findOrCreateDefaultDataset = ({ title, paradigm, items }, { admin }, next) => {
 	debug(`creating default dataset`);
 	async.waterfall([
 		cb => Dataset.collection.count({ default: true }, cb),
@@ -17,16 +17,16 @@ const findOrCreateDefaultDataset = ({ title, paradigm, items }, next) => {
 				title,
 				paradigm,
 				items,
-				userId: '5be21d6404c4adde3273dcaa',
+				userId: admin._id,
 				default: true
 			}, cb);
 		}
 	], next);
 };
 
-const boot = done => {
+const boot = ({ admin }, done) => {
 	debug('bootstraping dataset');
-	findOrCreateDefaultDataset(Config.defaultDataset, done);
+	findOrCreateDefaultDataset(Config.defaultDataset, { admin }, done);
 };
 
 module.exports = {

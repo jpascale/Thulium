@@ -22,7 +22,7 @@
       "paradigm": "sql",
       "items": [{
         "title": "data",
-        "data": [1, 2, 3],
+        "data": [[1, 2, 3]],
         "headers": ["a", "b", "c"],
         "types": ["Int", "Int", "Int"]
       }]
