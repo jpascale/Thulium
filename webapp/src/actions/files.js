@@ -56,6 +56,13 @@ export const autosave = sql => (dispatch, getState) => {
 export const selectForQuery = tableName => (dispatch, getState) => {
 	const defaultQuery = `SELECT * FROM ${tableName};`;
 	dispatch(autosave(defaultQuery));
-
 };
+
+export const changeResponse = (file, response) => ({
+	type: C.CHANGE_RESPONSE,
+	payload: {
+		file,
+		response
+	}
+});
 

@@ -8,6 +8,7 @@ export default constants('file', [
 	'change',
 	'autosaving',
 	'autosaved',
+	'change response'
 ], {
 	separator: '/',
 	transform: v => v.replace(/ /g, '_').toUpperCase()

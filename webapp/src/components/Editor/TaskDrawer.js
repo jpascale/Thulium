@@ -2,20 +2,25 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Button, Form, FormGroup, Input } from 'reactstrap';
 
+import { changeResponse } from '../../actions/files';
+
 class TaskDrawer extends React.Component {
 
 	state = {}
 
 	handleChange = key => e => this.setState({ [key]: e.target.value })
 
+	changeResponse = e => {
+		this.props.changeResponse(this.props.file._id, e.target.value)
+	}
+
 	render = () => {
 		const { showTask, file } = this.props;
-		const { response } = this.state;
 
 		const responseComponent = (() => {
 			if (file.type === 'true-false') {
 				return (
-					<Input type="select" onChange={this.handleChange('response')}>
+					<Input type="select" value={file.response} onChange={this.changeResponse}>
 						<option value="">-- Select True/False</option>
 						<option value="false">False</option>
 						<option value="true">True</option>
@@ -26,7 +31,7 @@ class TaskDrawer extends React.Component {
 				return null;
 			}
 			if (file.type === 'written-answer') {
-				return <Input type="textarea" placeholder="Write your answer here" onChange={this.handleChange('response')} />
+				return <Input type="textarea" value={file.response} placeholder="Write your answer here" onChange={this.changeResponse} />
 			}
 			if (file.type === 'query-response') {
 				return <i className="text-muted">Your answer will be the query you write in the editor</i>
@@ -35,9 +40,9 @@ class TaskDrawer extends React.Component {
 		})();
 
 		const disabled = (() => {
-			if (file.type === 'true-false') return !response;
-			if (file.type === 'multiple-choice') return !response;
-			if (file.type === 'written-answer') return !response;
+			if (file.type === 'true-false') return !file.response;
+			if (file.type === 'multiple-choice') return !file.response;
+			if (file.type === 'written-answer') return !file.response;
 			if (file.type === 'query-response') return false;
 			return false;
 		})();
@@ -64,6 +69,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+	changeResponse: (file, response) => dispatch(changeResponse(file, response))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskDrawer);

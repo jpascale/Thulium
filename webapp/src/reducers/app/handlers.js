@@ -21,6 +21,11 @@ export default {
   [CF.CHANGE]: (state, selectedFile) => {
     return objectAssign({}, state, { selectedFile, selectedTab: 'file' });
   },
+  [CF.CHANGE_RESPONSE]: (state, { file, response }) => {
+    const modifiedFile = objectAssign({}, state.files[state.selectedFile], { response });
+    const files = objectAssign({}, state.files, { [modifiedFile._id]: modifiedFile });
+    return objectAssign({}, state, { files });
+  },
   [C.CHANGE_TEXT]: (state, currentText) => {
     // Modify current file
     const modifiedFile = objectAssign({}, state.files[state.selectedFile], { content: currentText });
