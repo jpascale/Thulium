@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import brace from 'brace';
 import AceEditor from 'react-ace';
 import debounce from 'lodash.debounce';
-import { Button } from 'reactstrap';
+import TaskDrawer from './TaskDrawer';
 
 import 'brace/mode/sql';
 import 'brace/theme/monokai';
@@ -43,7 +43,7 @@ class Editor extends React.Component {
 	}
 
 	render = () => {
-		const { queryText, showTask, file } = this.props;
+		const { queryText, file } = this.props;
 
 		return (
 			<div style={{position:'relative'}}>
@@ -66,23 +66,16 @@ class Editor extends React.Component {
 						showLineNumbers: true,
 						tabSize: 2,
 					}} />
-					<div className={`task bg-light ${showTask && 'open' }`}>
-						<h3>{file.title}</h3>
-						<p>{file.task}</p>
-						<Button color="success">Submit</Button>
-					</div>
+					<TaskDrawer />
 				</div>
 		);
 	}
 }
 
-const mapStateToProps = state => {
-	return {
-		file: state.app.files[state.app.selectedFile],
-		queryText: state.app.currentText,
-		showTask: state.app.showTask
-	};
-};
+const mapStateToProps = state => ({
+	file: state.app.files[state.app.selectedFile],
+	queryText: state.app.currentText,
+});
 
 const mapDispatchToProps = dispatch => ({
 	autosave: sql => dispatch(autosave(sql)),

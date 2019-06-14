@@ -62,7 +62,7 @@ class SidebarContent extends React.Component {
 
 		return (
 			<React.Fragment>
-				<AsyncDatasetMenuItem />
+				{examMode ? null : <AsyncDatasetMenuItem />}
 				<h6 className="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-1 mb-1 text-muted">OPEN FILES
 					{!examMode ? (
 						<a className="d-flex align-items-center text-muted" href="#" onClick={this.createFile}>
