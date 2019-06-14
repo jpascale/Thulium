@@ -24,7 +24,7 @@ Dataset.pre('save', function (next) {
 
 const flatten = coll => coll.reduce((a, b) => a.concat(b), []);
 
-Dataset.statics.create = function ({ paradigm, title, exam, items, userId }, done) {
+Dataset.statics.create = function ({ paradigm, title, exam, items, userId, ...options }, done) {
 	debug('creating dataset');
 	const self = this;
 	const dataset = new self({
@@ -34,6 +34,8 @@ Dataset.statics.create = function ({ paradigm, title, exam, items, userId }, don
 		paradigm,
 		examDataset: exam
 	});
+
+	Object.assign(dataset, options);
 
 	const reducedDataset = (() => {
 		if (!exam) return null;
@@ -107,33 +109,6 @@ Dataset.statics.create = function ({ paradigm, title, exam, items, userId }, don
 		}
 		doc.save(next);
 	}, done);
-
-	// async.waterfall([
-	// 	next => {
-	// 		debug('creating physical dataset');
-	// 		StorageService.createDataset({
-	// 			items
-	// 		}, next);
-	// 	},
-	// 	(instances, next) => {
-	// 		async.each(instances, ({ engine, tables }, cb) => {
-	// 			const instance = new DatasetInstance({
-	// 				dataset: dataset._id,
-	// 				owner: userId,
-	// 				engine,
-	// 				tables
-	// 			});
-	// 			instance.save(cb);
-	// 		}, next);
-	// 	}
-	// ], err => {
-	// 	if (err) {
-	// 		/// TODO: wtf do we do here?
-	// 		console.error(err);
-	// 		return;
-	// 	}
-	// 	debug('done persisting in storages');
-	// });
 };
 
 /**
@@ -225,71 +200,6 @@ Dataset.methods.createInstances = function ({ owner, engine, exam }, done) {
 		if (err) console.error(err);
 		done(err);
 	});
-
-	// async.waterfall([
-	// 	cb => DatasetTable.find({ dataset: dataset._id }, cb),
-	// 	(datasetTables, cb) => {
-	// 		const tables = datasetTables.reduce((prev, curr) => {
-	// 			prev[curr.table_name] = Util.generateId('table', [owner.email, engine.title, title, table_name])
-	// 			return prev;
-	// 		}, {});
-
-	// 		const datasetInstance = new DatasetInstance({
-	// 			title,
-	// 			dataset: self._id,
-	// 			owner: owner._id,
-	// 			engine: engine._id,
-	// 			tables
-	// 		});
-
-	// 		datasetInstance.save(cb)
-	// 	},
-	// 	(instance, cb) => {
-	// 		// Persist data on real database
-	// 		const databaseService = DatabaseService.getEngineDatabaseService(engine.mimeType);
-	// 		databaseService.createPhysicalDataset({
-	// 			tables: res,
-	// 			datasetInstance
-	// 		}, cb);
-	// 	}
-	// ], done);
-
-	// DatasetTable.find({ dataset: dataset._id }, (err, res) => {
-
-	// 	if (err) {
-	// 		console.log(err);
-	// 		return;
-	// 	}
-
-	// 	const tables = res.reduce((prev, curr) => {
-	// 		prev[curr.table_name] = Util.generateId('table', [owner.email, engine.title, title, table_name])
-	// 		return prev;
-	// 	}, {})
-
-	// 	const datasetInstance = new DatasetInstance({
-	// 		title,
-	// 		dataset: self._id,
-	// 		owner: owner._id,
-	// 		engine: engine._id,
-	// 		tables: tables
-	// 	});
-
-	// 	datasetInstance.save((err) => {
-	// 		if (err) {
-	// 			console.log(err);
-	// 			return;
-	// 		}
-
-	// 		// Persist data on real database
-	// 		const databaseService = DatabaseService.getEngineDatabaseService(engine.mimeType);
-	// 		databaseService.createPhysicalDataset({
-	// 			tables: res,
-	// 			datasetInstance
-	// 		});
-
-	// 	});
-	// });
-
 };
 
 /**

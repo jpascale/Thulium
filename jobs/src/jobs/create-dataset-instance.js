@@ -15,4 +15,4 @@ const job = ({ dataset, engine, owner, exam }, done) => {
 module.exports = {
 	key: CREATE_DATASET_INSTANCE,
 	job
-}
+};

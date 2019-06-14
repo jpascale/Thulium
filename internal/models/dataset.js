@@ -42,6 +42,9 @@ const Dataset = mongoose.Schema({
 	reduced: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Dataset'
+	},
+	default: {
+		type: Boolean
 	}
 });
 

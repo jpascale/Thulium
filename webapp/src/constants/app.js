@@ -9,6 +9,6 @@ export default constants('app', [
 	'change text',
 	'toggle task'
 ], {
-		separator: '/',
-		transform: v => v.replace(/ /g, '_').toUpperCase()
-	});
+	separator: '/',
+	transform: v => v.replace(/ /g, '_').toUpperCase()
+});

@@ -6,6 +6,7 @@ const debug = require('debug')('ws')
 		, redis = require('redis')
 		, messageAdapter = require('./messageAdapter')
 		, { Config } = require('@thulium/base')
+		, { Session } = require('@thulium/internal')
 		, { jobs } = require('@thulium/jobs')
 		, zmq = require('zeromq');
 
@@ -32,35 +33,54 @@ const onJoin = (ws, req) => {
 
 	debug(`joined USER=${user.email} UID=${uid}`);
 	debug(`clients are ${Object.keys(clients)}`);
-	
-	session.ws.push(uid);
-	session.markModified('ws');
 
-	session.save(err => {
+	Session.collection.updateOne({
+		_id: session._id
+	}, {
+		$push: { ws: uid }
+	}, err => {
 		if (err) {
 			console.error(err);
 		}
 	});
+	
+	// session.ws.push(uid);
+	// session.markModified('ws');
+
+	// session.save();
 };
 
 const onClose = (ws, req) => () => {
 	const { token, user, session } = req;
 
-	debug(`joined USER=${user.email} UID=${ws.id}`);
+	debug(`left USER=${user.email} UID=${ws.id}`);
 
 	delete clients[ws.id];
 	debug(`clients are ${Object.keys(clients)}`);
 
-	const idx = session.ws.indexOf(ws.id);
-	if (!~idx) return;
-	session.ws.splice(idx, 1);
-	session.markModified('ws');
-	session.save(err => {
+	Session.collection.updateOne({
+		_id: session._id
+	}, {
+		$pull: {
+			ws: ws.id
+		}
+	}, err => {
 		if (err) {
 			console.error(err);
 			return;
 		}
 	});
+
+	// const idx = session.ws.indexOf(ws.id);
+	// if (!~idx) return;
+	// session.ws.splice(idx, 1);
+	// session.markModified('ws');
+	// session.save(err => {
+	// 	if (err) {
+	// 		console.error(err);
+	// 		return;
+	// 	}
+	// });
 };
 
 const router = createRouter({

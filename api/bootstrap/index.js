@@ -1,3 +1,4 @@
 module.exports = [
-	require('./engines')
+	require('./engines'),
+	require('./dataset')
 ];
