@@ -1,6 +1,6 @@
 const express = require('express')
 	, router = express.Router({ mergeParams: true })
-	, { Exam, Session, File, Dataset, Job } = require('@thulium/internal')
+	, { Exam, Session, File, Job, ExamResponse } = require('@thulium/internal')
 	, Status = require('http-status-codes')
 	, validateUser = require('../../../middleware/validateUser')
 	, debug = require('debug')('api:core:v1:exams')
@@ -98,6 +98,7 @@ router.post('/:id([a-f0-9]+)/load',
 				const dto = f.dto();
 				dto.task = req.exam.questions[i].content;
 				dto.options = req.exam.questions[i].options;
+				dto.question = req.exam.questions[i]._id;
 				dto.type = req.exam.questions[i].type;
 				return dto;
 			});
@@ -107,5 +108,43 @@ router.post('/:id([a-f0-9]+)/load',
 		});
 	}
 );
+
+router.post('/:eid([a-f0-9]+)/response/:qid([a-f0-9]+)',
+	validateUser,
+	(req, res, next) => {
+		ExamResponse.findOne({
+			exam: req.params.id,
+			user: req.user.sub,
+			question: req.params.qid
+		}, (err, response) => {
+			if (err) {
+				console.error(err);
+				return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });
+			}
+			if (response) {
+				return res.status(Status.CONFLICT).json({
+					ok: 0,
+					code: 'ALREADY_SUBMITTED'
+				});
+			}
+			req.response = response;
+			next();
+		});
+	},
+	(req, res) => {
+		ExamResponse.create({
+			exam: req.params.eid,
+			user: req.user.sub,
+			question: req.params.qid,
+			response: req.body.response
+		}, (err, response) => {
+			if (err) {
+				console.error(err);
+				return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });
+			}
+			res.status(Status.CREATED).json(response);
+		});
+	}
+)
 
 module.exports = router;

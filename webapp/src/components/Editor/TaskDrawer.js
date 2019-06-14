@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Button, Form, FormGroup, Input } from 'reactstrap';
 
 import { changeResponse } from '../../actions/files';
+import { submitExamResponse } from '../../actions/exams';
 
 class TaskDrawer extends React.Component {
 
@@ -15,7 +16,7 @@ class TaskDrawer extends React.Component {
 	}
 
 	render = () => {
-		const { showTask, file } = this.props;
+		const { showTask, file, submitExamResponse } = this.props;
 
 		const responseComponent = (() => {
 			if (file.type === 'true-false') {
@@ -57,7 +58,7 @@ class TaskDrawer extends React.Component {
 						{responseComponent}
 					</FormGroup>
 				</Form>
-				<Button disabled={disabled} color="success">Submit</Button>
+				<Button disabled={disabled} onClick={submitExamResponse} color="success">Submit</Button>
 			</div>
 		);
 	}
@@ -69,7 +70,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-	changeResponse: (file, response) => dispatch(changeResponse(file, response))
+	changeResponse: (file, response) => dispatch(changeResponse(file, response)),
+	submitExamResponse: () => dispatch(submitExamResponse())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TaskDrawer);

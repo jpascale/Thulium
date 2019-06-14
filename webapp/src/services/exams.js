@@ -10,3 +10,8 @@ export const loadExam = (id, options) => {
 	const queryOptions = objectAssign({}, options);
 	return post(`/core/v1/exams/${id}/load`, {}, queryOptions).then(extractBody);
 }
+
+export const submitResponse = (eid, qid, form, options) => {
+	const queryOptions = objectAssign({}, options);
+	return post(`/core/v1/exams/${eid}/response/${qid}`, form, queryOptions).then(extractBody);
+}

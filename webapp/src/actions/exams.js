@@ -28,7 +28,7 @@ const examMode = on => ({
 });
 
 export const loadExam = examId => (dispatch, getState) => {
-	dispatch(examMode(true));
+	dispatch(examMode(examId));
 
 	const thuliumWebSocket = connectUsingToken(getState().auth.token);
 	ws(thuliumWebSocket);
@@ -65,5 +65,33 @@ export const loadExam = examId => (dispatch, getState) => {
 		thuliumWebSocket.on('message', messageHandler);
 		thuliumWebSocket.on('message', wsMessageHandler({ getState, dispatch }));
 		thuliumWebSocket.connect();
+	});
+};
+
+const submittingExamResponse = () => ({
+	type: C.SUBMITTING
+});
+
+const submittedExamResponse = (payload) => ({
+	type: C.SUBMITTED,
+	payload
+});
+
+export const submitExamResponse = () => (dispatch, getState) => {
+	dispatch(submittingExamResponse());
+
+	const file = getState().app.files[getState().app.selectedFile];
+
+	return ExamService.submitResponse(getState().app.examMode, file.question, {
+		response: (() => {
+			if (file.type === 'true-false') return file.response;
+			if (file.type === 'multiple-choice') return file.response;
+			if (file.type === 'written-answer') return file.response;
+			if (file.type === 'query-response') return file.content;
+		})()
+	}, {
+		token: getState().auth.token
+	}).then(response => {
+		return dispatch(submittedExamResponse(response));
 	});
 };

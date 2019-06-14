@@ -4,7 +4,10 @@ export default constants('exam', [
 	'creating',
 	'created',
 
-	'set exam mode'
+	'set exam mode',
+
+	'submitting',
+	'submitted',
 ], {
 	separator: '/',
 	transform: v => v.replace(/ /g, '_').toUpperCase()
