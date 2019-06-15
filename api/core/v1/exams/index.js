@@ -186,4 +186,31 @@ router.get('/:id([a-f0-9]+)/responses',
 	}
 );
 
+router.patch('/:id([a-f0-9]+)/review',
+	validateUser,
+	(req, res, next) => {
+		ExamResponse.findById(req.params.id).exec((err, response) => {
+			if (err) {
+				console.error(err);
+				return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });
+			}
+			if (!response) {
+				return res.status(Status.NOT_FOUND).json({ ok: 0 });
+			}
+			req.examResponse = response;
+			next();
+		});
+	},
+	(req, res) => {
+		req.examResponse.review = req.body.review;
+		req.examResponse.save(err => {
+			if (err) {
+				console.error(err);
+				return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });
+			}
+			res.status(Status.OK).json(req.response);
+		});
+	}
+);
+
 module.exports = router;

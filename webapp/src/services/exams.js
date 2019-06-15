@@ -25,3 +25,8 @@ export const submitGrade = (course, column, user, grade, options) => {
 	const queryOptions = objectAssign({}, options);
 	return patch(`/core/v1/learn/v2/courses/${course}/gradebook/columns/${column}/users/${user}`, grade, queryOptions).then(extractBody);
 };
+
+export const reviewResponse = (response, form, options) => {
+	const queryOptions = objectAssign({}, options);
+	return patch(`/core/v1/exams/${response}/review`, form, queryOptions).then(extractBody);
+};

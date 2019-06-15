@@ -8,7 +8,7 @@ import DateTime from 'react-datetime';
 import 'react-datetime/css/react-datetime.css';
 import './editor.scss';
 
-import { createExam, fetchResponses, submitGrade } from '../../actions/exams';
+import { createExam, fetchResponses, submitGrade, reviewResponse } from '../../actions/exams';
 import { showDatasetModal } from '../../actions/datasets';
 
 const examTypes = {
@@ -144,7 +144,7 @@ class CourseTab extends React.Component {
 	}
 
 	showResponses = id => () => {
-		this.props.fetchResponses(id).then(results => {
+		return this.props.fetchResponses(id).then(results => {
 			console.log(results);
 			this.setState({
 				createExam: false,
@@ -162,8 +162,16 @@ class CourseTab extends React.Component {
 	}
 
 	seeFullAnswer = opts => () => this.setState({ showFullAnswer: true, ...opts })
-
 	closeFullAnswerModal = () => this.setState({ showFullAnswer: false })
+	
+	reviewResponse = review => () => {
+		const { reviewResponse } = this.props;
+		const { responseId, exam } = this.state;
+		reviewResponse(responseId, review).then(() => {
+			this.setState({ showFullAnswer: false });
+			return this.showResponses(exam._id)();
+		});
+	}
 
 	render = () => {
 		const { membership, datasets, engines, showDatasetModal } = this.props;
@@ -185,7 +193,9 @@ class CourseTab extends React.Component {
 			showFullAnswer,
 			fullName,
 			questionTitle,
-			fullResponse
+			fullResponse,
+			responseStyle,
+			canReview
 		} = this.state;
 
 		if (!membership) return null;
@@ -426,14 +436,17 @@ class CourseTab extends React.Component {
 											const response = (() => {
 												if (q.type === 'true-false') return r.response.toUpperCase();
 												if (q.type === 'multiple-choice') return q.response;
+												const fullAnswerOptions = {
+													fullName: `${item.user.first_name} ${item.user.last_name}`,
+													questionTitle: `Question #${k + 1}`,
+													fullResponse: r.response,
+													responseStyle: q.type === 'written-answer' ? 'raw': 'code',
+													responseId: r._id,
+													canReview: typeof(r.review) === 'undefined'
+												};
 												if (q.type === 'written-answer') {
 													const maxLength = 10;
 													const isLong = r.response.length > maxLength;
-													const fullAnswerOptions = {
-														fullName: `${item.user.first_name} ${item.user.last_name}`,
-														questionTitle: `Question #${k + 1}`,
-														fullResponse: q.response
-													};
 													return (
 														<React.Fragment>
 															{r.response.substr(0, maxLength)}
@@ -446,14 +459,14 @@ class CourseTab extends React.Component {
 												}
 												if (q.type === 'query-response')
 													return (
-														<Button size="xs">SEE QUERY</Button>
+														<Button onClick={this.seeFullAnswer(fullAnswerOptions)} color="link" size="xs">See query</Button>
 													);
 											})();
 											const rightAnswer = (() => {
 												if (q.type === 'true-false') return r.response === q.correct_answer;
 												if (q.type === 'multiple-choice') return r.response === q.correct_answer;
-												if (q.type === 'written-answer') return;
-												if (q.type === 'query-response') return;
+												if (q.type === 'written-answer') return r.review;
+												if (q.type === 'query-response') return r.review;
 											})();
 											if (rightAnswer) {
 												grade += 10 / exam.questions.length;
@@ -490,16 +503,23 @@ class CourseTab extends React.Component {
 
 		const fullAnswerModal = (() => {
 			if (!showFullAnswer) return null;
+			const Component = responseStyle === 'raw' ? 'p' : 'pre';
 			return (
 				<Modal isOpen={true}>
 					<ModalHeader>
 						{fullName}'s answer to {questionTitle}
 					</ModalHeader>
-					<ModalBody>{fullResponse}</ModalBody>
+					<ModalBody>
+						<Component>{fullResponse}</Component>
+					</ModalBody>
 					<ModalFooter>
-						<Button color="secondary" onClick={this.closeFullAnswerModal}>Close</Button>{' '}
-						<Button color="danger">Mark incorrect</Button>{' '}
-						<Button color="success">Mark correct</Button>
+						<Button onClick={this.closeFullAnswerModal} color="secondary">Close</Button>{' '}
+						{canReview ? (
+							<Button onClick={this.reviewResponse(false)} color="danger">Mark incorrect</Button>
+						) : null}{' '}
+						{canReview ? (
+							<Button onClick={this.reviewResponse(true)} color="success">Mark correct</Button>
+						) : null}
 					</ModalFooter>
 				</Modal>
 			);
@@ -538,7 +558,8 @@ const mapDispatchToProps = dispatch => ({
 	createExam: (course, exam) => dispatch(createExam(course, exam)),
 	fetchResponses: (exam) => dispatch(fetchResponses(exam)),
 	submitGrade: (column, user, grade) => dispatch(submitGrade(column, user, grade)),
-	showDatasetModal: (show) => dispatch(showDatasetModal(show))
+	showDatasetModal: (show) => dispatch(showDatasetModal(show)),
+	reviewResponse: (response, review) => dispatch(reviewResponse(response, review))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CourseTab);

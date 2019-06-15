@@ -116,3 +116,9 @@ export const submitGrade = (column, user, grade) => (dispatch, getState) => {
 	// 	return dispatch(createdExam(exam));
 	// });
 };
+
+export const reviewResponse = (response, review) => (dispatch, getState) => {
+	return ExamService.reviewResponse(response, { review }, {
+		token: getState().auth.token
+	});
+};
