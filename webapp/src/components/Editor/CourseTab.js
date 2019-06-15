@@ -418,7 +418,19 @@ class CourseTab extends React.Component {
 											const response = (() => {
 												if (q.type === 'true-false') return r.response.toUpperCase();
 												if (q.type === 'multiple-choice') return !q.response;
-												if (q.type === 'written-answer') return r.response;
+												if (q.type === 'written-answer') {
+													const maxLength = 10;
+													const isLong = r.response.length > maxLength;
+													return (
+														<React.Fragment>
+															{r.response.substr(0, maxLength)}
+															{isLong ? <span>...<br/></span> : ''}
+															{isLong ? (
+																<Button size="xs" color="link">See full answer</Button>
+															) : null}
+														</React.Fragment>
+													);
+												}
 												if (q.type === 'query-response')
 													return (
 														<Button size="xs">SEE QUERY</Button>
@@ -451,7 +463,7 @@ class CourseTab extends React.Component {
 												onClick={this.sendGradeToCampus(courseGrade.id, item.user.bb_id, grade)}
 												size="xs"
 												color="link">
-												Send to Campus
+												Submit to Blackboard
 											</Button>
 										</td>
 									</tr>
