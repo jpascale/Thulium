@@ -181,7 +181,10 @@ Dataset.methods.createInstances = function ({ owner, engine, exam }, done) {
 				types: Array.from(i.headers.values()),
 				data: entriesPerItem[i._id].map(e => e.data)
 			}));
-			StorageService.createDataset({ items }, { engines: [engine], nonce: owner }, next);
+			StorageService.createDataset({ items }, {
+				engines: [engine],
+				nonce: owner.toString() + (exam || '').toString()
+			}, next);
 		}],
 		create: ['instances', ({ instances }, next) => {
 			if (!instances.length) return next(null, []);
