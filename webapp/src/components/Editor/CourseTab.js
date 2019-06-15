@@ -9,6 +9,7 @@ import 'react-datetime/css/react-datetime.css';
 import './editor.scss';
 
 import { createExam, fetchResponses, submitGrade } from '../../actions/exams';
+import { showDatasetModal } from '../../actions/datasets';
 
 const examTypes = {
 	"true-false": "True/False",
@@ -161,7 +162,7 @@ class CourseTab extends React.Component {
 	}
 
 	render = () => {
-		const { membership, datasets, engines } = this.props;
+		const { membership, datasets, engines, showDatasetModal } = this.props;
 		const {
 			createExam,
 			showResponses,
@@ -337,11 +338,12 @@ class CourseTab extends React.Component {
 						<FormGroup>
 							<Label>Dataset</Label>
 							<Input bsSize="sm" type="select" value={dataset} onChange={this.handleChange('dataset')}>
-							<option value={''}>Select Dataset</option>
-								{Object.values(datasets).filter(d => d.exam).map(d => (
+								<option value={''}>Select Dataset</option>
+								{Object.values(datasets).filter(d => d.reduced).map(d => (
 									<option key={d._id} value={d._id}>{d.title}</option>
 								))}
 							</Input>
+							<Button onClick={showDatasetModal.bind(null, true)} size="xs" color="link">Create one now</Button>
 						</FormGroup>
 						<FormGroup>
 							<Label>Content</Label>
@@ -492,7 +494,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
 	createExam: (course, exam) => dispatch(createExam(course, exam)),
 	fetchResponses: (exam) => dispatch(fetchResponses(exam)),
-	submitGrade: (column, user, grade) => dispatch(submitGrade(column, user, grade))
+	submitGrade: (column, user, grade) => dispatch(submitGrade(column, user, grade)),
+	showDatasetModal: (show) => dispatch(showDatasetModal(show))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CourseTab);

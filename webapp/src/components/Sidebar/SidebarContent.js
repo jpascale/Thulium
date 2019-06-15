@@ -50,7 +50,7 @@ class SidebarContent extends React.Component {
 			);
 		});
 
-		const datasetList = availableDatasets.map(dataset => {
+		const datasetList = availableDatasets.filter(v => !v.full).map(dataset => {
 			return (
 				<li key={dataset._id} className="nav-item ml-2 mr-4">
 					<a className={classNames('nav-link', 'course')} href="#" /*onClick={this.selectForQuery(tableName)}*/>

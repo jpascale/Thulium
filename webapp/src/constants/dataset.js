@@ -26,7 +26,9 @@ export default constants('dataset', [
   'creating dataset',
   'created dataset',
 
-  'use exam type dataset'
+  'use exam type dataset',
+
+  'show dataset modal'
 ], {
     separator: '/',
     transform: v => v.replace(/ /g, '_').toUpperCase()

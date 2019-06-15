@@ -24,10 +24,6 @@ const Dataset = mongoose.Schema({
 		lowercase: true,
 		enum: ['sql', 'nosql']
 	},
-	items: [{
-		type: mongoose.Schema.Types.ObjectId,
-		ref: 'DatasetItem'
-	}],
 	access: {
 		/* defined access levels or 'owner'. 'admin' role should be always able to access. */
 		type: String,
@@ -40,6 +36,10 @@ const Dataset = mongoose.Schema({
 		type: Boolean
 	},
 	reduced: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Dataset'
+	},
+	full: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'Dataset'
 	},

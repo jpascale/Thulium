@@ -32,7 +32,7 @@ Dataset.statics.create = function ({ paradigm, title, exam, items, userId, ...op
 		publisher: userId,
 		title,
 		paradigm,
-		examDataset: exam
+		exam
 	});
 
 	Object.assign(dataset, options);
@@ -43,7 +43,8 @@ Dataset.statics.create = function ({ paradigm, title, exam, items, userId, ...op
 			_id: mongoose.Types.ObjectId(),
 			publisher: userId,
 			title,
-			paradigm
+			paradigm,
+			full: dataset._id
 		});
 	})();
 	if (reducedDataset) {

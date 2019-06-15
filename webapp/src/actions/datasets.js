@@ -214,3 +214,9 @@ export const createDataset = () => (dispatch, getState) => {
     return dispatch(createdDataset(dataset));
   });
 };
+
+export const showDatasetModal = show => ({
+  type: CD.SHOW_DATASET_MODAL,
+  payload: show
+});
+

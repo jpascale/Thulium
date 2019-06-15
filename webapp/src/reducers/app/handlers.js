@@ -108,6 +108,9 @@ export default {
     }, {});
     return objectAssign({}, state, { instances });
   },
+  [CD.SHOW_DATASET_MODAL]: (state, show) => {
+    return objectAssign({}, state, { showDatasetModal: show });
+  },
   [CC.FETCHED]: (state, data) => {
     const courses = data.memberships.reduce((memo, val) => {
       memo[val.courseId] = val;

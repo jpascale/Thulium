@@ -4,6 +4,8 @@ import { NavItem, NavLink, Nav } from 'reactstrap';
 import Loadable from 'react-loadable';
 import AddIcon from '../common/AddIcon';
 
+import { showDatasetModal } from '../../actions/datasets'
+
 const AsyncDatasetModal = Loadable({
   loader: () => import(/* webpackChunkName: "DatasetModal" */ './CreateDatasetModal/'),
   /* eslint-disable react/display-name */
@@ -14,12 +16,11 @@ class CreateDatasetMenuItem extends React.Component {
 
   state = {}
 
-  displayLoginModal = () => this.setState({ modal: true })
-  closeModal = () => this.setState({ modal: false })
+  displayLoginModal = () => this.props.showDatasetModal(true)
+  closeModal = () => this.props.showDatasetModal(false)
 
   render = () => {
-    const { profile } = this.props;
-    const { modal } = this.state;
+    const { profile, modal } = this.props;
     const createDatasetMenuItem = (
       <Nav>
         <NavItem>
@@ -40,10 +41,12 @@ class CreateDatasetMenuItem extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  profile: state.auth.profile || {}
+  profile: state.auth.profile || {},
+  modal: state.app.showDatasetModal
 });
 
 const mapDispatchToProps = dispatch => ({
+  showDatasetModal: show => dispatch(showDatasetModal(show))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateDatasetMenuItem);
