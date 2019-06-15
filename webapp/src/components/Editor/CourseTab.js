@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { Row, Col, Form, FormGroup, Label, Input, Button, Badge, ButtonToolbar, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, Table } from 'reactstrap';
+import { Row, Col, Form, FormGroup, Label, Input, Button, Badge, ButtonToolbar, ListGroup, ListGroupItem, ListGroupItemHeading, ListGroupItemText, Table, Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap';
 import moment from 'moment';
 import DateTime from 'react-datetime';
 
@@ -161,6 +161,10 @@ class CourseTab extends React.Component {
 		});
 	}
 
+	seeFullAnswer = opts => () => this.setState({ showFullAnswer: true, ...opts })
+
+	closeFullAnswerModal = () => this.setState({ showFullAnswer: false })
+
 	render = () => {
 		const { membership, datasets, engines, showDatasetModal } = this.props;
 		const {
@@ -178,6 +182,10 @@ class CourseTab extends React.Component {
 			numberOfOptions,
 			exam,
 			responses,
+			showFullAnswer,
+			fullName,
+			questionTitle,
+			fullResponse
 		} = this.state;
 
 		if (!membership) return null;
@@ -410,23 +418,28 @@ class CourseTab extends React.Component {
 							{responsesByUser.map(item => {
 								let grade = 0;
 								return (
-									<tr key={item._id}>
+									<tr key={item.user._id}>
 										<td>{item.user.first_name} {item.user.last_name}</td>
-										{exam.questions.map(q => {
+										{exam.questions.map((q, k) => {
 											const r = item.responses.find(r => r.question === q._id);
 											if (!r) return <td key={q._id}>-</td>;
 											const response = (() => {
 												if (q.type === 'true-false') return r.response.toUpperCase();
-												if (q.type === 'multiple-choice') return !q.response;
+												if (q.type === 'multiple-choice') return q.response;
 												if (q.type === 'written-answer') {
 													const maxLength = 10;
 													const isLong = r.response.length > maxLength;
+													const fullAnswerOptions = {
+														fullName: `${item.user.first_name} ${item.user.last_name}`,
+														questionTitle: `Question #${k + 1}`,
+														fullResponse: q.response
+													};
 													return (
 														<React.Fragment>
 															{r.response.substr(0, maxLength)}
 															{isLong ? <span>...<br/></span> : ''}
 															{isLong ? (
-																<Button size="xs" color="link">See full answer</Button>
+																<Button onClick={this.seeFullAnswer(fullAnswerOptions)} size="xs" color="link">See full answer</Button>
 															) : null}
 														</React.Fragment>
 													);
@@ -475,6 +488,23 @@ class CourseTab extends React.Component {
 			)
 		})();
 
+		const fullAnswerModal = (() => {
+			if (!showFullAnswer) return null;
+			return (
+				<Modal isOpen={true}>
+					<ModalHeader>
+						{fullName}'s answer to {questionTitle}
+					</ModalHeader>
+					<ModalBody>{fullResponse}</ModalBody>
+					<ModalFooter>
+						<Button color="secondary" onClick={this.closeFullAnswerModal}>Close</Button>{' '}
+						<Button color="danger">Mark incorrect</Button>{' '}
+						<Button color="success">Mark correct</Button>
+					</ModalFooter>
+				</Modal>
+			);
+		})();
+
 		return (
 			<div className="thulium-tab course-tab full-height">
 				<Row>
@@ -491,6 +521,7 @@ class CourseTab extends React.Component {
 					{isTeacher ? createExamColumn : null}
 					{editQuestionColumn}
 					{responsesColumn}
+					{fullAnswerModal}
 				</Row>
 			</div>
 		);

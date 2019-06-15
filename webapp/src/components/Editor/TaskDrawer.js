@@ -5,6 +5,8 @@ import { Button, Form, FormGroup, Input } from 'reactstrap';
 import { changeResponse } from '../../actions/files';
 import { submitExamResponse } from '../../actions/exams';
 
+const range = (n, b = 0, fn = v => v) => Array.from({ length: n}).map((_, i) => fn(i + b))
+
 class TaskDrawer extends React.Component {
 
 	state = {}
@@ -22,14 +24,21 @@ class TaskDrawer extends React.Component {
 			if (file.type === 'true-false') {
 				return (
 					<Input type="select" value={file.response} onChange={this.changeResponse}>
-						<option value="">-- Select True/False</option>
+						<option value="">Select True/False</option>
 						<option value="false">False</option>
 						<option value="true">True</option>
 					</Input>
 				);
 			}
 			if (file.type === 'multiple-choice') {
-				return null;
+				return (
+					<Input type="select" value={file.response} onChange={this.changeResponse}>
+						<option value="">Select your answer</option>
+						{range(file.options.total, 0, i => (
+							<option key={i} value={String.fromCharCode(65 + i)}>{String.fromCharCode(65 + i)}</option>
+						))}
+					</Input>
+				);
 			}
 			if (file.type === 'written-answer') {
 				return <Input type="textarea" value={file.response} placeholder="Write your answer here" onChange={this.changeResponse} />
