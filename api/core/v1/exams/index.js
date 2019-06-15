@@ -7,6 +7,17 @@ const express = require('express')
 	, async = require('async')
 	, { mq } = require('@thulium/jobs');
 	
+const uniqBy = (arr, predicate) => {
+	const cb = typeof predicate === 'function' ? predicate : (o) => o[predicate];
+	return [...arr.reduce((map, item) => {
+		const key = (item === null || item === undefined) ? item : cb(item);
+		
+		map.has(key) || map.set(key, item);
+		
+		return map;
+	}, new Map()).values()];
+};
+
 /**
  * Create exams
  */
@@ -69,7 +80,8 @@ router.post('/:id([a-f0-9]+)/load',
 			instances: cb => {
 				debug('creating instances');
 
-				const jobs = req.exam.questions.map(q => ({
+				const jobs = uniqBy(req.exam.questions, q => q.dataset.toString())
+				.map(q => ({
 					key: mq.KEYS.CREATE_DATASET_INSTANCE,
 					params: {
 						dataset: q.dataset,
