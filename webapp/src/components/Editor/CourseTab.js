@@ -8,7 +8,7 @@ import DateTime from 'react-datetime';
 import 'react-datetime/css/react-datetime.css';
 import './editor.scss';
 
-import { createExam, fetchResponses } from '../../actions/exams';
+import { createExam, fetchResponses, submitGrade } from '../../actions/exams';
 
 const examTypes = {
 	"true-false": "True/False",
@@ -150,6 +150,12 @@ class CourseTab extends React.Component {
 				showResponses: true,
 				...results
 			});
+		});
+	}
+
+	sendGradeToCampus = (column, user, grade) => () => {
+		this.props.submitGrade(column, user, grade).then(response => {
+			console.log(response);
 		});
 	}
 
@@ -369,16 +375,19 @@ class CourseTab extends React.Component {
 
 		const responsesColumn = (() => {
 			if (!showResponses) return null;
+			const courseGrade = membership.course.grades.find(g => g.thuliumID === exam._id);
 			return (
-				<Col sm={9}>
-					<h2>{membership.course.grades.find(g => g.thuliumID === exam._id).name}</h2>
-					<Table>
+				<Col sm={10}>
+					<h2>{courseGrade.name}</h2>
+					<Table size="sm" responsive striped>
 						<thead>
 							<tr>
 								<th>Student</th>
 								{exam.questions.map((q, i) => (
 									<th key={q._id}>Question #{i + 1}</th>
 								))}
+								<th>Grade</th>
+								<th>Submit Grade</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -387,22 +396,56 @@ class CourseTab extends React.Component {
 									<td colSpan={1 + exam.question.length} className="text-center">No responses submitted so far</td>
 								</tr>
 							)}
-							{responsesByUser.map(item => (
-								<tr key={item._id}>
-									<td>{item.user.first_name} {item.user.last_name}</td>
-									{exam.questions.map(q => {
-										const r = item.responses.find(r => r.question === q._id);
-										if (!r) return <td key={q._id}></td>;
-										return (
-											<td key={r._id}>
-												{r.response}
-												{' '}
-												{r.response === q.correct_answer ? '✅' : '❌'}
-											</td>
-										);
-									})}
-								</tr>
-							))}
+							{responsesByUser.map(item => {
+								let grade = 0;
+								return (
+									<tr key={item._id}>
+										<td>{item.user.first_name} {item.user.last_name}</td>
+										{exam.questions.map(q => {
+											const r = item.responses.find(r => r.question === q._id);
+											if (!r) return <td key={q._id}>-</td>;
+											const response = (() => {
+												if (q.type === 'true-false') return r.response.toUpperCase();
+												if (q.type === 'multiple-choice') return !q.response;
+												if (q.type === 'written-answer') return r.response;
+												if (q.type === 'query-response')
+													return (
+														<Button size="xs">SEE QUERY</Button>
+													);
+											})();
+											const rightAnswer = (() => {
+												if (q.type === 'true-false') return r.response === q.correct_answer;
+												if (q.type === 'multiple-choice') return r.response === q.correct_answer;
+												if (q.type === 'written-answer') return;
+												if (q.type === 'query-response') return;
+											})();
+											if (rightAnswer) {
+												grade += 10 / exam.questions.length;
+											}
+											const okEmoji = (() => {
+												if (typeof rightAnswer === 'undefined') return null;
+												return rightAnswer ? '✅' : '❌';
+											})();
+											return (
+												<td key={r._id}>
+													{response}
+													{' '}
+													{okEmoji}
+												</td>
+											);
+										})}
+										<td>{grade.toFixed(2)}/10</td>
+										<td>
+											<Button
+												onClick={this.sendGradeToCampus(courseGrade.id, item.user.bb_id, grade)}
+												size="xs"
+												color="link">
+												Send to Campus
+											</Button>
+										</td>
+									</tr>
+								);
+							})}
 						</tbody>
 					</Table>
 				</Col>
@@ -441,7 +484,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
 	createExam: (course, exam) => dispatch(createExam(course, exam)),
-	fetchResponses: (exam) => dispatch(fetchResponses(exam))
+	fetchResponses: (exam) => dispatch(fetchResponses(exam)),
+	submitGrade: (column, user, grade) => dispatch(submitGrade(column, user, grade))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CourseTab);

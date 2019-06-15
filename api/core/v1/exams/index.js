@@ -160,7 +160,7 @@ router.get('/:id([a-f0-9]+)/responses',
 				})
 				.populate({
 					path: 'user',
-					select: 'email first_name last_name'
+					select: 'email first_name last_name bb_id'
 				})
 				.exec(cb)
 			}

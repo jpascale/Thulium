@@ -1,4 +1,4 @@
-import { post, extractBody, get } from './queryBuilder';
+import { post, patch, extractBody, get } from './queryBuilder';
 import objectAssign from 'object-assign';
 
 export const createExam = (course, exam, options) => {
@@ -19,4 +19,9 @@ export const submitResponse = (eid, qid, form, options) => {
 export const fetchResponses = (eid, options) => {
 	const queryOptions = objectAssign({}, options);
 	return get(`/core/v1/exams/${eid}/responses`, {}, queryOptions).then(extractBody);
+};
+
+export const submitGrade = (course, column, user, grade, options) => {
+	const queryOptions = objectAssign({}, options);
+	return patch(`/core/v1/learn/v2/courses/${course}/gradebook/columns/${column}/users/${user}`, grade, queryOptions).then(extractBody);
 };

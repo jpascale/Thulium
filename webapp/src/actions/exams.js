@@ -101,3 +101,18 @@ export const fetchResponses = exam => (dispatch, getState) => {
 		token: getState().auth.token
 	});
 };
+
+export const submitGrade = (column, user, grade) => (dispatch, getState) => {
+	// dispatch(creatingExam());
+
+	const course = getState().app.selectedCourse;
+	return ExamService.submitGrade(course, column, user, {
+		text: grade.toFixed(2),
+		score: parseFloat(grade.toFixed(2))
+	}, {
+		token: getState().auth.token
+	});
+	// .then(exam => {
+	// 	return dispatch(createdExam(exam));
+	// });
+};
