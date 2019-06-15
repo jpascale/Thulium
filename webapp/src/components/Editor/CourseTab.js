@@ -156,6 +156,7 @@ class CourseTab extends React.Component {
 	sendGradeToCampus = (column, user, grade) => () => {
 		this.props.submitGrade(column, user, grade).then(response => {
 			console.log(response);
+			alert('Sucessfully sent grade to campus');
 		});
 	}
 
@@ -180,8 +181,16 @@ class CourseTab extends React.Component {
 
 		if (!membership) return null;
 
+		const isTeacher = ~['Instructor', 'TeachingAssistant'].indexOf(membership.courseRoleId)
+
 		const gradeList = membership.course.grades.filter(g => g.content).map((g) => (
-			<li key={g.id}><a onClick={this.showResponses(g.thuliumID)} href="#">{g.name}</a></li>
+			<li key={g.id}>
+				{isTeacher ? (
+					<a onClick={this.showResponses(g.thuliumID)} href="#">{g.name}</a>
+				) : (
+					<a href={`/?exam=${g.thuliumID}`}>{g.name}</a>
+				)}
+			</li>
 		));
 
 		const createExamColumn = (() => {
@@ -329,7 +338,7 @@ class CourseTab extends React.Component {
 							<Label>Dataset</Label>
 							<Input bsSize="sm" type="select" value={dataset} onChange={this.handleChange('dataset')}>
 							<option value={''}>Select Dataset</option>
-								{Object.values(datasets).map(d => (
+								{Object.values(datasets).filter(d => d.exam).map(d => (
 									<option key={d._id} value={d._id}>{d.title}</option>
 								))}
 							</Input>
@@ -393,7 +402,7 @@ class CourseTab extends React.Component {
 						<tbody>
 							{responsesByUser.length ? null : (
 								<tr>
-									<td colSpan={1 + exam.question.length} className="text-center">No responses submitted so far</td>
+									<td colSpan={3 + exam.questions.length} className="text-center">No responses submitted so far</td>
 								</tr>
 							)}
 							{responsesByUser.map(item => {
@@ -451,8 +460,6 @@ class CourseTab extends React.Component {
 				</Col>
 			)
 		})();
-
-		const isTeacher = ~['Instructor', 'TeachingAssistant'].indexOf(membership.courseRoleId)
 
 		return (
 			<div className="thulium-tab course-tab full-height">
