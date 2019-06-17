@@ -24,6 +24,9 @@ const ExamResponse = mongoose.Schema({
   },
   review: {
     type: Boolean
+  },
+  hint: {
+    type: Boolean
   }
 });
 

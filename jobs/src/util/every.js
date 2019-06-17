@@ -1,0 +1,1 @@
+module.exports = (coll, pred) => !coll.find((v, i) => !pred(v, i, coll));

@@ -1,6 +1,5 @@
-const debug = require('debug')('jobs:execute-query:shared');
-
-const every = (coll, pred) => !coll.find((v, i) => !pred(v, i, coll));
+const debug = require('debug')('jobs:execute-query:shared')
+		, every = require('../../util/every');
 
 module.exports = (tablesMap, parsedQueries) => {
 	const allTablesExist = every(parsedQueries, q => {

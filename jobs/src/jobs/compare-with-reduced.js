@@ -1,8 +1,11 @@
 const { Dataset } = require('@thulium/internal')
 		, COMPARE_WITH_REDUCED = 'compare with reduced'
 		, debug = require('debug')('jobs:compare-with-reduced')
+		, async = require('async')
+		, { Exam, ExamResponse } = require('@thulium/internal')
 		, { job: createDatasetInstance } = require('./create-dataset-instance')
-		, { job: executeQuery } = require('./execute-query');
+		, { job: executeQuery } = require('./execute-query')
+		, every = require('../util/every');
 
 const job = ({ response, question, owner, exam, file }, done) => {
   async.auto({
@@ -20,7 +23,7 @@ const job = ({ response, question, owner, exam, file }, done) => {
 				dataset: q.dataset,
 				engine: q.engine,
 				owner,
-				exam,
+				exam: exam._id,
 				reduced: true
 			}, next);
 		}],
@@ -36,7 +39,29 @@ const job = ({ response, question, owner, exam, file }, done) => {
 				}
 			}, next);
 		}],
-  }, (err, { results }) => {
+		submit: ['results', ({ results }, next) => {
+			const { full, reduced } = results;
+
+			const hint = (() => {
+				if (full.count !== reduced.count) return false;
+				if (full.columns.length !== reduced.columns.length) return false;
+				const columnsAreTheSame = every(full.columns, cf => {
+					return reduced.columns.find(cr => cr === cf);
+				});
+				if (!columnsAreTheSame) return false;
+				return every(full.records, (fullRecord, i) => {
+					const reducedRecord = reduced.records[i];
+					return every(Object.keys(fullRecord), key => {
+						return fullRecord[key] === reducedRecord[key];
+					});
+				});
+			})();
+
+			debug('updating response %s with hint=%s', response, hint);
+
+			ExamResponse.findOneAndUpdate({ _id: response }, { hint }, next);
+		}]
+  }, err => {
     if (err) {
       if (err === 'not applicable') {
         return;
@@ -44,7 +69,6 @@ const job = ({ response, question, owner, exam, file }, done) => {
       console.error(err);
       return done(err);
 		}
-		debug(results);
 		done();
   });
 };
