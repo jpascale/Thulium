@@ -22,11 +22,12 @@ const createdFile = (file) => ({
 	payload: file
 });
 
-export const createFile = (filename) => (dispatch, getState) => {
+export const createFile = ({ filename, engine, dataset }) => (dispatch, getState) => {
 	dispatch(creatingFile());
 	return FileService.createFile({
 		title: filename,
-		engine: getState().app.currentEngine,
+		engine,
+		dataset,
 		session: getState().app.session._id
 	}, {
 			token: getState().auth.token

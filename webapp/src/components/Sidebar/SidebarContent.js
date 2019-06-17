@@ -52,7 +52,7 @@ class SidebarContent extends React.Component {
 		return (
 			<React.Fragment>
 				{examMode ? null : <AsyncDatasetMenuItem />}
-				<h6 className="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-1 mb-1 text-muted">OPEN FILES
+				<h6 className="sidebar-heading d-flex justify-content-between align-items-center ml-3 mr-2 mt-1 mb-1 text-muted">OPEN FILES
 					{!examMode ? (
 						<a className="d-flex align-items-center text-muted" href="#" onClick={this.createFile}>
 							<AddIcon />
@@ -63,7 +63,7 @@ class SidebarContent extends React.Component {
 					{fileList}
 				</ul>
 				{!examMode && courseList.length ? (
-					<h6 className="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-1 mb-1 text-muted">
+					<h6 className="sidebar-heading d-flex justify-content-between align-items-center ml-3 mr-2 mt-1 mb-1 text-muted">
 						COURSES
 					</h6>
 				) : null}
