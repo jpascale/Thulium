@@ -2,29 +2,59 @@ const { Config } = require('@thulium/base')
 		, camelCase = require('lodash.camelcase')
 		, zmq = require('zeromq')
 		, sock = zmq.socket('push')
+		, req = zmq.socket('req')
 		, debug = require('debug')('jobs:mq');
 
-module.exports = jobs => {
-	sock.bindSync(`tcp://${Config.storage.mq.host}:${Config.storage.mq.port}`);
-	debug(`Producer bound to port ${Config.storage.mq.port}`);
+let sender;
 
-	const _send = sock.send;
-	sock.send = function () {
+module.exports = jobs => type => {
+	if (sender) return sender;
+	sender = (() => {
+		if (type === 'push') {
+			try {
+				sock.bindSync(`tcp://${Config.storage.mq.host}:${Config.storage.mq.port}`);
+				debug(`Push producer bound to port ${Config.storage.mq.port}`);
+			} catch (err) {
+				// do nothing
+			}
+			
+			return sock;
+		}
+		if (type === 'req') {
+			try {
+				req.connect(`tcp://${Config.storage.reqres.host}:${Config.storage.reqres.port}`);
+				debug(`Push producer bound to port ${Config.storage.reqres.port}`);
+			} catch (err) {
+				// do nothing
+			}
+			return req;
+		}
+	})();
+	if (!sender) throw new Error('invalid sender type');
+	const _send = sender.send;
+	sender.send = function () {
 		const args = Array.prototype.slice.apply(arguments);
 		args[0] = JSON.stringify(args[0]);
-		return _send.apply(sock, args);
+		if (type === 'push') {
+			return _send.apply(sender, args);
+		}
+		if (typeof(args[args.length - 1]) === 'function') {
+			const callback = args[args.length - 1];
+			sender.once('message', callback);
+			_send.apply(sender, args.slice(0, args.length - 1));
+		}
+		return _send.apply(sender, args);
 	};
-
-	sock.KEYS = {};
+	sender.KEYS = {};
 
 	Object.values(jobs).forEach(key => { 
-		sock[camelCase(key)] = function () {
+		sender[camelCase(key)] = function () {
 			const args = Array.prototype.slice.apply(arguments);
 			args[0] = { job: key, params: args[0] };
-			return sock.send.apply(sock, args);
+			return sender.send.apply(sender, args);
 		};
-		sock.KEYS[key.toUpperCase().replace(/\ /g, '_')] = key;
+		sender.KEYS[key.toUpperCase().replace(/\ /g, '_')] = key;
 	});
 
-	return sock;
+	return sender;
 };

@@ -5,8 +5,9 @@ const express = require('express')
     , async = require('async')
     , { Session, User, Job } = require('@thulium/internal')
     , validateUser = require('../../../middleware/validateUser')
-    , { mq } = require('@thulium/jobs');
+    , { mq: _mq } = require('@thulium/jobs');
 
+const mq = _mq('push')
 debug('setting up /core/v1/session routes');
 
 // const PORT = process.env.PORT || 3000;

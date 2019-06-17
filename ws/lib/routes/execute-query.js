@@ -1,6 +1,8 @@
 const { Job } = require('@thulium/internal')
 		, debug = require('debug')('ws:handlers:psql')
-		, { mq } = require('@thulium/jobs');
+		, { mq: _mq } = require('@thulium/jobs');
+
+const mq = _mq('push');
 
 const handler = (ws, req, message, done) => {
 	debug(`executing query via mq`);

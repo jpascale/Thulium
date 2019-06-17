@@ -5,17 +5,25 @@ const { Config } = require('@thulium/base')
 		, debug = require('debug')('jobs:server');
 
 const sock = zmq.socket('pull')
-		, pub = zmq.socket('pub');
+		, pub = zmq.socket('pub')
+		, responder = zmq.socket('rep');
 
+
+/// Server Sockets	
 sock.connect(`tcp://${Config.storage.mq.host}:${Config.storage.mq.port}`);
-console.log(`Worker listening to port ${Config.storage.mq.port}`);
+console.log(`Pull worker listening to port ${Config.storage.mq.port}`);
 
+pub.bindSync(`tcp://${Config.storage.reqres.host}:${Config.storage.reqres.port}`);
+console.log(`Req-Res worker to port ${Config.storage.reqres.port}`);
+
+/// Client sockets
 pub.bindSync(`tcp://${Config.storage.pubsub.host}:${Config.storage.pubsub.port}`);
 console.log(`Publisher bound to port ${Config.storage.pubsub.port}`);
 
+
 const jobs = require('./jobs');
 
-sock.on('message', raw => {
+const jobReceiverHandler = type => raw => {
 	const rawMessage = raw.toString();
 	const parsedMessage = (() => {
 		try {
@@ -72,7 +80,15 @@ sock.on('message', raw => {
 				result: announce
 			});
 			debug(publishMessage);
-			pub.send([parsedMessage.job, publishMessage]);
+			if (type === 'pub') {
+				return pub.send([parsedMessage.job, publishMessage]);
+			}
+			if (type === 'rep') {
+				return responder.send(publishMessage);
+			}
 		});
 	});
-});
+};
+
+sock.on('message', jobReceiverHandler('pub'));
+responder.on('message', jobReceiverHandler('rep'));

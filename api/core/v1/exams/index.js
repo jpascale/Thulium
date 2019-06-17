@@ -5,8 +5,10 @@ const express = require('express')
 	, validateUser = require('../../../middleware/validateUser')
 	, debug = require('debug')('api:core:v1:exams')
 	, async = require('async')
-	, { mq } = require('@thulium/jobs');
-	
+	, { mq: _mq } = require('@thulium/jobs');
+
+const mq = _mq('push');
+
 const uniqBy = (arr, predicate) => {
 	const cb = typeof predicate === 'function' ? predicate : (o) => o[predicate];
 	return [...arr.reduce((map, item) => {
@@ -139,7 +141,6 @@ router.post('/:eid([a-f0-9]+)/response/:qid([a-f0-9]+)',
 					code: 'ALREADY_SUBMITTED'
 				});
 			}
-			req.response = response;
 			next();
 		});
 	},
