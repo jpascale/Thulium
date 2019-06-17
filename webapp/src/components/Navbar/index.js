@@ -13,8 +13,8 @@ const ThuliumNavbar = ({ examMode }) => (
 	<Navbar color="dark" expand="md" fixed="top" className="navbar-dark thulium-navbar">
 		<NavbarBrand href="#">Thulium</NavbarBrand>
 		<Nav className="mr-auto" navbar>
-			{!examMode ? <EnginePicker /> : null}
-			</Nav>
+			{/*!examMode ? <EnginePicker /> : null*/}
+</Nav>
 		<LoginModal />
 	</Navbar>
 );

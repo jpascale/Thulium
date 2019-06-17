@@ -1,7 +1,7 @@
 #main-container {
 	position: relative;
 	padding: 0;
-	padding-top: 61px;
+	padding-top: 75px;
 }
 
 .navbar.editor-action-bar {
@@ -13,7 +13,7 @@
 }
 
 .navbar.thulium-editor-tab-bar {
-	padding-top: 34px;
+	padding-top: 37px;
 	padding-bottom: 0;
 	position: fixed;
 	border-bottom: 1px solid transparentize(#222, 0.5);
@@ -25,4 +25,15 @@
 .navbar-expand-md .navbar-nav .nav-link.editor-action-bar-button {
 	padding-top: 0.4rem;
 	padding-bottom: 0.2rem;
+	line-height: 1.2;
+
+	& > span {
+		display: block;
+	}
+
+	& > small {
+		display: block;
+		color: rgba(255, 255, 255, 0.25);
+		font-size: 50%;
+	}
 }

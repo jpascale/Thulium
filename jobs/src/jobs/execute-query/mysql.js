@@ -1,5 +1,5 @@
 const { MySQLStorage } = require('@thulium/storage')
-		, debug = require('debug')('jobs:execute-query:psql')
+		, debug = require('debug')('jobs:execute-query:mysql')
 		, parser = require('pg-query-parser')
 		, sharedParsing = require('./shared-parsing');
 

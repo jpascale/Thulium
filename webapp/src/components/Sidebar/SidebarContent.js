@@ -25,11 +25,10 @@ class SidebarContent extends React.Component {
 	selectForQuery = tableName => () => this.props.selectForQuery(tableName);
 
 	render() {
-		const { filesRepo = {}, coursesRepo = {}, selectedFile, selectedCourse, examMode, instances, datasets } = this.props;
+		const { filesRepo = {}, coursesRepo = {}, selectedFile, selectedCourse, examMode } = this.props;
 
 		const files = Object.values(filesRepo);
 		const courses = Object.values(coursesRepo);
-		const availableDatasets = Object.values(datasets || {});
 
 		const fileList = files.map((file, i) => (
 			<li key={file._id} className="nav-item ml-2 mr-4">
@@ -50,16 +49,6 @@ class SidebarContent extends React.Component {
 			);
 		});
 
-		const datasetList = availableDatasets.filter(v => !v.full).map(dataset => {
-			return (
-				<li key={dataset._id} className="nav-item ml-2 mr-4">
-					<a className={classNames('nav-link', 'course')} href="#" /*onClick={this.selectForQuery(tableName)}*/>
-						{dataset.title}
-					</a>
-				</li>
-			);
-		});
-
 		return (
 			<React.Fragment>
 				{examMode ? null : <AsyncDatasetMenuItem />}
@@ -73,16 +62,6 @@ class SidebarContent extends React.Component {
 				<ul className="nav flex-column">
 					{fileList}
 				</ul>
-				{!examMode && courseList.length ? (
-					<h6 className="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-1 mb-1 text-muted">
-						DATASETS
-					</h6>
-				) : null}
-				{!examMode ? (
-					<ul className="nav flex-column">
-						{datasetList}
-					</ul>
-				) : null}
 				{!examMode && courseList.length ? (
 					<h6 className="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-1 mb-1 text-muted">
 						COURSES
@@ -104,8 +83,6 @@ const mapStateToProps = state => ({
 	selectedCourse: state.app.selectedCourse,
 	selectedFile: state.app.selectedFile,
 	examMode: state.app.examMode,
-	datasets: state.app.datasets,
-	instances: state.app.instances
 });
 
 const mapDispatchToProps = dispatch => ({

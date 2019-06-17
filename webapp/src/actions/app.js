@@ -42,7 +42,7 @@ export const boot = () => (dispatch, getState) => {
 		dispatch(fetchCourses()),
 		dispatch(fetchSession()),
 		dispatch(fetchDatasets()),
-		dispatch(fetchDatasetInstances())
+		// dispatch(fetchDatasetInstances())
 	]).then(() => {
 		return dispatch(booted());
 	});

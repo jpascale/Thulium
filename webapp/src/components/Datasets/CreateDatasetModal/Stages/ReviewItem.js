@@ -124,7 +124,7 @@ class ReviewItem extends React.Component {
 
 		return (
 			<React.Fragment>
-				<h5>Data preview (First {Math.min(item.data.length, DISPLAYED_ROWS)} rows)</h5>
+				<h5>Data Preview (First {Math.min(item.data.length, DISPLAYED_ROWS)} rows)</h5>
 				<ReactDataGrid
 					columns={dataGridColumns}
 					rowGetter={this.rowGetter}

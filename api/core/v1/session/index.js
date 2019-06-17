@@ -140,7 +140,7 @@ router.get('/mine',
   (req, res) => {
     req.session.populate({
       path: 'files',
-      select: 'engine title content'
+      select: 'engine title content dataset'
     }, err => {
       if (err) {
         console.error(err);

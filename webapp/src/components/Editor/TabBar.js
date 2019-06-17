@@ -14,7 +14,7 @@ class TabBar extends React.Component {
 	changeCourse = course => () => this.props.changeCourse(course)
 
 	render = () => {
-		const { files, membership, selectedFile, selectedCourse, selectedTab, examMode } = this.props;
+		const { files, membership, selectedFile, selectedCourse, selectedTab, examMode, datasets, engines } = this.props;
 		const fileList = files.map((file, i) => (
 			<NavItem key={file._id} >
 				<NavLink
@@ -22,7 +22,8 @@ class TabBar extends React.Component {
 					onClick={this.changeFile(file._id)}
 					href="#"
 					className="editor-action-bar-button">
-					{file.title}
+					<span>{file.title}</span>
+					<small>{engines[file.engine].title} - {datasets[file.dataset].title}</small>
 				</NavLink>
 			</NavItem>
 		));
@@ -62,7 +63,9 @@ const mapStateToProps = state => ({
 	selectedCourse: state.app.selectedCourse,
 	membership: (state.app.courses || {})[state.app.selectedCourse],
 	selectedTab: state.app.selectedTab,
-	examMode: state.app.examMode
+	examMode: state.app.examMode,
+	engines: state.app.engines,
+	datasets: state.app.datasets
 });
 
 const mapDispatchToProps = dispatch => ({
