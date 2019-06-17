@@ -459,7 +459,13 @@ class CourseTab extends React.Component {
 												}
 												if (q.type === 'query-response')
 													return (
-														<Button onClick={this.seeFullAnswer(fullAnswerOptions)} color="link" size="xs">See query</Button>
+														<React.Fragment>
+															<Button onClick={this.seeFullAnswer(fullAnswerOptions)} color="link" size="xs">See query</Button>
+															{typeof(r.hint) === 'undefined' || typeof(r.review) !== 'undefined' ? null : ' '}
+															{typeof(r.hint) === 'undefined' || typeof(r.review) !== 'undefined' ? null : (
+																r.hint ? '👍' : '👎'
+															)}
+														</React.Fragment>
 													);
 											})();
 											const rightAnswer = (() => {
