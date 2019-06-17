@@ -88,7 +88,8 @@ export const submitExamResponse = () => (dispatch, getState) => {
 			if (file.type === 'multiple-choice') return file.response;
 			if (file.type === 'written-answer') return file.response;
 			if (file.type === 'query-response') return file.content;
-		})()
+		})(),
+		file: file._id
 	}, {
 		token: getState().auth.token
 	}).then(response => {

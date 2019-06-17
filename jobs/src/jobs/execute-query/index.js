@@ -8,14 +8,14 @@ const executors = {
 	mysql: require('./mysql')
 };
 
-const job = ({ file, content }, done) => {
+const job = ({ file, content, reduced }, done) => {
 
 	async.auto({
-		file: cb => File.findById(file).exec(cb),
+		file: cb => File.findById(file).populate('dataset').exec(cb),
 		instance: ['file', ({ file }, cb) => {
 			debug('finding dataset instance')
 			DatasetInstance.findOne({
-				dataset: file.dataset,
+				dataset: reduced ? file.dataset.reduced : file.dataset._id,
 				owner: file.owner,
 				engine: file.engine,
 				exam: file.exam
@@ -23,7 +23,10 @@ const job = ({ file, content }, done) => {
 		}],
 		result: ['instance', 'file', ({ instance, file }, cb) => {
 			const executor = executors[file.engine];
-			executor.executeQuery({ instance, content }, cb);
+			executor.executeQuery({
+				instance,
+				content: content || file.content
+			}, cb);
 		}]
 	}, (err, { result, file }) => {
 		if (err) return done(err);

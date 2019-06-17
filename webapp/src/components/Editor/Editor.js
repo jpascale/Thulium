@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import brace from 'brace';
 import AceEditor from 'react-ace';
 import debounce from 'lodash.debounce';
+import throttle from 'lodash.throttle';
 import TaskDrawer from './TaskDrawer';
 
 import 'brace/mode/sql';
@@ -16,7 +17,7 @@ class Editor extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.autosave = debounce(this.autosave, 2000);
+		this.autosave = throttle(this.autosave, 2000);
 		this.props.changeText(props.file.content)
 	}
 

@@ -149,14 +149,34 @@ router.post('/:eid([a-f0-9]+)/response/:qid([a-f0-9]+)',
 			exam: req.params.eid,
 			user: req.user.sub,
 			question: req.params.qid,
-			response: req.body.response
+			file: req.body.file,
+			response: req.body.response,
 		}, (err, response) => {
 			if (err) {
 				console.error(err);
 				return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });
 			}
+			Job.create({
+				key: mq.KEYS.COMPARE_WITH_REDUCED,
+				params: {
+					file: response.file,
+					response: response._id,
+					question: response.question,
+					owner: req.user.sub,
+					exam: response.exam
+				},
+				scope: []
+			}, (err, job) => {
+				if (err) {
+					console.error(err);
+					return;
+				}
+				mq.compareWithReduced(job._id);
+			});
 			res.status(Status.CREATED).json(response);
 		});
+
+		
 	}
 );
 

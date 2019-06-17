@@ -12,6 +12,10 @@ const ExamResponse = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
+  file: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'File'
+  },
   question: {
     type: mongoose.Schema.Types.ObjectId
   },
