@@ -27,7 +27,6 @@ const job = ({ file, content }, done) => {
 		}]
 	}, (err, { result, file }) => {
 		if (err) return done(err);
-		debug(result);
 		const executor = executors[file.engine];
 		done(null, executor.reportResults(result));
 	});
