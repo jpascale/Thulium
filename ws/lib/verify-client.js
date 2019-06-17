@@ -2,7 +2,10 @@ const debug = require('debug')('ws:verify-client')
 		, Status = require('http-status-codes')
 		, async = require('async')
 		, { Env, Util } = require('@thulium/base')
-		, { User, Session } = require('@thulium/internal');
+		, { User, Session, Job, File } = require('@thulium/internal')
+		, { mq: _mq } = require('@thulium/jobs');
+
+const mq = _mq('push');
 
 const verifyClient = ({ origin, req, secure }, done) => {
 
@@ -50,6 +53,7 @@ const verifyClient = ({ origin, req, secure }, done) => {
 			User.findById(token.sub, cb);
 		}],
 		session: ['token', ({ token }, cb) => {
+			debug('ws session');
 			Session.findOrCreateByOwner(token.sub, cb);
 		}],
 	}, (err, { token, user, session }) => {
@@ -66,6 +70,32 @@ const verifyClient = ({ origin, req, secure }, done) => {
 				'X-Reason': 'No Such User or Session'
 			});
 		}
+
+		if (!session.old) {
+			File.find({ _id: { $in: session.files } }).exec((err, files) => {
+				if (err) {
+					console.error(err);
+					return;
+				}
+				const jobs = files.map(f => ({
+					key: mq.KEYS.CREATE_DATASET_INSTANCE,
+					params: {
+						dataset: f.dataset,
+						engine: f.engine,
+						owner: user._id,
+					},
+					scope: []
+				}));
+	
+				Job.insertMany(jobs, (err, jobs) => {
+					if (err) return cb(err);
+					jobs.forEach(job => {
+						mq.createDatasetInstance(job._id);
+					});
+				});
+			});
+		}
+
 
 		debug('accept connection');
 		req.token = token;

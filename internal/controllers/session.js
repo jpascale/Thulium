@@ -39,7 +39,6 @@ Session.pre('save', function (next) {
 		self.files = [file._id];
 		next();
 	});
-	
 });
 
 Session.statics.findOrCreateById = function (id, { owner }, done) {
@@ -59,7 +58,10 @@ Session.statics.findOrCreateByOwner = function (owner, done) {
 	async.waterfall([
 		cb => self.findOne({ owner }).exec(cb),
 		(session, cb) => {
-			if (session) return cb(null, session);
+			if (session) {
+				session.old = true;
+				return cb(null, session);
+			}
 			const s = new self({ owner });
 			s.save(cb);
 		}

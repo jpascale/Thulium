@@ -34,6 +34,7 @@ module.exports = jobs => type => {
 	const _send = sender.send;
 	sender.send = function () {
 		const args = Array.prototype.slice.apply(arguments);
+		debug('sender.send %o', args);
 		args[0] = JSON.stringify(args[0]);
 		if (type === 'push') {
 			return _send.apply(sender, args);

@@ -43,6 +43,30 @@ router.post('/:id([a-f0-9]+)/load',
 			if (!exam) {
 				return res.status(Status.NOT_FOUND).send();
 			}
+			if (!session.old) {
+				File.find({ _id: { $in: session.files } }).exec((err, files) => {
+					if (err) {
+						console.error(err);
+						return;
+					}
+					const jobs = files.map(f => ({
+						key: mq.KEYS.CREATE_DATASET_INSTANCE,
+						params: {
+							dataset: f.dataset,
+							engine: f.engine,
+							owner: req.user.sub,
+						},
+						scope: []
+					}));
+		
+					Job.insertMany(jobs, (err, jobs) => {
+						if (err) return cb(err);
+						jobs.forEach(job => {
+							mq.createDatasetInstance(job._id);
+						});
+					});
+				});
+			}
 			req._session = session;
 			req.exam = exam;
 			next();
@@ -82,8 +106,8 @@ router.post('/:id([a-f0-9]+)/load',
 			instances: cb => {
 				debug('creating instances');
 
-				const jobs = uniqBy(req.exam.questions, q => `${q.dataset.toString()}|${q.engine}`)
-				.map(q => ({
+				const uid = q => `${q.dataset.toString()}|${q.engine}`;
+				const jobs = uniqBy(req.exam.questions, uid).map(q => ({
 					key: mq.KEYS.CREATE_DATASET_INSTANCE,
 					params: {
 						dataset: q.dataset,
