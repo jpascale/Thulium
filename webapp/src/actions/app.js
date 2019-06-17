@@ -32,7 +32,11 @@ const bootExam = examId => (dispatch, getState) => {
 export const boot = () => (dispatch, getState) => {
 
 	if (params.exam) {
-		return dispatch(bootExam(params.exam));
+		return Promise.all([
+			dispatch(bootExam(params.exam)),
+			dispatch(fetchEngines()),
+			dispatch(fetchDatasets()),
+		]);
 	}
 
 	dispatch(booting());

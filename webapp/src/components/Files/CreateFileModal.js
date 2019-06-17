@@ -41,14 +41,14 @@ class CreateFileModal extends React.Component {
 							<Label>Engine</Label>
 							<Input type="select" value={engine} onChange={this.handleChange('engine')}>
 								<option value={''}>Select Engine</option>
-								{Object.values(engines).map(e => <option key={e._id} value={e._id}>{e.title}</option>)}
+								{Object.values(engines || {}).map(e => <option key={e._id} value={e._id}>{e.title}</option>)}
 							</Input>
 						</FormGroup>
 						<FormGroup>
 							<Label>Dataset</Label>
 							<Input type="select" value={dataset} onChange={this.handleChange('dataset')}>
 								<option value={''}>Select Dataset</option>
-								{Object.values(datasets).filter(v => !v.full && !v.exam).map(d => <option key={d._id} value={d._id}>{d.title}</option>)}
+								{Object.values(datasets || {}).filter(v => !v.full && !v.exam).map(d => <option key={d._id} value={d._id}>{d.title}</option>)}
 							</Input>
 						</FormGroup>
 					</Form>
