@@ -1,8 +1,9 @@
 const express = require('express')
     , router = express.Router({ mergeParams: true })
 		, Status = require('http-status-codes')
-		, { File } = require('@thulium/internal')
+		, { File, Dataset } = require('@thulium/internal')
 		, debug = require('debug')('api:core:v1:files')
+		, async = require('async')
 		, validateUser = require('../../../middleware/validateUser');
 
 debug('setting up /core/v1/files routes');
@@ -10,11 +11,29 @@ debug('setting up /core/v1/files routes');
 router.post('/',
 	validateUser,
 	(req, res) => {
-		const file = new File({
-			owner: req.user.sub,
-			...req.body /// TODO: this is unsafe
-		});
-		file.save(err => {
+		const { engine, dataset, title, session } = req.body;
+		async.auto({
+			file: cb => {
+				const file = new File({
+					owner: req.user.sub,
+					engine,
+					dataset,
+					title,
+					session
+				});
+				file.save(cb);
+			},
+			dataset: cb => {
+				Dataset.findById(dataset).exec(cb);
+			},
+			instance: ['dataset', 'file', ({ dataset, file }, cb) => {
+				debug('creating instance');
+				dataset.createInstances({
+					engine: file.engine,
+					owner: req.user.sub
+				}, cb);
+			}]
+		}, (err, { file }) => {
 			if (err) {
 				console.error(err);
 				return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });

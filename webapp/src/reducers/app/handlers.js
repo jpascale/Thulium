@@ -55,6 +55,7 @@ export default {
     });
     return objectAssign({}, state, {
       creatingFile: false,
+      selectedFile: file._id,
       files: nextFiles
     });
   },
@@ -81,7 +82,8 @@ export default {
     return objectAssign({}, state, {
       session: session,
       files,
-      selectedFile
+      selectedFile,
+      selectedTab: 'file'
     });
   },
 
