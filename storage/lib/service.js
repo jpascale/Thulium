@@ -3,10 +3,7 @@ const Storages = require('./storages')
     , debug = require('debug')('storage:service');
 
 const Module = {};
-
-const allStorages = [Storages.PostgresStorage];
-
-// Object.values(Storages);
+const allStorages = Object.values(Storages);
 
 Module.getEngineDatabaseService = function (engine) {
   const mimeMap = {

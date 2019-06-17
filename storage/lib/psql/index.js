@@ -15,7 +15,6 @@ Module.config = (config) => {
 };
 
 const ENGINE_ID = 'psql';
-
 Module.id = () => ENGINE_ID;
 
 Module.query = function () {
@@ -64,11 +63,6 @@ const dataTypeMap = {
 	String: 'VARCHAR(255)',
 	Float: 'NUMERIC'
 };
-
-const zipObject = (headers, values) => headers.reduce((memo, h, i) => {
-	memo[h] = values[i];
-	return memo;
-}, {});
 
 // Deprecated
 Module.createTable = ({ title, headers, data, types, nonce }, done) => {

@@ -80,7 +80,7 @@ router.post('/:id([a-f0-9]+)/load',
 			instances: cb => {
 				debug('creating instances');
 
-				const jobs = uniqBy(req.exam.questions, q => q.dataset.toString())
+				const jobs = uniqBy(req.exam.questions, q => `${q.dataset.toString()}|${q.engine}`)
 				.map(q => ({
 					key: mq.KEYS.CREATE_DATASET_INSTANCE,
 					params: {
