@@ -6,7 +6,7 @@ import classNames from 'classnames';
 
 const toLabelText = (s) => {
   if (typeof s !== 'string') return ''
-  return s.charAt(0).toUpperCase() + s.replace(/_/, ' ').slice(1)
+  return s.charAt(0).toUpperCase() + s.replace(/_/, ' ').slice(1);
 }
 
 class ReviewActions extends React.Component {
@@ -37,19 +37,6 @@ class ReviewActions extends React.Component {
     const availableActions = Object.keys(actions);
     return (
       <div className="review-datasets d-flex flex-row">
-        {/* <Nav tabs className="nav-tabs--vertical nav-tabs--left">
-          {availableActions.map(action => (
-            <NavItem key={action}>
-              <NavLink className={classNames({ active: active === item.id })} onClick={this.switchToTab(item.id)}>
-                {item.title}
-              </NavLink>
-            </NavItem>
-          ))}
-        </Nav> */}
-
-
-
-
         <Form>
           {availableActions.map((action) => {
             return (
@@ -63,10 +50,6 @@ class ReviewActions extends React.Component {
           })}
           <Button>Submit</Button>
         </Form>
-
-
-
-
       </div>
     );
   }
