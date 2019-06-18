@@ -18,6 +18,10 @@ class ReviewActions extends React.Component {
     }
   }
 
+  componentDidMount = () => {
+    this.props.updateDatasetActions(this.state.actions);
+  }
+
   componentDidUpdate = () => {
     this.props.updateDatasetActions(this.state.actions);
   }
