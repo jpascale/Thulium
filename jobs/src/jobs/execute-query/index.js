@@ -23,6 +23,7 @@ const job = ({ file, content, reduced }, done) => {
 		}],
 		result: ['instance', 'file', ({ instance, file }, cb) => {
 			const executor = executors[file.engine];
+			instance.dataset = file.dataset;
 			executor.executeQuery({
 				instance,
 				content: content || file.content

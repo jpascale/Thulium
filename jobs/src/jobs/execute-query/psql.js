@@ -6,11 +6,10 @@ const { PostgresStorage } = require('@thulium/storage')
 const Module = {};
 
 Module.executeQuery = ({ instance, content }, cb) => {
-	const tablesMap = instance.tables;
-	debug('running query using mapping %o', tablesMap);
+	debug('running query using mapping %o', instance.tables);
 
 	const parsedQueries = parser.parse(content).query;
-	if (!sharedParsing(tablesMap, parsedQueries)) {
+	if (!sharedParsing(instance, parsedQueries)) {
 		return cb(`Table name does not exist`);
 	}
 
