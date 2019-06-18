@@ -205,6 +205,7 @@ export const createDataset = () => (dispatch, getState) => {
     paradigm,
     title,
     exam,
+    actions,
     items: items.map(({ title, data, headers, types, reduced }) => ({
       title,
       data,
