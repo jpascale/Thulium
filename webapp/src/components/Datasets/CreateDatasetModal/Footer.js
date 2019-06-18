@@ -32,6 +32,16 @@ const Footer = ({ stage, prevStage, nextStage, createDataset, closeModal, ok }) 
 			<ModalFooter>
 				<Button color="link" className="back-button" onClick={prevStage}>Go Back</Button>{' '}
 				<Button color="secondary" onClick={closeModal}>Cancel</Button>{' '}
+				<Button color="primary" disabled={!ok} onClick={nextStage}>Next step</Button>
+			</ModalFooter>
+		);
+	}
+
+	if (stage === 'review-actions') {
+		return (
+			<ModalFooter>
+				<Button color="link" className="back-button" onClick={prevStage}>Go Back</Button>{' '}
+				<Button color="secondary" onClick={closeModal}>Cancel</Button>{' '}
 				<Button color="primary" disabled={!ok} onClick={createDataset}>Submit</Button>
 			</ModalFooter>
 		);
@@ -46,7 +56,7 @@ const mapStateToProps = state => ({
 		if (!items.length) return false;
 		return !items.filter(i => i.error || !i.data || !i.data.length).length
 	})(state.dataset.create.items),
-	
+
 });
 
 const mapDispatchToProps = dispatch => ({

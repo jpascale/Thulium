@@ -3,12 +3,14 @@ import objectAssign from 'object-assign';
 
 const nextStages = {
 	'pick-paradigm': 'upload-datasets',
-	'upload-datasets': 'review-datasets'
+	'upload-datasets': 'review-datasets',
+	'review-datasets': 'review-actions'
 };
 
 const prevStages = {
 	'upload-datasets': 'pick-paradigm',
 	'review-datasets': 'upload-datasets',
+	'review-actions': 'review-datasets'
 };
 
 export default {
