@@ -1,31 +1,72 @@
 /* eslint-disable import/no-named-as-default */
 import React from 'react';
 import { connect } from 'react-redux';
-import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
+import { Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import classNames from 'classnames';
 
+const toLabelText = (s) => {
+  if (typeof s !== 'string') return ''
+  return s.charAt(0).toUpperCase() + s.replace(/_/, ' ').slice(1)
+}
+
 class ReviewActions extends React.Component {
-  state = {}
+  state = {
+    actions: {
+      can_create: false,
+      can_alter: false
+    }
+  }
+
+  componentDidUpdate = () => {
+    // Update redux state
+  }
+
+  toggleUpdateAction = (key) => {
+    this.setState((prevState) => {
+      return {
+        actions: {
+          ...prevState.actions,
+          [key]: !prevState.actions[key]
+        }
+      }
+    });
+  }
 
   render = () => {
-
+    const { actions } = this.state;
+    const availableActions = Object.keys(actions);
     return (
       <div className="review-datasets d-flex flex-row">
         {/* <Nav tabs className="nav-tabs--vertical nav-tabs--left">
-          {items.map(item => (
-            <NavItem key={item.id}>
+          {availableActions.map(action => (
+            <NavItem key={action}>
               <NavLink className={classNames({ active: active === item.id })} onClick={this.switchToTab(item.id)}>
                 {item.title}
               </NavLink>
             </NavItem>
           ))}
-        </Nav>
-        <TabContent className="flex-grow-1" activeTab={active}>
-          <TabPane tabId={active} tabIndex={active}>
-            <ReviewItem item={items[active]} />
-          </TabPane>
-        </TabContent> */}
-        hola :)
+        </Nav> */}
+
+
+
+
+        <Form>
+          {availableActions.map((action) => {
+            return (
+              <FormGroup key={`formgroup_${action}`} check>
+                <Label key={`label_${action}`} for={action} check>
+                  <Input id={action} key={`input_${action}`} type="checkbox" onChange={() => this.toggleUpdateAction(action)} value={actions[action]} />
+                  {toLabelText(action)}
+                </Label>
+              </FormGroup>
+            )
+          })}
+          <Button>Submit</Button>
+        </Form>
+
+
+
+
       </div>
     );
   }
