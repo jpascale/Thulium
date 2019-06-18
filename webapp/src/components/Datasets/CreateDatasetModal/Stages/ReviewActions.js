@@ -1,8 +1,9 @@
 /* eslint-disable import/no-named-as-default */
 import React from 'react';
 import { connect } from 'react-redux';
-import { Form, FormGroup, Label, Input, Button } from 'reactstrap';
+import { Form, FormGroup, Label, Input } from 'reactstrap';
 import classNames from 'classnames';
+import { updateDatasetActions } from '../../../../actions/datasets';
 
 const toLabelText = (s) => {
   if (typeof s !== 'string') return ''
@@ -18,7 +19,7 @@ class ReviewActions extends React.Component {
   }
 
   componentDidUpdate = () => {
-    // Update redux state
+    this.props.updateDatasetActions(this.state.actions);
   }
 
   toggleUpdateAction = (key) => {
@@ -48,7 +49,6 @@ class ReviewActions extends React.Component {
               </FormGroup>
             )
           })}
-          <Button>Submit</Button>
         </Form>
       </div>
     );
@@ -60,6 +60,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+  updateDatasetActions: (actions) => dispatch(updateDatasetActions(actions))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(ReviewActions);

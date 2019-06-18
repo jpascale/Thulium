@@ -6,6 +6,11 @@ import isFloat from 'validator/lib/isFloat';
 import isBoolean from 'validator/lib/isBoolean';
 import * as _ from 'lodash';
 
+export const updateDatasetActions = (payload) => ({
+  type: CD.UPDATE_DATASET_ACTIONS,
+  payload
+});
+
 const fetchingDatasets = () => ({
   type: CD.FETCHING
 });
