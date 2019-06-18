@@ -200,7 +200,7 @@ const createdDataset = () => ({ type: CD.CREATED_DATASET });
 
 export const createDataset = () => (dispatch, getState) => {
   dispatch(creatingDataset());
-  const { paradigm, items, title, exam } = getState().dataset.create;
+  const { paradigm, items, title, exam, actions } = getState().dataset.create;
   const data = {
     paradigm,
     title,

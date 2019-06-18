@@ -16,7 +16,6 @@ const prevStages = {
 export default {
 	[C.UPDATE_DATASET_ACTIONS]: (state, actions) => {
 		const create = objectAssign({}, state.create, { actions });
-		console.log(objectAssign({}, state, { create }));
 		return objectAssign({}, state, { create });
 	},
 	[C.CHANGE_TITLE]: (state, title) => {
