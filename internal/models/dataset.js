@@ -45,6 +45,10 @@ const Dataset = mongoose.Schema({
 	},
 	default: {
 		type: Boolean
+	},
+	actions: {
+		type: Map,
+		of: Boolean
 	}
 });
 

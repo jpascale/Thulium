@@ -24,7 +24,7 @@ Dataset.pre('save', function (next) {
 
 const flatten = coll => coll.reduce((a, b) => a.concat(b), []);
 
-Dataset.statics.create = function ({ paradigm, title, exam, items, userId, ...options }, done) {
+Dataset.statics.create = function ({ paradigm, title, exam, items, userId, actions, ...options }, done) {
 	debug('creating dataset');
 	const self = this;
 	const dataset = new self({
@@ -32,7 +32,8 @@ Dataset.statics.create = function ({ paradigm, title, exam, items, userId, ...op
 		publisher: userId,
 		title,
 		paradigm,
-		exam
+		exam,
+		actions
 	});
 
 	Object.assign(dataset, options);
@@ -44,6 +45,7 @@ Dataset.statics.create = function ({ paradigm, title, exam, items, userId, ...op
 			publisher: userId,
 			title,
 			paradigm,
+			actions,
 			full: dataset._id
 		});
 	})();
@@ -96,7 +98,7 @@ Dataset.statics.create = function ({ paradigm, title, exam, items, userId, ...op
 
 		return [item, entries, reducedItem, reducedEntries];
 	});
-	
+
 	const persistableData = flatten([dataset, reducedDataset].filter(Boolean).concat(datasetItems));
 
 	debug('persisting data');

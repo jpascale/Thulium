@@ -16,10 +16,10 @@ const hash = (data) => crypto.createHash('md5').update(data).digest("hex");
 router.post('/',
   validateUser,
   (req, res, next) => {
-    const { paradigm, title, items, exam } = req.body;
-    debug({ paradigm, title, exam });
+    const { paradigm, title, items, exam, actions } = req.body;
+    debug({ paradigm, title, exam, actions });
     debug(items);
-    Dataset.create({ paradigm, title, exam, items, userId: req.user.sub }, (err, dataset) => {
+    Dataset.create({ paradigm, title, exam, items, userId: req.user.sub, actions }, (err, dataset) => {
       if (err) {
         console.error(err);
         return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });
