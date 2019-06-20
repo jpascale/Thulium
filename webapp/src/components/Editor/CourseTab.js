@@ -73,20 +73,18 @@ class CourseTab extends React.Component {
 			}))
 		};
 
+		this.setState({ creating: true });
+
 		createExam(membership.courseId, exam).then(() => {
-			console.log('created exam');
-			alert('Created exam successfully');
 			this.setState({
 				createExam: false,
 				selectedQuestion: null,
 				title: '',
 				since: moment(),
 				until: moment().add(3, 'hours'),
-				questions: []
+				questions: [],
+				created: false
 			})
-		}, err => {
-			console.error(err);
-			alert('An error ocurred creating the exam. Please try again');
 		});
 	}
 
@@ -157,7 +155,6 @@ class CourseTab extends React.Component {
 	sendGradeToCampus = (column, user, grade) => () => {
 		this.props.submitGrade(column, user, grade).then(response => {
 			console.log(response);
-			alert('Sucessfully sent grade to campus');
 		});
 	}
 
@@ -195,7 +192,8 @@ class CourseTab extends React.Component {
 			questionTitle,
 			fullResponse,
 			responseStyle,
-			canReview
+			canReview,
+			creating
 		} = this.state;
 
 		if (!membership) return null;
@@ -277,7 +275,7 @@ class CourseTab extends React.Component {
 								) : null}
 							</ListGroup>
 						</FormGroup>
-						<Button size="sm">Create</Button>
+						<Button disabled={creating} size="sm">{creating ? 'Creating Exam' : 'Create Exam'}</Button>
 					</Form>
 				</Col>
 			)

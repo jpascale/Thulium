@@ -1,7 +1,7 @@
 import C from '../constants/exams';
 import * as ExamService from '../services/exams';
 import { startSession, connectUsingToken, ws } from './session';
-import { wsMessageHandler } from './app'
+import { wsMessageHandler, notify } from './app'
 
 const creatingExam = () => ({
 	type: C.CREATING
@@ -15,10 +15,25 @@ const createdExam = (payload) => ({
 export const createExam = (course, exam) => (dispatch, getState) => {
 	dispatch(creatingExam());
 
+	dispatch(notify({
+		text: 'Creating exam',
+		type: 'info'
+	}));
+
 	return ExamService.createExam(course, exam, {
 		token: getState().auth.token
 	}).then(exam => {
+		dispatch(notify({
+			text: 'Created exam successfully',
+			type: 'success'
+		}));
 		return dispatch(createdExam(exam));
+	}).catch(err => {
+		console.error(err);
+		dispatch(notify({
+			text: 'Failed to create exam. Please try again',
+			type: 'danger'
+		}));
 	});
 };
 
@@ -106,12 +121,28 @@ export const fetchResponses = exam => (dispatch, getState) => {
 export const submitGrade = (column, user, grade) => (dispatch, getState) => {
 	// dispatch(creatingExam());
 
+	dispatch(notify({
+		text: 'Sending grade',
+		type: 'info'
+	}));
 	const course = getState().app.selectedCourse;
 	return ExamService.submitGrade(course, column, user, {
 		text: grade.toFixed(2),
 		score: parseFloat(grade.toFixed(2))
 	}, {
 		token: getState().auth.token
+	}).then(r => {
+		dispatch(notify({
+			text: 'Successfully sent grade',
+			type: 'success'
+		}));
+		return r;
+	}).catch(err => {
+		console.error(err);
+		dispatch(notify({
+			text: 'Failed to send grade. Plase try again',
+			type: 'danger'
+		}));
 	});
 	// .then(exam => {
 	// 	return dispatch(createdExam(exam));
@@ -119,7 +150,22 @@ export const submitGrade = (column, user, grade) => (dispatch, getState) => {
 };
 
 export const reviewResponse = (response, review) => (dispatch, getState) => {
+	dispatch(notify({
+		text: 'Saving',
+		type: 'info'
+	}));
 	return ExamService.reviewResponse(response, { review }, {
 		token: getState().auth.token
+	}).then(() => {
+		dispatch(notify({
+			text: 'Saved',
+			type: 'success'
+		}));
+	}).catch(err => {
+		console.error(err);
+		dispatch(notify({
+			text: 'Failed to save. Please try again later',
+			type: 'danger'
+		}));
 	});
 };
