@@ -5,6 +5,7 @@ import Navbar from './Navbar';
 import Sidebar from './Sidebar';
 import Main from './containers/Main';
 import Files from './Files';
+import Notifications from './Notifications';
 
 import { boot } from '../actions/app';
 
@@ -22,6 +23,7 @@ class AsyncApp extends React.Component {
     }
     return (
       <React.Fragment>
+        <Notifications />
         <Navbar />
         <Files />
         <div className="container-fluid full-height">

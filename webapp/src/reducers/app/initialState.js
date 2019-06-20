@@ -1,1 +1,1 @@
-export default { booting: true };
+export default { booting: true, notifications: [] };

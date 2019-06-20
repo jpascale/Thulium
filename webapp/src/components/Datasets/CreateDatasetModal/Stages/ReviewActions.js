@@ -99,7 +99,6 @@ class ReviewActions extends React.Component {
 	toggleUpdateAction = key => () => {
 		const { actions } = this.state;
 		const nextActions = Object.assign({}, actions, { [key]: !actions[key] });
-		console.log(nextActions);
 		this.setState({ actions: nextActions });
 	}
 
@@ -111,7 +110,7 @@ class ReviewActions extends React.Component {
 				<p className="text-muted">Select what is allowed for this dataset</p>
 				<div className="d-flex flex-row">
 					{Object.keys(actionsRepo).map(key => (
-						<Col sm={3}>
+						<Col sm={3} key={key}>
 							<h6>{categoryTitles[key]}</h6>
 							<Form>
 								{Object.keys(actionsRepo[key]).map(action => (

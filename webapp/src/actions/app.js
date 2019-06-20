@@ -81,6 +81,11 @@ export const run = payload => (dispatch, getState) => {
 	ws().send(query);
 };
 
+export const notify = notification => ({
+	type: C.NOTIFY,
+	payload: notification
+});
+
 const startsWith = (str, start) => str.substr(0, start.length) === start;
 const endsWith = (str, end) => str.substr(-end.length) === end;
 
@@ -91,5 +96,6 @@ export const wsMessageHandler = ({ getState, dispatch }) => ({ topic, message })
 		dispatch(runFailed(message.error));
 		return;
 	}
+	dispatch(notify({ id: 1 }));
 	dispatch(doneRunning(message.result));
 };

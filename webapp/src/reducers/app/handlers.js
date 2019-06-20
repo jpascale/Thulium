@@ -128,5 +128,9 @@ export default {
   },
   [CEX.SET_EXAM_MODE]: (state, on) => {
     return objectAssign({}, state, { examMode: on });
+  },
+
+  [C.NOTIFY]: (state, notification) => {
+    return objectAssign({}, state, { notifications: state.notifications.concat(notification) });
   }
 }
