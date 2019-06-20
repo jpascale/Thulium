@@ -61,6 +61,11 @@ export const doneRunning = (payload) => ({
 	payload
 });
 
+export const runFailed = payload => ({
+	type: C.RUN_FAILED,
+	payload
+})
+
 export const run = payload => (dispatch, getState) => {
 
 	dispatch(running());
@@ -76,8 +81,15 @@ export const run = payload => (dispatch, getState) => {
 	ws().send(query);
 };
 
+const startsWith = (str, start) => str.substr(0, start.length) === start;
+const endsWith = (str, end) => str.substr(-end.length) === end;
+
 export const wsMessageHandler = ({ getState, dispatch }) => ({ topic, message }) => {
 	console.log({ topic, message });
-	if (topic !== 'execute query') return;
+	if (!startsWith(topic, 'execute query')) return;
+	if (endsWith(topic, 'error')) {
+		dispatch(runFailed(message.error));
+		return;
+	}
 	dispatch(doneRunning(message.result));
-}
+};

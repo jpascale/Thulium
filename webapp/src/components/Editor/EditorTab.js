@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import Loadable from 'react-loadable';
 
 import ActionBar from './ActionBar';
@@ -11,17 +12,25 @@ const AsyncResults = Loadable({
   loading: () => <span>Loading</span>
 });
 
-class EditorTab extends React.Component {
-	render() {
-		return (
-			<div className="thulium-tab">
-				<ActionBar />
-				<Editor />
-				<StatusBar />
-				<AsyncResults />
-			</div>
-		);
-	}
-}
+const AsyncQueryError = Loadable({
+  loader: () => import(/* webpackChunkName: "QueryError" */ './QueryError'),
+  /* eslint-disable react/display-name */
+  loading: () => <span>Loading</span>
+});
 
-export default EditorTab;
+const EditorTab = ({ results, error }) => (
+	<div className="thulium-tab">
+		<ActionBar />
+		<Editor />
+		<StatusBar />
+		{results ? <AsyncResults /> : null}
+		{error ? <AsyncQueryError /> : null}
+	</div>
+);
+
+const mapStateToProps = state => ({
+	results: state.app.results,
+	error: state.app.error
+});
+
+export default connect(mapStateToProps)(EditorTab);

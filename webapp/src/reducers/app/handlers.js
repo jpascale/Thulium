@@ -69,7 +69,10 @@ export default {
     return objectAssign({}, state, { running: true });
   },
   [C.RUN]: (state, results) => {
-    return objectAssign({}, state, { running: false, results });
+    return objectAssign({}, state, { running: false, results, error: null });
+  },
+  [C.RUN_FAILED]: (state, error) => {
+    return objectAssign({}, state, { running: false, error, results: null });
   },
 
   [CS.START]: (state, sessionData) => {

@@ -61,10 +61,15 @@ const jobReceiverHandler = type => raw => {
 			console.error(err);
 			job.status = 'failed';
 			job.save(_err => {
-				if (err) {
+				if (_err) {
 					console.error(_err);
 				}
-				pub.send([`${parsedMessage.job}:error`, JSON.stringify(err)]);
+				const publishMessage = JSON.stringify({
+					id: parsedMessage.params,
+					scope: job.scope,
+					error: err
+				});
+				pub.send([`${parsedMessage.job}:error`, publishMessage]);
 			})
 			return;
 		}

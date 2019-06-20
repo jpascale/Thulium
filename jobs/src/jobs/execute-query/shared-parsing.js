@@ -21,6 +21,7 @@ const actionsRepo = {
 module.exports = (instance, parsedQueries) => {
 	const { tables: tablesMap, dataset } = instance;
 	const allTablesExist = every(parsedQueries, q => {
+		if (!q.SelectStmt) return true;
 		return every(q.SelectStmt.fromClause || [], t => {
 			debug('using %o to replace %s to %s', tablesMap, t.RangeVar.relname, tablesMap.get(t.RangeVar.relname));
 			if (!tablesMap.get(t.RangeVar.relname)) {
