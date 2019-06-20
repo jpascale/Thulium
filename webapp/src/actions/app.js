@@ -61,10 +61,16 @@ export const doneRunning = (payload) => ({
 	payload
 });
 
-export const runFailed = payload => ({
-	type: C.RUN_FAILED,
-	payload
-})
+export const runFailed = payload => (dispatch, getState) => {
+	dispatch({
+		type: C.RUN_FAILED,
+		payload
+	});
+	dispatch(notify({
+		text: 'Query failed, check result box to see why',
+		type: 'danger'
+	}));
+};
 
 export const run = payload => (dispatch, getState) => {
 

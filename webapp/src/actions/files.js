@@ -1,5 +1,6 @@
 import C from '../constants/file';
 import * as FileService from '../services/file';
+import { notify } from './app'
 
 export const changeFile = file => ({
 	type: C.CHANGE,
@@ -30,10 +31,20 @@ export const createFile = ({ filename, engine, dataset }) => (dispatch, getState
 		dataset,
 		session: getState().app.session._id
 	}, {
-			token: getState().auth.token
-		}).then(file => {
-			return dispatch(createdFile(file));
-		});
+		token: getState().auth.token
+	}).then(file => {
+		dispatch(notify({
+			text: 'File created successfully',
+			type: 'success'
+		}));
+		return dispatch(createdFile(file));
+	}).catch(err => {
+		console.error(err);
+		dispatch(notify({
+			text: 'Failed to create file, please try again',
+			type: 'danger'
+		}));
+	});
 };
 
 const autosaving = () => ({
