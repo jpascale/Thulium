@@ -9,7 +9,8 @@ export default constants('app', [
 	'query changed',
 	'change text',
 	'toggle task',
-	'notify'
+	'notify',
+	'close notification'
 ], {
 	separator: '/',
 	transform: v => v.replace(/ /g, '_').toUpperCase()

@@ -131,6 +131,15 @@ export default {
   },
 
   [C.NOTIFY]: (state, notification) => {
-    return objectAssign({}, state, { notifications: state.notifications.concat(notification) });
+    const nextNotifications = state.notifications.concat(notification);
+    return objectAssign({}, state, { notifications: nextNotifications });
+  },
+  [C.CLOSE_NOTIFICATION]: (state, id) => {
+    const nextNotifications = state.notifications.slice();
+    const idx = nextNotifications.findIndex(n => n.id === id);
+    if (~idx) {
+      nextNotifications.splice(idx, 1);
+    }
+    return objectAssign({}, state, { notifications: nextNotifications });
   }
 }

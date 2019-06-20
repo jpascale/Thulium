@@ -2,16 +2,27 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Toast, ToastBody, ToastHeader } from 'reactstrap';
 
+import { closeNotification } from '../../actions/app';
 
-const Notifications = ({ notifications }) => notifications.map(n => (
-	<Toast key={Math.random().toString(36).substr(2)}>
-		<ToastHeader icon="success">Thulium</ToastHeader>
-		<ToastBody>Whole bodyyyy</ToastBody>
-	</Toast>
-));
+import './notifications.scss';
+
+const Notifications = ({ notifications, closeNotification }) => (
+	<div className="thulium-notification-container">
+		{notifications.map(n => (
+			<Toast key={n.id}>
+				<ToastHeader toggle={closeNotification(n.id)} icon={n.type || 'primary'}>Thulium</ToastHeader>
+				<ToastBody>{n.text}</ToastBody>
+			</Toast>
+		))}
+	</div> 
+);
 
 const mapStateToProps = state => ({
 	notifications: state.app.notifications,
+});
+
+const mapDispatchToProps = dispatch => ({
+	closeNotification: id => () => dispatch(closeNotification(id))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Notifications);

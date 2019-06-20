@@ -69,6 +69,10 @@ export const runFailed = payload => ({
 export const run = payload => (dispatch, getState) => {
 
 	dispatch(running());
+	dispatch(notify({
+		text: 'Sending query',
+		type: 'info'
+	}))
 
 	const query = {
 		action: 'execute-query',
@@ -81,9 +85,25 @@ export const run = payload => (dispatch, getState) => {
 	ws().send(query);
 };
 
-export const notify = notification => ({
-	type: C.NOTIFY,
-	payload: notification
+export const notify = notification => (dispatch, getState) => {
+	const id = Math.random().toString(36).substr(2);
+	const notif = Object.assign({}, notification, { id });
+	dispatch({
+		type: C.NOTIFY,
+		payload: notif
+	});
+
+	if (notification.delay === -1) return;
+
+	setTimeout(() => {
+		dispatch(closeNotification(id));
+	}, notification.delay || 2000);
+	
+};
+
+export const closeNotification = id => ({
+	type: C.CLOSE_NOTIFICATION,
+	payload: id
 });
 
 const startsWith = (str, start) => str.substr(0, start.length) === start;
@@ -96,6 +116,9 @@ export const wsMessageHandler = ({ getState, dispatch }) => ({ topic, message })
 		dispatch(runFailed(message.error));
 		return;
 	}
-	dispatch(notify({ id: 1 }));
+	dispatch(notify({
+		text: 'Query results are ready',
+		type: 'success'
+	}));
 	dispatch(doneRunning(message.result));
 };
