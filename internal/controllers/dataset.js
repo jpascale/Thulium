@@ -111,7 +111,10 @@ Dataset.statics.create = function ({ paradigm, title, exam, items, userId, actio
 			return;
 		}
 		doc.save(next);
-	}, done);
+	}, err => {
+		if (err) return done(err);
+		done(null, dataset);
+	});
 };
 
 /**

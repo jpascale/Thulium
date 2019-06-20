@@ -6,7 +6,7 @@ import classNames from 'classnames';
 
 import { nextStage, prevStage, createDataset } from '../../../actions/datasets';
 
-const Footer = ({ stage, prevStage, nextStage, createDataset, closeModal, ok }) => {
+const Footer = ({ stage, prevStage, nextStage, createDataset, closeModal, ok, creating }) => {
 
 	if (stage === 'pick-paradigm') {
 		return (
@@ -42,7 +42,7 @@ const Footer = ({ stage, prevStage, nextStage, createDataset, closeModal, ok }) 
 			<ModalFooter>
 				<Button color="link" className="back-button" onClick={prevStage}>Go Back</Button>{' '}
 				<Button color="secondary" onClick={closeModal}>Cancel</Button>{' '}
-				<Button color="primary" disabled={!ok} onClick={createDataset}>Submit</Button>
+				<Button color="primary" disabled={creating} disabled={!ok} onClick={createDataset}>{creating ? 'Submitting...' : 'Submit'}</Button>
 			</ModalFooter>
 		);
 	}
@@ -56,7 +56,7 @@ const mapStateToProps = state => ({
 		if (!items.length) return false;
 		return !items.filter(i => i.error || !i.data || !i.data.length).length
 	})(state.dataset.create.items),
-
+	creating: state.dataset.creating
 });
 
 const mapDispatchToProps = dispatch => ({

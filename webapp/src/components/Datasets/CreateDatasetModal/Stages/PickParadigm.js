@@ -10,6 +10,7 @@ const src = title => `https://via.placeholder.com/200x150.png/eee/aaa?text=${tit
 
 const PickParadigm = ({ paradigm, changeDatasetParadigm }) => (
 	<div className="text-center pick-paradigm">
+		<h4>Pick dataset paradigm</h4>
 		<img onClick={() => changeDatasetParadigm('sql')} src={src('SQL')} className={classNames('rounded img-thumbnail', { selected: paradigm === 'sql' })}></img>
 		<div>
 			<img src={src('NoSQL')} className="rounded img-thumbnail disabled"></img>

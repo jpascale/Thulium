@@ -4,7 +4,8 @@ import Papa from 'papaparse';
 import isInt from 'validator/lib/isInt';
 import isFloat from 'validator/lib/isFloat';
 import isBoolean from 'validator/lib/isBoolean';
-import * as _ from 'lodash';
+import isEqual from 'lodash/isEqual';
+import { notify } from './app'
 
 export const updateDatasetActions = (payload) => ({
   type: CD.UPDATE_DATASET_ACTIONS,
@@ -143,7 +144,7 @@ export const assignFileToItem = (id, file, { firstLine, exam, reducedFile }) => 
       const reducedTypes = range(data[0].length, 0, mapToTypes(reducedData));
 
       // Compare file schema
-      if (!_.isEqual(types, reducedTypes) || !_.isEqual(headers, reducedHeaders)) {
+      if (!isEqual(types, reducedTypes) || !isEqual(headers, reducedHeaders)) {
         return dispatch({
           type: CD.ASSIGN_FILE_TO_ITEM,
           payload: { id, error: true, errorText: 'Schema provided in the reduced file does not repect main schema' }
@@ -196,11 +197,22 @@ export const useExamTypeDataset = (exam) => ({
 });
 
 const creatingDataset = () => ({ type: CD.CREATING_DATASET });
-const createdDataset = () => ({ type: CD.CREATED_DATASET });
+const createdDataset = payload => ({ type: CD.CREATED_DATASET, payload });
 
 export const createDataset = () => (dispatch, getState) => {
-  dispatch(creatingDataset());
   const { paradigm, items, title, exam, actions } = getState().dataset.create;
+  if (!title) {
+    return dispatch(notify({
+      text: 'Title is required to create a dataset',
+      type: 'warning'
+    }));
+  }
+  dispatch(creatingDataset());
+  dispatch(notify({
+    text: 'Creating dataset',
+    type: 'info'
+  }));
+  
   const data = {
     paradigm,
     title,
@@ -217,7 +229,18 @@ export const createDataset = () => (dispatch, getState) => {
   DatasetService.create(data, {
     token: getState().auth.token
   }).then(dataset => {
+    dispatch(notify({
+      text: 'Dataset created successfully',
+      type: 'success'
+    }));
+    dispatch(showDatasetModal(false));
     return dispatch(createdDataset(dataset));
+  }).catch(err => {
+    console.error(err);
+    dispatch(notify({
+      text: 'An error ocurred creating the dataset. Please try again',
+      type: 'danger'
+    }));
   });
 };
 

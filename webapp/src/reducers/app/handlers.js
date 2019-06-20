@@ -116,6 +116,10 @@ export default {
   [CD.SHOW_DATASET_MODAL]: (state, show) => {
     return objectAssign({}, state, { showDatasetModal: show });
   },
+  [CD.CREATED_DATASET]: (state, dataset) => {
+    const nextDatasets = Object.assign({}, state.datasets, { [dataset._id]: dataset });
+    return objectAssign({}, state, { datasets: nextDatasets });
+  },
   [CC.FETCHED]: (state, data) => {
     const courses = data.memberships.reduce((memo, val) => {
       memo[val.courseId] = val;
@@ -141,5 +145,5 @@ export default {
       nextNotifications.splice(idx, 1);
     }
     return objectAssign({}, state, { notifications: nextNotifications });
-  }
+  },
 }

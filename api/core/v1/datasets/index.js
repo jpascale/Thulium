@@ -25,7 +25,7 @@ router.post('/',
         return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });
       }
       debug('created internal dataset');
-      res.status(Status.OK).json({ ok: 1 });
+      res.status(Status.OK).json(dataset);
     });
   }
 );

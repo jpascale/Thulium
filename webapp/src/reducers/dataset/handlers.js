@@ -94,5 +94,22 @@ export default {
 	[C.USE_EXAM_TYPE_DATASET]: (state, { exam }) => {
 		const create = objectAssign({}, state.create, { exam });
 		return objectAssign({}, state, { create });
-	}
+	},
+
+	[C.CREATING_DATASET]: state => {
+		return objectAssign({}, state, { creating: true });
+	},
+
+	[C.CREATED_DATASET]: (state, payload) => {
+		return objectAssign({}, state, { creating: false });
+	},
+	[C.SHOW_DATASET_MODAL]: (state, show) => {
+    return objectAssign({}, state, {
+			create: {
+				stage: 'pick-paradigm',
+				paradigm: 'sql',
+				items: []
+			}
+		});
+  },
 }
