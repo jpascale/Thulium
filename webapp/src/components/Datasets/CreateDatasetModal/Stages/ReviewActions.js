@@ -23,10 +23,6 @@ const actionsRepo = {
 			title: 'TRUNCATE',
 			detail: 'is used to remove all records from a table, including all spaces allocated for the records are removed.'
 		},
-		can_comment: {
-			title: 'COMMENT',
-			detail: 'is used to add comments to the data dictionary.'
-		},
 		can_rename: {
 			title: 'RENAME',
 			detail: 'is used to rename an object existing in the database.'

@@ -8,13 +8,21 @@ const Module = {};
 Module.executeQuery = ({ instance, content }, cb) => {
 	debug('running query using mapping %o', instance.tables);
 
-	const parsedQueries = parser.parse(content).query;
-	if (!sharedParsing(instance, parsedQueries)) {
-		return cb(`Table name does not exist`);
+	const { query: parsedQueries, error } = parser.parse(content);
+	if (error) {
+		error.displayMessage = error.message;
+		return cb(error);
 	}
+	const sharedParsingError = sharedParsing(instance, parsedQueries);
+	if (sharedParsingError) return cb(sharedParsingError);
 
 	const queries = parser.deparse(parsedQueries);
-	PostgresStorage.query(queries, cb);
+	PostgresStorage.query(queries, (err, result) => {
+		if (err) {
+			err.displayMessage = err.message;
+		}
+		cb(err, result);
+	});
 };
 
 Module.reportResults = result => ({

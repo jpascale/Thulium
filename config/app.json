@@ -25,7 +25,23 @@
         "data": [["1", "2", "3"]],
         "headers": ["a", "b", "c"],
         "types": ["Int", "Int", "Int"]
-      }]
+      }],
+      "actions": {
+        "can_create": false,
+        "can_drop": false,
+        "can_alter": false,
+        "can_truncate": false,
+        "can_rename": false,
+        "can_insert": false,
+        "can_update": false,
+        "can_delete": false,
+        "can_grant": false,
+        "can_revoke": false,
+        "can_commit": false,
+        "can_rollback": false,
+        "can_savepoint": false,
+        "can_set_transaction": false
+      }
     }
   },
   "production": {
