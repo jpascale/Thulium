@@ -5,6 +5,27 @@ $course-width: 300px;
 	width: $file-width;
 	min-width: $file-width;
 	max-width: $file-width;
+	position: relative;
+
+	.remove-file-button {
+		position: absolute;
+		right: 0;
+		top: 0;
+		background-color: transparent;
+		color: white;
+		outline: none;
+		border: none;
+		z-index: 99999;
+		display: none;
+	}
+
+	&:hover {
+		.remove-file-button {
+			display: block;
+		}
+	}
+
+	
 }
 
 .course-tab-item {

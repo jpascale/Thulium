@@ -33,6 +33,8 @@
 	& > span {
 		display: block;
 		white-space: nowrap;
+		max-width: 120px;
+		overflow: hidden;
 	}
 
 	& > small {

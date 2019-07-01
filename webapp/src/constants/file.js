@@ -5,6 +5,8 @@ export default constants('file', [
 	'close create modal',
 	'creating',
 	'created',
+	'removing',
+	'removed',
 	'change',
 	'autosaving',
 	'autosaved',

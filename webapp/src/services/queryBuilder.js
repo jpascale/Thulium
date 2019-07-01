@@ -20,5 +20,6 @@ export const post = request;
 export const get = (path, query, options) => request(path, query, options, 'get');
 export const patch = (path, body, options) => request(path, body, options, 'patch');
 export const put = (path, body, options) => request(path, body, options, 'put');
+export const del = (path, body, options) => request(path, body, options, 'del');
 
 export const extractBody = res => res.body;

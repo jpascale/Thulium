@@ -47,6 +47,34 @@ export const createFile = ({ filename, engine, dataset }) => (dispatch, getState
 	});
 };
 
+const removingFile = () => ({
+	type: C.REMOVING
+});
+
+const removedFile = file => ({
+	type: C.REMOVED,
+	payload: file
+});
+
+export const removeFile = id => (dispatch, getState) => {
+	dispatch(removingFile());
+	return FileService.removeFile(id, {
+		token: getState().auth.token
+	}).then(() => {
+		dispatch(notify({
+			text: 'File removed successfully',
+			type: 'success'
+		}));
+		return dispatch(removedFile(id));
+	}).catch(err => {
+		console.error(err);
+		dispatch(notify({
+			text: 'Failed to remove file, please try again',
+			type: 'danger'
+		}));
+	});
+};
+
 const autosaving = () => ({
 	type: C.AUTOSAVING
 });

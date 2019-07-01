@@ -39,7 +39,8 @@ class CourseTab extends React.Component {
 	createExam = () => this.setState({ createExam: true, showResponses: false })
 
 	handleChange = key => e => this.setState({ [key]: e.target ? e.target.value : e })
-	handleSubmit = () => {
+	handleSubmit = e => {
+		e.preventDefault();
 		const { membership, createExam } = this.props;
 		const {
 			title,
@@ -251,7 +252,7 @@ class CourseTab extends React.Component {
 									<ListGroupItem tag="a">
 										<ListGroupItemHeading>No questions for this exam</ListGroupItemHeading>
 										<ListGroupItemText>
-											<Button size="sm" onClick={this.addQuestion}>Add question</Button>
+											<Button type="button" size="sm" onClick={this.addQuestion}>Add question</Button>
 										</ListGroupItemText>
 									</ListGroupItem>
 								) : null}
@@ -269,13 +270,13 @@ class CourseTab extends React.Component {
 								{questions.length ? (
 									<ListGroupItem tag="a">
 										<ListGroupItemText>
-											<Button size="sm" onClick={this.addQuestion}>Add another question</Button>
+											<Button type="button" size="sm" onClick={this.addQuestion}>Add another question</Button>
 										</ListGroupItemText>
 									</ListGroupItem>
 								) : null}
 							</ListGroup>
 						</FormGroup>
-						<Button disabled={creating} size="sm">{creating ? 'Creating Exam' : 'Create Exam'}</Button>
+						<Button type="submit" disabled={creating} size="sm">{creating ? 'Creating Exam' : 'Create Exam'}</Button>
 					</Form>
 				</Col>
 			)
@@ -359,7 +360,7 @@ class CourseTab extends React.Component {
 									<option key={d._id} value={d._id}>{d.title}</option>
 								))}
 							</Input>
-							<Button onClick={showDatasetModal.bind(null, true)} size="xs" color="link">Create one now</Button>
+							<Button type="button" onClick={showDatasetModal.bind(null, true)} size="xs" color="link">Create one now</Button>
 						</FormGroup>
 						<FormGroup>
 							<Label>Content</Label>
@@ -376,8 +377,8 @@ class CourseTab extends React.Component {
 						</FormGroup>
 						{correctAnswerForm}
 						<ButtonToolbar>
-							<Button size="sm" onClick={this.saveQuestion(selectedQuestion, false)}>Save</Button>
-							<Button size="sm" onClick={this.saveQuestion(selectedQuestion, true)}>Save and close</Button>
+							<Button type="button" size="sm" onClick={this.saveQuestion(selectedQuestion, false)}>Save</Button>
+							<Button type="button" size="sm" onClick={this.saveQuestion(selectedQuestion, true)}>Save and close</Button>
 						</ButtonToolbar>
 					</Form>
 				</Col>
@@ -450,7 +451,7 @@ class CourseTab extends React.Component {
 															{r.response.substr(0, maxLength)}
 															{isLong ? <span>...<br/></span> : ''}
 															{isLong ? (
-																<Button onClick={this.seeFullAnswer(fullAnswerOptions)} size="xs" color="link">See full answer</Button>
+																<Button type="button" onClick={this.seeFullAnswer(fullAnswerOptions)} size="xs" color="link">See full answer</Button>
 															) : null}
 														</React.Fragment>
 													);
@@ -458,7 +459,7 @@ class CourseTab extends React.Component {
 												if (q.type === 'query-response')
 													return (
 														<React.Fragment>
-															<Button onClick={this.seeFullAnswer(fullAnswerOptions)} color="link" size="xs">See query</Button>
+															<Button type="button" onClick={this.seeFullAnswer(fullAnswerOptions)} color="link" size="xs">See query</Button>
 															{typeof(r.hint) === 'undefined' || typeof(r.review) !== 'undefined' ? null : ' '}
 															{typeof(r.hint) === 'undefined' || typeof(r.review) !== 'undefined' ? null : (
 																r.hint ? '👍' : '👎'
@@ -490,6 +491,7 @@ class CourseTab extends React.Component {
 										<td>{grade.toFixed(2)}/10</td>
 										<td>
 											<Button
+												type="button"
 												onClick={this.sendGradeToCampus(courseGrade.id, item.user.bb_id, grade)}
 												size="xs"
 												color="link">
@@ -517,12 +519,12 @@ class CourseTab extends React.Component {
 						<Component>{fullResponse}</Component>
 					</ModalBody>
 					<ModalFooter>
-						<Button onClick={this.closeFullAnswerModal} color="secondary">Close</Button>{' '}
+						<Button type="button" onClick={this.closeFullAnswerModal} color="secondary">Close</Button>{' '}
 						{canReview ? (
-							<Button onClick={this.reviewResponse(false)} color="danger">Mark incorrect</Button>
+							<Button type="button" onClick={this.reviewResponse(false)} color="danger">Mark incorrect</Button>
 						) : null}{' '}
 						{canReview ? (
-							<Button onClick={this.reviewResponse(true)} color="success">Mark correct</Button>
+							<Button type="button" onClick={this.reviewResponse(true)} color="success">Mark correct</Button>
 						) : null}
 					</ModalFooter>
 				</Modal>
@@ -540,7 +542,7 @@ class CourseTab extends React.Component {
 						<ul className="list-unstyled">
 							{gradeList}
 						</ul>
-						{isTeacher ? <Button size="sm" onClick={this.createExam}>New Exam</Button> : null}
+						{isTeacher ? <Button type="button" type="button" size="sm" onClick={this.createExam}>New Exam</Button> : null}
 					</Col>
 					{isTeacher ? createExamColumn : null}
 					{editQuestionColumn}

@@ -5,6 +5,7 @@ export default constants('app', [
 	'booted',
 	'running',
 	'run',
+	'stop',
 	'run failed',
 	'query changed',
 	'change text',

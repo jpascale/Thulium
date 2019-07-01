@@ -59,6 +59,14 @@ export default {
       files: nextFiles
     });
   },
+  [CF.REMOVED]: (state, id) => {
+    const {
+      [id]: _,
+      ...nextFiles
+    } = state.files;
+    const selectedFile = id === state.selectedFile ? Object.keys(nextFiles)[0] : state.selectedFile;
+    return objectAssign({}, state, { selectedFile, files: nextFiles });
+  },
   [CF.AUTOSAVING]: (state, query) => {
     return objectAssign({}, state, { autosaving: true });
   },
@@ -66,10 +74,13 @@ export default {
     return objectAssign({}, state, { autosaving: false });
   },
   [C.RUNNING]: (state) => {
-    return objectAssign({}, state, { running: true });
+    return objectAssign({}, state, { running: true, stop: false });
   },
   [C.RUN]: (state, results) => {
     return objectAssign({}, state, { running: false, results, error: null });
+  },
+  [C.STOP]: (state, results) => {
+    return objectAssign({}, state, { running: false, stop: true });
   },
   [C.RUN_FAILED]: (state, error) => {
     return objectAssign({}, state, { running: false, error, results: null });

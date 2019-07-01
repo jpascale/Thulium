@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { Navbar, Nav, NavItem, NavLink } from 'reactstrap'
 
-import { changeFile, showCreateFileModal } from '../../actions/files';
+import { changeFile, removeFile, showCreateFileModal } from '../../actions/files';
 import { changeCourse } from '../../actions/courses';
 
 // https://github.com/danro/jquery-easing/blob/master/jquery.easing.js
@@ -63,6 +63,7 @@ class TabBar extends React.Component {
 	}
 
 	changeFile = file => () => this.props.changeFile(file)
+	removeFile = file => () => this.props.removeFile(file)
 	createFile = () => this.props.createFile()
 	
 	changeCourse = course => () => this.props.changeCourse(course)
@@ -77,6 +78,9 @@ class TabBar extends React.Component {
 					href="#"
 					className="editor-action-bar-button">
 					<span>{file.title}</span>
+					{examMode || files.length === 1 ? null : (
+						<button onClick={this.removeFile(file._id)} className="remove-file-button" type="button">&times;</button>
+					)}
 					<small>{engines[file.engine].title} - {datasets[file.dataset].title}</small>
 				</NavLink>
 			</NavItem>
@@ -132,6 +136,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
 	changeFile: file => dispatch(changeFile(file)),
+	removeFile: file => dispatch(removeFile(file)),
 	changeCourse: course => dispatch(changeCourse(course)),
 	createFile: () => dispatch(showCreateFileModal())
 });

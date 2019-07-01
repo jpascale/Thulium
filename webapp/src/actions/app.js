@@ -72,24 +72,44 @@ export const runFailed = payload => (dispatch, getState) => {
 	}));
 };
 
-export const run = payload => (dispatch, getState) => {
+export const run = (explain) => (dispatch, getState) => {
+
+	if (getState().app.running) {
+		dispatch(notify({
+			text: 'A query is already running. Press "Stop" to halt its execution',
+			type: 'warning'
+		}))
+		return;
+	}
 
 	dispatch(running());
 	dispatch(notify({
 		text: 'Sending query',
 		type: 'info'
-	}))
+	}));
 
 	const query = {
 		action: 'execute-query',
 		data: {
 			file: getState().app.selectedFile,
-			content: getState().app.files[getState().app.selectedFile].content
+			content: (explain ? 'explain ' : '') + getState().app.files[getState().app.selectedFile].content
 		}
 	};
 
 	ws().send(query);
 };
+
+export const stop = () => (dispatch, getState) => {
+	dispatch(notify({
+		text: 'Stopped Query',
+		type: 'primary'
+	}));
+	dispatch({
+		type: C.STOP
+	});
+};
+
+export const explain = () => run(true);
 
 export const notify = notification => (dispatch, getState) => {
 	const id = Math.random().toString(36).substr(2);
@@ -120,6 +140,9 @@ export const wsMessageHandler = ({ getState, dispatch }) => ({ topic, message })
 	if (!startsWith(topic, 'execute query')) return;
 	if (endsWith(topic, 'error')) {
 		dispatch(runFailed(message.error));
+		return;
+	}
+	if (getState().app.stop) {
 		return;
 	}
 	dispatch(notify({
