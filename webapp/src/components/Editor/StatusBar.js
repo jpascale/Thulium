@@ -6,7 +6,7 @@ import { Navbar, Nav, NavItem, NavLink } from 'reactstrap'
 class StatusBar extends React.Component {
 	
 	render = () => {
-		const { autosaving } = this.props;
+		const { autosaving, results } = this.props;
 
 		const autosaveStatus = autosaving ? (
 			<NavItem>
@@ -18,12 +18,20 @@ class StatusBar extends React.Component {
 			<Navbar color="dark" expand="md" className="navbar-dark editor-action-bar">
 				<Nav className="mr-auto" navbar>
 					{autosaveStatus}
-					<NavItem>
-						<NavLink href="#" className="editor-action-bar-button">Run in 55ms</NavLink>
-					</NavItem>
-					<NavItem>
-						<NavLink href="#" className="editor-action-bar-button">55 rows affected</NavLink>
-					</NavItem>
+					{results && results.time ? (
+						<React.Fragment>
+							<NavItem>
+								<NavLink href="#" className="editor-action-bar-button">Run in {results.time}ms</NavLink>
+							</NavItem>
+							<NavItem>
+								<NavLink href="#" className="editor-action-bar-button">Showing {results.count} record{results.count === 1 ? '' : 's'}</NavLink>
+							</NavItem>
+						</React.Fragment>
+					) : (
+						<NavItem>
+							<NavLink className="editor-action-bar-button">Type your query in the editor and hit Run</NavLink>
+						</NavItem>
+					)}
 				</Nav>
 			</Navbar>
 		);
@@ -31,7 +39,8 @@ class StatusBar extends React.Component {
 }
 
 const mapStateToProps = state => ({
-	autosaving: state.app.autosaving
+	autosaving: state.app.autosaving,
+	results: state.app.results
 });
 
 const mapDispatchToProps = dispatch => ({

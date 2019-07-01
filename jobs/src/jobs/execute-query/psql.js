@@ -17,10 +17,12 @@ Module.executeQuery = ({ instance, content }, cb) => {
 	if (sharedParsingError) return cb(sharedParsingError);
 
 	const queries = parser.deparse(parsedQueries);
+	const start = Date.now();
 	PostgresStorage.query(queries, (err, result) => {
 		if (err) {
 			err.displayMessage = err.message;
 		}
+		result.time = Date.now() - start;
 		cb(err, result);
 	});
 };
@@ -28,7 +30,8 @@ Module.executeQuery = ({ instance, content }, cb) => {
 Module.reportResults = result => ({
 	columns: result.fields.map(v => v.name),
 	records: result.rows,
-	count: result.rowCount || 0
+	count: result.rowCount || 0,
+	time: result.time
 });
 
 module.exports = Module;

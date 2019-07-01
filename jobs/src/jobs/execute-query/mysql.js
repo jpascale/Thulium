@@ -17,18 +17,24 @@ Module.executeQuery = ({ instance, content, dataset }, cb) => {
 	if (sharedParsingError) return cb(sharedParsingError);
 
 	const queries = parser.deparse(parsedQueries).replace(/"(table_[a-f0-9]{32})"/g, '$1');
+	const start = Date.now();
 	MySQLStorage.query(queries, (err, result) => {
 		if (err) {
 			err.displayMessage = err.message;
 		}
+		result.time = Date.now() - start;
 		cb(err, result);
 	});
 };
 
-Module.reportResults = ([ rows, columns ]) => ({
-	columns: columns.map(v => v.name),
-	records: rows,
-	count: rows.length
-});
+Module.reportResults = result => {
+	const [rows, columns] = result;
+	return {
+		columns: columns.map(v => v.name),
+		records: rows,
+		count: rows.length,
+		time: result.time
+	};
+};
 
 module.exports = Module;
