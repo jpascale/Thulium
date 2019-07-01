@@ -15,7 +15,7 @@
     "async": "^2.6.2",
     "debug": "^4.1.1",
     "lodash.camelcase": "^4.3.0",
-    "pg-query-parser": "^0.2.3",
+    "pg-query-parser": "jpascale/pg-query-parser",
     "superagent": "^5.0.2",
     "zeromq": "^5.1.0"
   }

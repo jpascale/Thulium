@@ -31,7 +31,7 @@ Module.executeQuery = ({ instance, content }, cb) => {
 Module.reportResults = result => ({
 	columns: result.fields.map(v => v.name),
 	records: result.rows,
-	count: result.rowCount || 0,
+	count: result.rows.length,
 	time: result.time
 });
 

@@ -13,11 +13,11 @@ const ActionBar = ({ running, toggleTask, showTask, examMode, run, stop, explain
 				<NavLink href="#" onClick={run} className="editor-action-bar-button">{running ? "Running" : "Run"}</NavLink>
 			</NavItem>
 			<NavItem>
-				<NavLink href="#" onClick={stop} className="editor-action-bar-button">Stop</NavLink>
+				<NavLink href="#" disabled={!running} onClick={stop} className="editor-action-bar-button">Stop</NavLink>
 			</NavItem>
-			{/*<NavItem>
+			<NavItem>
 				<NavLink href="#" onClick={explain} className="editor-action-bar-button">Explain</NavLink>
-			</NavItem>*/}
+			</NavItem>
 		</Nav>
 		{examMode && (
 			<Nav className="ml-auto" navbar>

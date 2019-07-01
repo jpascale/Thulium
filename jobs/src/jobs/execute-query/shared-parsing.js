@@ -51,9 +51,13 @@ const recursivelyCheckAndReplaceWhereClause = (tablesMap, whereClause) => {
 };
 
 const recursivelyCheckAndReplaceAllTablesExist = (tablesMap, query) => {
+	if (query.ExplainStmt) {
+		return recursivelyCheckAndReplaceAllTablesExist(tablesMap, query.ExplainStmt.query);
+	}
 	const statementKey = Object.keys(query).filter(s => /Stmt$/)[0];
 	const target = (() => {
 		if (query[statementKey].relation) return [query[statementKey].relation];
+		if (query[statementKey].query) return rec
 		return query[statementKey].fromClause;
 	})();
 	const statementCondition = every(target, t => {
