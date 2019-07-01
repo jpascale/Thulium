@@ -38,6 +38,9 @@ class SidebarContent extends React.Component {
 		));
 
 		const courseList = courses.map((membership, i) => {
+			if (!membership.course.grades) {
+				console.log(membership);
+			}
 			const exams = membership.course.grades.filter(g => g.content).length;
 			return (
 				<li key={membership.courseId} className="nav-item ml-2 mr-4">

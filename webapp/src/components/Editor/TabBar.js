@@ -6,7 +6,61 @@ import { Navbar, Nav, NavItem, NavLink } from 'reactstrap'
 import { changeFile, showCreateFileModal } from '../../actions/files';
 import { changeCourse } from '../../actions/courses';
 
+// https://github.com/danro/jquery-easing/blob/master/jquery.easing.js
+// t: current time, b: begInnIng value, c: change In value, d: duration
+const easeInQuad = (x, t, b, c, d) => c * (t /= d) * t + b;
+
+const DELTA = 10;
+
 class TabBar extends React.Component {
+
+	constructor(props) {
+		super(props);
+
+		this.filesTab = React.createRef();
+	}
+
+	_scroll = direction => {
+		if (this.animating) return;
+		const elem = this.filesTab.current;
+		// check if elem is overflowing
+		if (elem.scrollWidth <= elem.offsetWidth) return;
+		/// already on the left
+		if (elem.scrollLeft === 0 && direction === 'left') return;
+		/// already on the right
+		if (elem.scrollLeft + elem.offsetWidth === elem.scrollWidth && direction === 'right') return;
+		const scrollableLeft = elem.scrollLeft;
+		const scrollableRight = elem.scrollWidth - elem.offsetWidth - elem.scrollLeft;
+		const targetScrollLeft = (() => {
+			if (direction === 'right') {
+				return Math.min(scrollableRight, Math.max(0, elem.scrollLeft + 20));
+			}
+			return Math.min(scrollableLeft, Math.max(0, elem.scrollLeft - 20));
+		})();
+		let t = 0;
+		this.animating = true;
+		console.log('animating from', elem.scrollLeft, 'to', targetScrollLeft, 'diff', targetScrollLeft - scrollableLeft);
+		const start = Date.now();
+		const interval = setInterval(() => {
+			elem.scrollLeft = easeInQuad(elem.scrollLeft, t / 1000, scrollableLeft, targetScrollLeft - scrollableLeft, .4);
+			if (Math.abs(targetScrollLeft - elem.scrollLeft) <= 1) {
+				console.log('done', Date.now() - start);
+				this.animating = false;
+				clearInterval(interval);
+			}
+			t += DELTA;
+		}, DELTA);
+	}
+
+	// _scrollBy = delta => this._scrollTo(this.filesTab.current.scrollLeft + delta);
+
+	_scrollRight = e => {
+		this._scroll('right');
+	}
+
+	_scrollLeft = e => {
+		this._scroll('left');
+	}
 
 	changeFile = file => () => this.props.changeFile(file)
 	createFile = () => this.props.createFile()
@@ -16,7 +70,7 @@ class TabBar extends React.Component {
 	render = () => {
 		const { files, membership, selectedFile, selectedCourse, selectedTab, examMode, datasets, engines } = this.props;
 		const fileList = files.map((file, i) => (
-			<NavItem key={file._id} >
+			<NavItem className="file-tab-item" key={file._id}>
 				<NavLink
 					active={selectedFile === file._id && selectedTab === 'file'}
 					onClick={this.changeFile(file._id)}
@@ -30,7 +84,7 @@ class TabBar extends React.Component {
 		const courseTab = (() => {
 			if (!selectedCourse) return null;
 			return (
-				<NavItem>
+				<NavItem className="course-tab-item">
 					<NavLink
 						active={selectedTab === 'course'}
 						onClick={this.changeCourse(selectedCourse)}
@@ -43,7 +97,7 @@ class TabBar extends React.Component {
 		})();
 		return (
 			<Navbar color="dark" expand="md" fixed="top" className="navbar-dark thulium-editor-tab-bar col-md-9 ml-sm-auto col-lg-10">
-				<Nav className="mr-auto" navbar>
+				<ul className="mr-auto files-tab-bar navbar-nav" ref={this.filesTab}>
 					{fileList}
 					{!examMode ? (
 						<NavItem onClick={this.createFile}>
@@ -51,6 +105,14 @@ class TabBar extends React.Component {
 						</NavItem>
 					) : null}
 					{courseTab}
+				</ul>
+				<Nav className="ml-auto overflow-arrows" navbar style={{ maxHeight: '52px', paddingTop: '8.5px', paddingBottom: '8.5px' }}>
+					<NavItem onClick={this._scrollLeft}>
+						<NavLink active={true} href="#" className="editor-action-bar-button">{'<'}</NavLink>
+					</NavItem>
+					<NavItem onClick={this._scrollRight}>
+						<NavLink active={true} href="#" className="editor-action-bar-button">{'>'}</NavLink>
+					</NavItem>
 				</Nav>
 			</Navbar>
 		);

@@ -1,3 +1,25 @@
+$file-width: 150px;
+$course-width: 300px;
+
+.file-tab-item {
+	width: $file-width;
+	min-width: $file-width;
+	max-width: $file-width;
+}
+
+.course-tab-item {
+	width: $course-width;
+	min-width: $course-width;
+	max-width: $course-width;
+}
+
+.files-tab-bar {
+	max-height: 52px;
+	padding-bottom: 17px;
+	overflow-y: hidden;
+	overflow-x: auto;
+}
+
 .thulium-tab {
 	&.course-tab {
 		padding: 20px;
