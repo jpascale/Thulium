@@ -2,11 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import Loadable from 'react-loadable';
-import { Badge } from 'reactstrap'
+import { Badge } from 'reactstrap';
 
 import { changeFile, showCreateFileModal, selectForQuery } from '../../actions/files';
 import { changeCourse } from '../../actions/courses';
-import { flatten } from 'lodash';
 
 import AddIcon from '../common/AddIcon';
 

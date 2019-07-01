@@ -150,7 +150,9 @@ router.get('/',
 				return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });
 			}
 
-			res.cookie('X-Access-Token', token);
+			res.cookie('X-Access-Token', token, {
+				domain: '.thulium.xyz'
+			});
 
 			res.redirect(Env.select({
 				development: `http://localhost:3010${params.callback || '/'}`,
