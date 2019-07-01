@@ -21,7 +21,7 @@ Module.query = function () {
 	if (!pool) {
 		throw new Error('module has no config');
 	}
-	debug('querying postgres');
+	debug('querying postgres %s', arguments['0']);
 	return pool.query.apply(pool, arguments);
 };
 

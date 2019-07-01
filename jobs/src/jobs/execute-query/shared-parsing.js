@@ -35,6 +35,21 @@ const conditionReplacer = (tablesMap, whereExpression) => {
 	return true;
 };
 
+const recursivelyCheckAndReplaceWhereClause = (tablesMap, whereClause) => {
+	if (whereClause.SubLink) {
+		return recursivelyCheckAndReplaceAllTablesExist(tablesMap, whereClause.SubLink.subselect);
+	}
+	const whereExpressionKey = Object.keys(whereClause).filter(k => /Expr$/)[0];
+	const whereExpression = whereClause[whereExpressionKey];
+	if (whereExpression.lexpr) {
+		return conditionReplacer(tablesMap, whereExpression);
+	}
+	if (whereExpression.args) {
+		return every(whereExpression.args, e => recursivelyCheckAndReplaceWhereClause(tablesMap, e));
+	}
+	return true;
+};
+
 const recursivelyCheckAndReplaceAllTablesExist = (tablesMap, query) => {
 	const statementKey = Object.keys(query).filter(s => /Stmt$/)[0];
 	const target = (() => {
@@ -72,20 +87,7 @@ const recursivelyCheckAndReplaceAllTablesExist = (tablesMap, query) => {
 		return true;
 	});
 	if (!query[statementKey].whereClause) return statementCondition;
-	const whereCondition = (() => {
-		if (query[statementKey].whereClause.SubLink) {
-			return recursivelyCheckAndReplaceAllTablesExist(tablesMap, query[statementKey].whereClause.SubLink.subselect);
-		}
-		const whereExpressionKey = Object.keys(query[statementKey].whereClause).filter(k => /Expr$/)[0];
-		const whereExpression = query[statementKey].whereClause[whereExpressionKey];
-		if (whereExpression.lexpr) {
-			return conditionReplacer(tablesMap, whereExpression);
-		}
-		if (whereExpression.args) {
-			return every(whereExpression.args, e => conditionReplacer(tablesMap, e));
-		}
-		return true;
-	})();
+	const whereCondition = recursivelyCheckAndReplaceWhereClause(tablesMap, query[statementKey].whereClause);
 	return statementCondition && whereCondition;
 }
 
