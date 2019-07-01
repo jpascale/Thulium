@@ -11,7 +11,9 @@ const GLOBALS = {
   'SERVICE_URL': JSON.stringify('http://localhost:3000'),
   'process.env.SERVICE_URL': JSON.stringify('http://localhost:3000'),
   'BB_CLIENT_ID': JSON.stringify('fc226b24-55ed-462e-be5b-fbc95d52ff6d'),
-  'process.env.BB_CLIENT_ID': JSON.stringify('fc226b24-55ed-462e-be5b-fbc95d52ff6d')
+  'process.env.BB_CLIENT_ID': JSON.stringify('fc226b24-55ed-462e-be5b-fbc95d52ff6d'),
+  'BB_URL': JSON.stringify('https://campus.itba.edu.ar'),
+  'process.env.BB_URL': JSON.stringify('https://campus.itba.edu.ar')
 };
 
 export default {

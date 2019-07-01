@@ -197,7 +197,8 @@
       "SERVICE_URL": 1,
       "__DEV__": 1,
       "BB_CLIENT_ID": 1,
-      "WS_URL": 1
+      "WS_URL": 1,
+      "BB_URL": 1
     },
     "rules": {
       "no-unused-vars": 1,

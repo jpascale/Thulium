@@ -22,6 +22,12 @@ const decodeState = state => {
 
 debug(Config);
 
+const CAMPUS_URL = Env.select({
+	default: 'https://itba-test.blackboard.com',
+	development: 'https://campus.itba.edu.ar',
+	production: 'https://campus.itba.edu.ar'
+});
+
 router.get('/',
 	(req, res, next) => {
 		if (!req.query.code && !req.query.state) {
@@ -34,7 +40,7 @@ router.get('/',
 
 		debug(`received code ${code}. Exchanging for token`);
 		superagent
-		.post('https://itba-test.blackboard.com/learn/api/public/v1/oauth2/token')
+		.post(`${CAMPUS_URL}/learn/api/public/v1/oauth2/token`)
 		.type('form')
 		.send({
 			grant_type: 'authorization_code',
@@ -63,7 +69,7 @@ router.get('/',
 
 		debug('querying user profile');
 		superagent
-		.get('https://itba-test.blackboard.com/learn/api/public/v1/users/me')
+		.get(`${CAMPUS_URL}/learn/api/public/v1/users/me`)
 		.set('Authorization', `Bearer ${req.accessToken}`)
 		.end((err, { body }) => {
 			if (err) {
@@ -150,9 +156,9 @@ router.get('/',
 				return res.status(Status.INTERNAL_SERVER_ERROR).json({ ok: 0 });
 			}
 
-			res.cookie('X-Access-Token', token, {
-				domain: '.thulium.xyz'
-			});
+			res.cookie('X-Access-Token', token, Env.select({
+				production: { domain: '.thulium.xyz' }
+			}));
 
 			res.redirect(Env.select({
 				development: `http://localhost:3010${params.callback || '/'}`,

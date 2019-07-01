@@ -2,7 +2,7 @@ const superagent = require('superagent')
 		, { Exam } = require('@thulium/internal')	
 		, debug = require('debug')('api:core:v1:learn:gql:membership')
 
-const BASE_URL = 'https://itba-test.blackboard.com/learn/api/public';
+const BASE_URL = 'https://campus.itba.edu.ar/learn/api/public';
 
 module.exports = {
 	CourseGrade: {
@@ -13,7 +13,7 @@ module.exports = {
 			.set('Authorization', req.headers.authorization)
 			.end((err, response) => {
 				if (err) {
-					console.error(err);
+					// console.error(err);
 					return reject(err);
 				}
 				// debug(response.body);
@@ -30,7 +30,7 @@ module.exports = {
 				projection: { _id: 1 }
 			}, (err, exam) => {
 				if (err) {
-					console.error(err);
+					// console.error(err);
 					return reject(err);
 				}
 				if (!exam) return resolve(null);

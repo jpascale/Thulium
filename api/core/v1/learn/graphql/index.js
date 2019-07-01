@@ -35,7 +35,7 @@ router.use('/',
 			cb => {
 				debug(`refreshing token for ${req.user.db.email}`);
 				superagent
-				.post('https://itba-test.blackboard.com/learn/api/public/v1/oauth2/token')
+				.post('https://campus.itba.edu.ar/learn/api/public/v1/oauth2/token')
 				.type('form')
 				.auth(Config.blackboard.APPLICATION_KEY, Config.blackboard.APPLICATION_SECRET)
 				.send({

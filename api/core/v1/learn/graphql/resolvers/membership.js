@@ -1,7 +1,7 @@
 const superagent = require('superagent')
 			, debug = require('debug')('api:core:v1:learn:gql:membership')
 
-const BASE_URL = 'https://itba-test.blackboard.com/learn/api/public';
+const BASE_URL = 'https://campus.itba.edu.ar/learn/api/public';
 
 module.exports = {
 	Query: {
@@ -14,7 +14,7 @@ module.exports = {
 			})
 			.end((err, response) => {
 				if (err) {
-					console.error(err);
+					// console.error(err);
 					return reject(err);
 				}
 				resolve(response.body.results);
@@ -28,7 +28,7 @@ module.exports = {
 			.set('Authorization', req.headers.authorization)
 			.end((err, response) => {
 				if (err) {
-					console.error(err);
+					// console.error(err);
 					return reject(err);
 				}
 				resolve(response.body);

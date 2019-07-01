@@ -12,7 +12,8 @@ const GLOBALS = {
   'WS_URL': JSON.stringify('wss://api.thulium.xyz'),
   'SERVICE_URL': JSON.stringify('https://api.thulium.xyz'),
   'BB_CLIENT_ID': JSON.stringify('fc226b24-55ed-462e-be5b-fbc95d52ff6d'),
-  'process.env.BB_CLIENT_ID': JSON.stringify('fc226b24-55ed-462e-be5b-fbc95d52ff6d')
+  'process.env.BB_CLIENT_ID': JSON.stringify('fc226b24-55ed-462e-be5b-fbc95d52ff6d'),
+  'BB_URL': JSON.stringify('https://campus.itba.edu.ar')
 };
 
 export default {
