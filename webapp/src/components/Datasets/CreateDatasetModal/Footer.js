@@ -42,7 +42,7 @@ const Footer = ({ stage, prevStage, nextStage, createDataset, closeModal, ok, cr
 			<ModalFooter>
 				<Button color="link" className="back-button" onClick={prevStage}>Go Back</Button>{' '}
 				<Button color="secondary" onClick={closeModal}>Cancel</Button>{' '}
-				<Button color="primary" disabled={creating} disabled={!ok} onClick={createDataset}>{creating ? 'Submitting...' : 'Submit'}</Button>
+				<Button color="primary" disabled={creating || !ok} onClick={createDataset}>{creating ? 'Submitting...' : 'Submit'}</Button>
 			</ModalFooter>
 		);
 	}

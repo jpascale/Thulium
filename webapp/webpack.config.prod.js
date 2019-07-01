@@ -10,7 +10,9 @@ const GLOBALS = {
   'process.env.NODE_ENV': JSON.stringify('production'),
   __DEV__: false,
   'WS_URL': JSON.stringify('wss://api.thulium.xyz'),
-  'SERVICE_URL': JSON.stringify('https://api.thulium.xyz')
+  'SERVICE_URL': JSON.stringify('https://api.thulium.xyz'),
+  'BB_CLIENT_ID': JSON.stringify('fc226b24-55ed-462e-be5b-fbc95d52ff6d'),
+  'process.env.BB_CLIENT_ID': JSON.stringify('fc226b24-55ed-462e-be5b-fbc95d52ff6d')
 };
 
 export default {

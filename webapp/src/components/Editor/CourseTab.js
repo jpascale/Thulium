@@ -511,7 +511,7 @@ class CourseTab extends React.Component {
 			return (
 				<Modal isOpen={true}>
 					<ModalHeader>
-						{fullName}'s answer to {questionTitle}
+						{fullName}{"'"}s answer to {questionTitle}
 					</ModalHeader>
 					<ModalBody>
 						<Component>{fullResponse}</Component>

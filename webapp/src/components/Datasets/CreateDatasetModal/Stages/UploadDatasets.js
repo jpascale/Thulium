@@ -11,7 +11,7 @@ import UploadItem from './UploadItem';
 const UploadDatasets = ({ items, exam, updateExamDataset }) => (
   <div className="upload-datasets">
     {items.length ? null : (
-      <span className="text-muted">Press "+ Add Collection" to get started 👇</span>
+      <span className="text-muted">Press {'"'}+ Add Collection{'"'} to get started 👇</span>
     )}
     <UploadItem adding />
     <Form>
