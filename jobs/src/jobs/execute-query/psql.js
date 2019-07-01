@@ -21,8 +21,9 @@ Module.executeQuery = ({ instance, content }, cb) => {
 	PostgresStorage.query(queries, (err, result) => {
 		if (err) {
 			err.displayMessage = err.message;
+		} else {
+			result.time = Date.now() - start;
 		}
-		result.time = Date.now() - start;
 		cb(err, result);
 	});
 };

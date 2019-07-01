@@ -18,19 +18,80 @@ const actionsRepo = {
 	can_set_transaction: qs => every(qs, q => !q.TransactionStmt),
 };
 
+const conditionReplacer = (tablesMap, whereExpression) => {
+	if (whereExpression.lexpr.SubLink && whereExpression.rexpr.SubLink) {
+		const l = recursivelyCheckAndReplaceAllTablesExist(tablesMap, whereExpression.lexpr.SubLink.subselect);
+		const r = recursivelyCheckAndReplaceAllTablesExist(tablesMap, whereExpression.rexpr.SubLink.subselect);
+		return l && r;
+	}
+	if (whereExpression.lexpr.SubLink) {
+		const l = recursivelyCheckAndReplaceAllTablesExist(tablesMap, whereExpression.lexpr.SubLink.subselect);
+		return l;
+	}
+	if (whereExpression.rexpr.SubLink) {
+		const r = recursivelyCheckAndReplaceAllTablesExist(tablesMap, whereExpression.rexpr.SubLink.subselect);
+		return r;
+	}
+	return true;
+};
+
+const recursivelyCheckAndReplaceAllTablesExist = (tablesMap, query) => {
+	const statementKey = Object.keys(query).filter(s => /Stmt$/)[0];
+	const target = (() => {
+		if (query[statementKey].relation) return [query[statementKey].relation];
+		return query[statementKey].fromClause;
+	})();
+	const statementCondition = every(target, t => {
+		if (t.RangeSubselect) return recursivelyCheckAndReplaceAllTablesExist(tablesMap, t.RangeSubselect.subquery);
+		if (t.JoinExpr) {
+			if (t.JoinExpr.larg.RangeSubselect && t.JoinExpr.rarg.RangeSubselect) {
+				const l = recursivelyCheckAndReplaceAllTablesExist(tablesMap, t.JoinExpr.larg.RangeSubselect.subquery);
+				const r = recursivelyCheckAndReplaceAllTablesExist(tablesMap, t.JoinExpr.rarg.RangeSubselect.subquery);
+				return l && r;
+			}
+			if (t.JoinExpr.larg.RangeSubselect) {
+				const l = recursivelyCheckAndReplaceAllTablesExist(tablesMap, t.JoinExpr.larg.RangeSubselect.subquery);
+				const r = tablesMap.get(t.JoinExpr.rarg.RangeVar.relname);
+				t.JoinExpr.rarg.RangeVar.relname = tablesMap.get(t.JoinExpr.rarg.RangeVar.relname);
+				return l && r;
+			}
+			if (t.JoinExpr.rarg.RangeSubselect) {
+				const r = recursivelyCheckAndReplaceAllTablesExist(tablesMap, t.JoinExpr.rarg.RangeSubselect.subquery);
+				const l = tablesMap.get(t.JoinExpr.larg.RangeVar.relname);
+				t.JoinExpr.larg.RangeVar.relname = tablesMap.get(t.JoinExpr.larg.RangeVar.relname);
+				return l && r;
+			}
+			const l = tablesMap.get(t.JoinExpr.larg.RangeVar.relname);
+			const r = tablesMap.get(t.JoinExpr.rarg.RangeVar.relname);
+			t.JoinExpr.larg.RangeVar.relname = tablesMap.get(t.JoinExpr.larg.RangeVar.relname);
+			t.JoinExpr.rarg.RangeVar.relname = tablesMap.get(t.JoinExpr.rarg.RangeVar.relname);
+			return l && r;
+		}
+		if (!tablesMap.get(t.RangeVar.relname)) return false;
+		t.RangeVar.relname = tablesMap.get(t.RangeVar.relname);
+		return true;
+	});
+	if (!query[statementKey].whereClause) return statementCondition;
+	const whereCondition = (() => {
+		if (query[statementKey].whereClause.SubLink) {
+			return recursivelyCheckAndReplaceAllTablesExist(tablesMap, query[statementKey].whereClause.SubLink.subselect);
+		}
+		const whereExpressionKey = Object.keys(query[statementKey].whereClause).filter(k => /Expr$/)[0];
+		const whereExpression = query[statementKey].whereClause[whereExpressionKey];
+		if (whereExpression.lexpr) {
+			return conditionReplacer(tablesMap, whereExpression);
+		}
+		if (whereExpression.args) {
+			return every(whereExpression.args, e => conditionReplacer(tablesMap, e));
+		}
+		return true;
+	})();
+	return statementCondition && whereCondition;
+}
+
 module.exports = (instance, parsedQueries) => {
 	const { tables: tablesMap, dataset } = instance;
-	const allTablesExist = every(parsedQueries, q => {
-		if (!q.SelectStmt) return true;
-		return every(q.SelectStmt.fromClause || [], t => {
-			debug('using %o to replace %s to %s', tablesMap, t.RangeVar.relname, tablesMap.get(t.RangeVar.relname));
-			if (!tablesMap.get(t.RangeVar.relname)) {
-				return false;
-			}
-			t.RangeVar.relname = tablesMap.get(t.RangeVar.relname);
-			return true;
-		});
-	});
+	const allTablesExist = every(parsedQueries, q => recursivelyCheckAndReplaceAllTablesExist(tablesMap, q));
 	if (!allTablesExist) return 'Table name does not exist';
 	debug(dataset.actions);
 	const allowedToDoEverything = every(Array.from(dataset.actions.keys()), action => {
