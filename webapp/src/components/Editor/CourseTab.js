@@ -542,7 +542,7 @@ class CourseTab extends React.Component {
 						<ul className="list-unstyled">
 							{gradeList}
 						</ul>
-						{isTeacher ? <Button type="button" type="button" size="sm" onClick={this.createExam}>New Exam</Button> : null}
+						{isTeacher ? <Button type="button" size="sm" onClick={this.createExam}>New Exam</Button> : null}
 					</Col>
 					{isTeacher ? createExamColumn : null}
 					{editQuestionColumn}
