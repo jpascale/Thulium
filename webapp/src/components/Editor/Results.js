@@ -8,18 +8,19 @@ class Results extends React.Component {
 
 	rowGetter = (i) => this.props.records[i]
 
-	render() {
+	render = () => {
 		const { columns, recordCount } = this.props;
 		const dataGridColumns = columns.map(c => ({
 			key: c,
 			name: c
 		}));
+		const minHeight = window.innerHeight - 40 - 52 - 29 - 500 - 29;
 		return (
 			<ReactDataGrid
         columns={dataGridColumns}
         rowGetter={this.rowGetter}
         rowsCount={recordCount}
-        minHeight={500} />
+        minHeight={minHeight} />
 		);
 	}
 }
