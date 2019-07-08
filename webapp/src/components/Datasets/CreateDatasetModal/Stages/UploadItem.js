@@ -1,7 +1,7 @@
 /* eslint-disable import/no-named-as-default */
 import React from 'react';
 import { connect } from 'react-redux';
-import { Collapse, CardBody, Card, CardHeader, UncontrolledTooltip, FormGroup, Label, Input, Form, FormText, Button, Alert } from 'reactstrap';
+import { Collapse, CardBody, Card, CardHeader, UncontrolledTooltip, FormGroup, Label, Input, Form, FormText, Button, Row, Col, Alert } from 'reactstrap';
 import classNames from 'classnames';
 
 import { addItemToDataset, assignFileToItem, upload } from '../../../../actions/datasets';
@@ -72,7 +72,16 @@ class UploadItem extends React.Component {
     const header = (() => {
       if (changingTitle) {
         return (
-          <input type="text" autoFocus className="form-control form-control-sm" value={title} onClick={this.handleInputClick} onChange={this.handleChange('title')} onKeyPress={this.handleKeyPress} onBlur={this.handleBlur} />
+          <input
+            type="text"
+            autoFocus
+            placeholder="Ex. users. Then press Enter to apply changes"
+            className="form-control form-control-sm"
+            value={title}
+            onClick={this.handleInputClick}
+            onChange={this.handleChange('title')}
+            onKeyPress={this.handleKeyPress}
+            onBlur={this.handleBlur} />
         )
       }
       if (adding) {
@@ -108,24 +117,39 @@ class UploadItem extends React.Component {
           {!adding && (
             <Collapse isOpen={!collapsed}>
               <CardBody>
+                <Alert color="info" style={{marginBottom:'5px'}}>
+                  <span style={{display:"block"}}>Select the file from your filesystem that will be used to fill out the contents of the {sql ? 'table' : 'collection'} <b><i>{header}</i></b></span>
+                  {options.exam ? (
+                    <span style={{display:"block"}}>The file will be accesible to the student, the hidden file is used for enhanced query auto-correcting capabilities</span>
+                  ) : null}
+                </Alert>
                 <Form>
-                  <FormGroup>
-                    <Label>File</Label>
-                    <Input type="file" accept=".csv, text/csv" onChange={this.handleFileChange} />
-                    <FormText color="muted">We only accept CSV Files</FormText>
-                  </FormGroup>
-                  {this.props.options && this.props.options.exam &&
-                    <FormGroup>
-                      <Label>Reduced file</Label>
-                      <Input type="file" accept=".csv, text/csv" onChange={this.handleReducedFileChange} />
-                      <FormText color="muted">We only accept CSV Files</FormText>
-                    </FormGroup>}
+                  <Row form>
+                    <Col sm={6}>
+                      <FormGroup>
+                        <Label>File</Label>
+                        <Input type="file" accept=".csv, text/csv" onChange={this.handleFileChange} />
+                        <FormText color="muted">We only accept CSV Files</FormText>
+                      </FormGroup>
+                    </Col>
+                    {options && options.exam ? (
+                      <Col sm={6}>
+                        <FormGroup>
+                          <Label>Hidden File</Label>
+                          <Input type="file" accept=".csv, text/csv" onChange={this.handleReducedFileChange} />
+                          <FormText color="muted">We only accept CSV Files</FormText>
+                        </FormGroup>
+                      </Col>
+                    ) : null}
+                  </Row>
                   <FormGroup check>
                     <Label check>
                       <Input type="checkbox" onChange={this.toggleFirstLine} /> First line contains column names
                     </Label>
                   </FormGroup>
                   <Button size="sm" disabled={!file || (options && options.exam && !reducedFile)} onClick={this.process}>Process File</Button>
+                  <br/>
+                  <small className="text-muted">All files need to be processed before going on to the next step</small>
                 </Form>
               </CardBody>
             </Collapse>
@@ -137,7 +161,7 @@ class UploadItem extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  sql: state.dataset.create.type === 'SQL'
+  sql: state.dataset.create.paradigm === 'sql'
 });
 
 const mapDispatchToProps = dispatch => ({

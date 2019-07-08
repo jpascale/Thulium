@@ -3,14 +3,15 @@ import { connect } from 'react-redux';
 import { NavItem, NavLink, Nav } from 'reactstrap';
 import Loadable from 'react-loadable';
 import AddIcon from '../common/AddIcon';
+import AsyncDatasetModal from './CreateDatasetModal/';
 
 import { showDatasetModal } from '../../actions/datasets'
 
-const AsyncDatasetModal = Loadable({
-  loader: () => import(/* webpackChunkName: "DatasetModal" */ './CreateDatasetModal/'),
-  /* eslint-disable react/display-name */
-  loading: () => <span>Loading</span>
-});
+// const AsyncDatasetModal = Loadable({
+//   loader: () => import(/* webpackChunkName: "DatasetModal" */ './CreateDatasetModal/'),
+//   /* eslint-disable react/display-name */
+//   loading: () => <span>Loading</span>
+// });
 
 class CreateDatasetMenuItem extends React.Component {
 

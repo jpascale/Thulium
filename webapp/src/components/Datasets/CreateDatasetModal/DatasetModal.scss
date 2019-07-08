@@ -12,8 +12,13 @@
 			}
 		}
 
+		.title-caption {
+			display: block;
+			font-size: 50%;
+		}
+
 		&.untitled {
-			color: '#ddd';
+			color: #999;
 			font-style: italic;
 		}
 	}

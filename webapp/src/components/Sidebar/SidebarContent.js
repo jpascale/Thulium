@@ -9,11 +9,13 @@ import { changeCourse } from '../../actions/courses';
 
 import AddIcon from '../common/AddIcon';
 
-const AsyncDatasetMenuItem = Loadable({
-	loader: () => import(/* webpackChunkName: "DatasetMenuItem" */ '../Datasets/CreateDatasetMenuItem'),
-	/* eslint-disable react/display-name */
-	loading: () => <span>Loading</span>
-});
+import AsyncDatasetMenuItem from '../Datasets/CreateDatasetMenuItem';
+
+// const AsyncDatasetMenuItem = Loadable({
+// 	loader: () => import(/* webpackChunkName: "DatasetMenuItem" */ '../Datasets/CreateDatasetMenuItem'),
+// 	/* eslint-disable react/display-name */
+// 	loading: () => <span>Loading</span>
+// });
 
 class SidebarContent extends React.Component {
 

@@ -27,6 +27,16 @@ class Header extends React.Component {
       });
     }
   }
+  handleFocus = e => this.setState({ previousTitle: e.target.value });
+  handleBlur = () => {
+    const { changingTitle, previousTitle } = this.state;
+    if (changingTitle) {
+      this.setState({
+        changingTitle: false,
+        title: previousTitle
+      });
+    }
+  }
 
   render = () => {
     const { type } = this.props;
@@ -34,7 +44,17 @@ class Header extends React.Component {
     const titleContent = (() => {
       if (changingTitle) {
         return (
-          <input type="text" className="form-control" value={title} onKeyPress={this.handleKeyPress} onChange={this.handleChange('title')} />
+					<React.Fragment>
+						<input
+							type="text"
+							className="form-control"
+							value={title}
+							onKeyPress={this.handleKeyPress}
+							onFocus={this.handleFocus}
+							onBlur={this.handleBlur}
+							onChange={this.handleChange('title')} />
+						<small className="text-muted title-caption">Press Enter to apply changes</small>
+					</React.Fragment>
         );
       }
       return (
