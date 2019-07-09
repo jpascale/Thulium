@@ -126,20 +126,36 @@ export const assignFileToItem = (id, file, { firstLine, exam, reducedFile, empty
 
     const mapToTypes = data => i => {
       const values = data.slice(0, 5).map(row => row[i]);
-      const isAnInt = values.filter(isInt).length === values.length;
+      const isAnInt = values.filter(v => isInt(`${v}`)).length === values.length;
       if (isAnInt) return 'Int';
-      const isAFloat = values.filter(isFloat).length === values.length;
+      const isAFloat = values.filter(v => isFloat(`${v}`)).length === values.length;
       if (isAFloat) return 'Float';
-      const isABoolean = values.filter(isBoolean).length === values.length;
+      const isABoolean = values.filter(v => isBoolean(`${v}`)).length === values.length;
       if (isABoolean) return 'Boolean';
-      const isATime = values.filter(isTime).length === values.length;
+      const isATime = values.filter(v => isTime(`${v}`)).length === values.length;
       if (isATime) return 'Time';
-      const isADate = values.filter(isDate).length === values.length;
+      const isADate = values.filter(v => isDate(`${v}`)).length === values.length;
       if (isADate) return 'Date';
-      const isATimestamp = values.filter(v => isISO8601(v, { strict: true })).length === values.length;
+      const isATimestamp = values.filter(v => isISO8601(`${v}`, { strict: true })).length === values.length;
       if (isATimestamp) return 'Timestamp';
       return 'String';
     };
+
+    if (null2NULL) {
+      data.forEach((d, i) => d.forEach((d, j) => {
+        if (d.toLowerCase().trim() !== 'null') return;
+        data[i][j] = null;
+      }));
+    }
+
+    if (empty2NULL) {
+      data.forEach((d, i) => d.forEach((d, j) => {
+        if (d === null) return;
+        if (typeof(d) === 'undefined') return;
+        if (d.toLowerCase().trim() !== '') return;
+        data[i][j] = null;
+      }));
+    }
 
     const types = range(data[0].length, 0, mapToTypes(data));
 

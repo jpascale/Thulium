@@ -15,7 +15,13 @@ class Header extends React.Component {
   }
 
   handleChange = key => e => this.setState({ [key]: e.target.value })
-  changeTitle = () => this.setState({ changingTitle: true })
+  changeTitle = () => {
+    if (this.state.changingTitle) return;
+    this.setState({ changingTitle: true }, () => {
+      this.input.focus();
+      this.input.setSelectionRange(0, this.input.value.length);
+    });
+  }
   handleKeyPress = e => {
     const { title } = this.state;
     if (e.key === 'Enter') {
@@ -39,14 +45,15 @@ class Header extends React.Component {
   }
 
   render = () => {
-    const { type } = this.props;
+    const { paradigm } = this.props;
     const { modifiedTitle, changingTitle, title } = this.state;
     const titleContent = (() => {
       if (changingTitle) {
         return (
 					<React.Fragment>
 						<input
-							type="text"
+              ref={ref => this.input = ref}
+							paradigm="text"
 							className="form-control"
 							value={title}
 							onKeyPress={this.handleKeyPress}
@@ -68,14 +75,14 @@ class Header extends React.Component {
     })();
     return (
       <ModalHeader toggle={this.props.toggle} onClick={this.changeTitle} className={classNames({ untitled: !modifiedTitle })}>
-        <Badge color="success">{type}</Badge> {titleContent}
+        <Badge color="success">{paradigm.toUpperCase()}</Badge> {titleContent}
       </ModalHeader>
     )
   }
 }
 
 const mapStateToProps = state => ({
-  type: state.dataset.create.type
+  paradigm: state.dataset.create.paradigm
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -32,13 +32,12 @@ class UploadItem extends React.Component {
   handleKeyPress = e => {
     const { adding, addItemToDataset } = this.props;
     const { title } = this.state;
-    if (e.key === 'Enter') {
-      if (adding) {
-        addItemToDataset(title);
-        this.setState({ title: '' });
-      }
-      return this.toggleTitleEdit();
+    if (e.key !== 'Enter') return;
+    if (adding) {
+      addItemToDataset(title);
+      this.setState({ title: '' });
     }
+    this.toggleTitleEdit();
   }
 
   handleBlur = e => this.toggleTitleEdit()
@@ -87,7 +86,7 @@ class UploadItem extends React.Component {
             onChange={this.handleChange('title')}
             onKeyPress={this.handleKeyPress}
             onBlur={this.handleBlur} />
-        )
+        );
       }
       if (adding) {
         return (
@@ -123,7 +122,7 @@ class UploadItem extends React.Component {
             <Collapse isOpen={!collapsed}>
               <CardBody>
                 <Alert color="info" style={{marginBottom:'5px'}}>
-                  <span style={{display:"block"}}>Select the file from your filesystem that will be used to fill out the contents of the {sql ? 'table' : 'collection'} <b><i>{header}</i></b></span>
+                  <span style={{display:"block"}}>Select the file from your filesystem that will be used to fill out the contents of the {sql ? 'table' : 'collection'} <b><i>{title}</i></b></span>
                   {options.exam ? (
                     <span style={{display:"block"}}>The file will be accesible to the student, the hidden file is used for enhanced query auto-correcting capabilities</span>
                   ) : null}

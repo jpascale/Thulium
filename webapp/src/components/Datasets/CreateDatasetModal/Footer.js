@@ -20,7 +20,9 @@ const Footer = ({ stage, prevStage, nextStage, createDataset, closeModal, ok, cr
 	if (stage === 'upload-datasets') {
 		return (
 			<ModalFooter>
-				<Button color="link" className="back-button" onClick={prevStage}>Go Back</Button>{' '}
+				<div className="back-button">
+					<Button color="link" onClick={prevStage}>Go Back</Button>
+				</div>
 				<Button color="secondary" onClick={closeModal}>Cancel</Button>{' '}
 				<Button color="primary" disabled={!ok} onClick={nextStage}>Next Step</Button>
 			</ModalFooter>
@@ -30,7 +32,9 @@ const Footer = ({ stage, prevStage, nextStage, createDataset, closeModal, ok, cr
 	if (stage === 'review-datasets') {
 		return (
 			<ModalFooter>
-				<Button color="link" className="back-button" onClick={prevStage}>Go Back</Button>{' '}
+				<div className="back-button">
+					<Button color="link" onClick={prevStage}>Go Back</Button>
+				</div>
 				<Button color="secondary" onClick={closeModal}>Cancel</Button>{' '}
 				<Button color="primary" disabled={!ok} onClick={nextStage}>Next step</Button>
 			</ModalFooter>
@@ -40,7 +44,9 @@ const Footer = ({ stage, prevStage, nextStage, createDataset, closeModal, ok, cr
 	if (stage === 'review-actions') {
 		return (
 			<ModalFooter>
-				<Button color="link" className="back-button" onClick={prevStage}>Go Back</Button>{' '}
+				<div className="back-button">
+					<Button color="link" onClick={prevStage}>Go Back</Button>
+				</div>
 				<Button color="secondary" onClick={closeModal}>Cancel</Button>{' '}
 				<Button color="primary" disabled={creating || !ok} onClick={createDataset}>{creating ? 'Submitting...' : 'Submit'}</Button>
 			</ModalFooter>
