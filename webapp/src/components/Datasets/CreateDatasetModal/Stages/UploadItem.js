@@ -12,11 +12,14 @@ class UploadItem extends React.Component {
 
   state = {
     collapsed: false,
+    firstLine: false,
+    empty2NULL: false,
+    null2NULL: false,
     title: this.props.item ? this.props.item.title : ''
   }
 
   handleChange = key => e => this.setState({ [key]: e.target.value })
-  toggleFirstLine = e => this.setState({ firstLine: e.target.checked })
+  handleToggle = key => e => this.setState({ [key]: e.target.checked })
   toggleExamDataset = e => this.setState({ exam: e.target.checked })
   toggleCollapsed = e => this.setState({ collapsed: !this.state.collapsed })
   toggleTitleEdit = e => {
@@ -57,9 +60,11 @@ class UploadItem extends React.Component {
 
   process = e => {
     const { assignFileToItem, item, options } = this.props;
-    const { file, reducedFile, firstLine } = this.state;
+    const { file, reducedFile, firstLine, empty2NULL, null2NULL } = this.state;
     assignFileToItem(item.id, file, {
       firstLine,
+      empty2NULL,
+      null2NULL,
       exam: options && options.exam || false,
       reducedFile: reducedFile || false
     });
@@ -67,7 +72,7 @@ class UploadItem extends React.Component {
 
   render = () => {
     const { adding, sql, item, options } = this.props;
-    const { changingTitle, collapsed, title, file, reducedFile } = this.state;
+    const { changingTitle, collapsed, title, file, reducedFile, firstLine, empty2NULL, null2NULL } = this.state;
 
     const header = (() => {
       if (changingTitle) {
@@ -142,9 +147,20 @@ class UploadItem extends React.Component {
                       </Col>
                     ) : null}
                   </Row>
+                  <h5>File Options</h5>
                   <FormGroup check>
                     <Label check>
-                      <Input type="checkbox" onChange={this.toggleFirstLine} /> First line contains column names
+                      <Input type="checkbox" value={firstLine} onChange={this.handleToggle('firstLine')} /> First line contains column names
+                    </Label>
+                  </FormGroup>
+                  <FormGroup check>
+                    <Label check>
+                      <Input type="checkbox" value={empty2NULL} onChange={this.handleToggle('empty2NULL')} /> Empty cells are treated as <code>NULL</code>
+                    </Label>
+                  </FormGroup>
+                  <FormGroup check>
+                    <Label check>
+                      <Input type="checkbox" value={null2NULL} onChange={this.handleToggle('null2NULL')} /> Cells containing "NULL" or "null" are treated as <code>NULL</code>
                     </Label>
                   </FormGroup>
                   <Button size="sm" disabled={!file || (options && options.exam && !reducedFile)} onClick={this.process}>Process File</Button>

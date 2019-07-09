@@ -61,7 +61,10 @@ const flatten = arr => arr.reduce((memo, arr) => memo.concat(arr), []);
 const dataTypeMap = {
 	Int: 'INTEGER',
 	String: 'VARCHAR(255)',
-	Float: 'NUMERIC'
+	Float: 'NUMERIC',
+	Time: 'TIME',
+	Date: 'DATE',
+	Timestamp: 'TIMESTAMP'
 };
 
 // Deprecated

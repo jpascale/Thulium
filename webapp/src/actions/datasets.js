@@ -5,7 +5,9 @@ import isInt from 'validator/lib/isInt';
 import isFloat from 'validator/lib/isFloat';
 import isBoolean from 'validator/lib/isBoolean';
 import isEqual from 'lodash/isEqual';
+import isISO8601 from 'validator/lib/isISO8601';
 import { notify } from './app'
+import moment from 'moment';
 
 export const updateDatasetActions = (payload) => ({
   type: CD.UPDATE_DATASET_ACTIONS,
@@ -100,8 +102,18 @@ export const addItemToDataset = title => ({
 });
 
 const range = (n, b = 0, fn = i => i) => new Array(n).fill(undefined).map((_, i) => fn(i + b));
+const any = (coll, pred = v => v) => coll.reduce((m, v) => m || pred(v), true);
 
-export const assignFileToItem = (id, file, { firstLine, exam, reducedFile }) => dispatch => {
+const isDate = v => moment(v, 'YYYY-MM-DD', true).isValid();
+
+const isTime = v => any([
+  moment(v, 'HH:mm', true).isValid(),
+  moment(v, 'HH:mm:ss', true).isValid(),
+  moment(v, 'HHmmss', true).isValid(),
+  moment(v, 'HHmm', true).isValid(),
+]);
+
+export const assignFileToItem = (id, file, { firstLine, exam, reducedFile, empty2NULL, null2NULL }) => dispatch => {
   return Papa.parsePromise(file, { skipEmptyLines: true }).then(({ data: _data }) => {
     const headers = firstLine ? _data[0] : [];
     const data = firstLine ? _data.slice(1) : _data;
@@ -112,7 +124,7 @@ export const assignFileToItem = (id, file, { firstLine, exam, reducedFile }) => 
       });
     }
 
-    const mapToTypes = (data) => (i) => {
+    const mapToTypes = data => i => {
       const values = data.slice(0, 5).map(row => row[i]);
       const isAnInt = values.filter(isInt).length === values.length;
       if (isAnInt) return 'Int';
@@ -120,6 +132,12 @@ export const assignFileToItem = (id, file, { firstLine, exam, reducedFile }) => 
       if (isAFloat) return 'Float';
       const isABoolean = values.filter(isBoolean).length === values.length;
       if (isABoolean) return 'Boolean';
+      const isATime = values.filter(isTime).length === values.length;
+      if (isATime) return 'Time';
+      const isADate = values.filter(isDate).length === values.length;
+      if (isADate) return 'Date';
+      const isATimestamp = values.filter(v => isISO8601(v, { strict: true })).length === values.length;
+      if (isATimestamp) return 'Timestamp';
       return 'String';
     };
 

@@ -15,7 +15,10 @@ const columnTypes = [
 	'String',
 	'Int',
 	'Float',
-	'Boolean'
+	'Boolean',
+	'Date',
+	'Time',
+	'Timestamp'
 ].map(t => ({ id: t, value: t}));
 
 const ColumnTypeEditor = <DropDownEditor options={columnTypes} />;

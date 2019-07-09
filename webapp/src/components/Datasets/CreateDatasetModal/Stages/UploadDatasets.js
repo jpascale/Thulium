@@ -20,10 +20,6 @@ const UploadDatasets = ({ items, exam, updateExamDataset, sql }) => (
         </FormGroup>
       </Form>
     </Alert>
-    {/*<Alert color="light">
-      <h5>Hidden File</h5>
-      The hidden file is meant to be used to check that a query response is correct for the 
-</Alert>*/}
     {items.length ? null : (
       <span className="text-muted">Press {'"'}+ Add {sql ? 'Table' : 'Collection'}{'"'} to get started 👇</span>
     )}
