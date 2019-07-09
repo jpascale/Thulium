@@ -1,7 +1,7 @@
 const { File, DatasetInstance } = require('@thulium/internal')
-		, EXECUTE_QUERY = 'execute query'
-		, debug = require('debug')('jobs:execute-query')
-		, async = require('async');
+	, EXECUTE_QUERY = 'execute query'
+	, debug = require('debug')('jobs:execute-query')
+	, async = require('async');
 
 const executors = {
 	psql: require('./psql'),
