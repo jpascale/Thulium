@@ -1,26 +1,14 @@
 const debug = require('debug')('jobs:execute-query:shared')
 	, every = require('../../util/every')
-	, { DatasetInstance } = require('@thulium/internal');
+	, { DatasetInstance } = require('@thulium/internal')
+	, crypto = require('crypto');
 
-const generateRandomString = () => {
-	let str = '';
-	for (let i = 0; i < 20; i++) {
-		str += Math.random().toString(36).substring(2, 15);
-	}
-	return str;
-}
-// This is a patch and should be moved/fixed
+const range = (n, b = 0, f = v => v) => Array.from({ length: n }).map((_, i) => f(b + i));
+const generateRandomString = () => range(20, 0, () => Math.random().toString(36).substring(2, 15)).join('');
+
 const generateRandomTableName = () => {
 	debug('generating random table name');
-	const dataHash = crypto.createHash('md5').update(new Buffer(generateRandomString())).digest();
-	const titleHash = crypto.createHash('md5').update(generateRandomString()).digest();
-	const shuffle = (() => {
-		return crypto.createHash('md5').update(generateRandomString()).digest();
-	})();
-	const hash = Buffer.allocUnsafe(dataHash.length);
-	for (let i = 0; i < hash.length; i++) {
-		hash[i] = dataHash[i] ^ shuffle[i] ^ titleHash[i];
-	}
+	const hash = crypto.createHash('md5').update(generateRandomString()).digest();
 	return `table_${hash.toString('hex')}`;
 };
 
@@ -79,22 +67,27 @@ const recursivelyCheckAndReplaceAllTablesExist = (instance, query) => {
 	}
 	// Patch to create a new table and add it to the translation dict.
 	if (query.CreateStmt) {
-		const newTableName = generateRandomTableName();
-		const currentName = CreateStmt.relation.RangeVar.relname;
-		instance.tablesMap[currentName] = newTableName;
+		const generatedTableName = generateRandomTableName();
+		const currentName = query.CreateStmt.relation.RangeVar.relname;
+		instance.tables.set(currentName, generatedTableName);
 
 		DatasetInstance.collection.updateOne({
 			_id: instance._id
 		}, {
-				[`tables.${currentName}`]: newTableName
-			}, () => { });
+			$set: {
+				[`tables.${currentName}`]: generatedTableName
+			}
+		}, err => {
+			if (err) {
+				console.error(err);
+			}
+		});
 
 		// IMPORTANTE: no se esta editando la query actual: query.CreateStmt.relation.RangeVar.relname = newTableName;
 	}
 	const statementKey = Object.keys(query).filter(s => /Stmt$/)[0];
 	const target = (() => {
 		if (query[statementKey].relation) return [query[statementKey].relation];
-		if (query[statementKey].query) return rec
 		return query[statementKey].fromClause;
 	})();
 	const statementCondition = every(target, t => {
@@ -107,24 +100,24 @@ const recursivelyCheckAndReplaceAllTablesExist = (instance, query) => {
 			}
 			if (t.JoinExpr.larg.RangeSubselect) {
 				const l = recursivelyCheckAndReplaceAllTablesExist(instance, t.JoinExpr.larg.RangeSubselect.subquery);
-				const r = instance.tablesMap.get(t.JoinExpr.rarg.RangeVar.relname);
-				t.JoinExpr.rarg.RangeVar.relname = instance.tablesMap.get(t.JoinExpr.rarg.RangeVar.relname);
+				const r = instance.tables.get(t.JoinExpr.rarg.RangeVar.relname);
+				t.JoinExpr.rarg.RangeVar.relname = instance.tables.get(t.JoinExpr.rarg.RangeVar.relname);
 				return l && r;
 			}
 			if (t.JoinExpr.rarg.RangeSubselect) {
 				const r = recursivelyCheckAndReplaceAllTablesExist(instance, t.JoinExpr.rarg.RangeSubselect.subquery);
-				const l = instance.tablesMap.get(t.JoinExpr.larg.RangeVar.relname);
-				t.JoinExpr.larg.RangeVar.relname = instance.tablesMap.get(t.JoinExpr.larg.RangeVar.relname);
+				const l = instance.tables.get(t.JoinExpr.larg.RangeVar.relname);
+				t.JoinExpr.larg.RangeVar.relname = instance.tables.get(t.JoinExpr.larg.RangeVar.relname);
 				return l && r;
 			}
-			const l = instance.tablesMap.get(t.JoinExpr.larg.RangeVar.relname);
-			const r = instance.tablesMap.get(t.JoinExpr.rarg.RangeVar.relname);
-			t.JoinExpr.larg.RangeVar.relname = instance.tablesMap.get(t.JoinExpr.larg.RangeVar.relname);
-			t.JoinExpr.rarg.RangeVar.relname = instance.tablesMap.get(t.JoinExpr.rarg.RangeVar.relname);
+			const l = instance.tables.get(t.JoinExpr.larg.RangeVar.relname);
+			const r = instance.tables.get(t.JoinExpr.rarg.RangeVar.relname);
+			t.JoinExpr.larg.RangeVar.relname = instance.tables.get(t.JoinExpr.larg.RangeVar.relname);
+			t.JoinExpr.rarg.RangeVar.relname = instance.tables.get(t.JoinExpr.rarg.RangeVar.relname);
 			return l && r;
 		}
-		if (!instance.tablesMap.get(t.RangeVar.relname)) return false;
-		t.RangeVar.relname = instance.tablesMap.get(t.RangeVar.relname);
+		if (!instance.tables.get(t.RangeVar.relname)) return false;
+		t.RangeVar.relname = instance.tables.get(t.RangeVar.relname);
 		return true;
 	});
 	if (!query[statementKey].whereClause) return statementCondition;
@@ -133,14 +126,12 @@ const recursivelyCheckAndReplaceAllTablesExist = (instance, query) => {
 }
 
 module.exports = (instance, parsedQueries) => {
-	const { tables: tablesMap, dataset } = instance;
 	const allTablesExist = every(parsedQueries, q => recursivelyCheckAndReplaceAllTablesExist(instance, q));
 	if (!allTablesExist) return 'Table name does not exist';
-	debug(dataset.actions);
-	const allowedToDoEverything = every(Array.from(dataset.actions.keys()), action => {
-		if (dataset.actions[action]) return true;
+	const allowedToDoEverything = every(Array.from(instance.dataset.actions.keys()), action => {
+		if (instance.dataset.actions.get(action)) return true;
 		debug(`checking if %s is allowed`, action)
 		return actionsRepo[action](parsedQueries);
 	});
-	if (!allowedToDoEverything) return 'Not allowed in this dataset'
+	if (!allowedToDoEverything) return 'Not allowed in this dataset';
 };
