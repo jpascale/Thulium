@@ -17,9 +17,9 @@ module.exports = {
 				}
 				req.courseId = id;
 				
-				const grades = response.body.results.filter(g => g.contentId);
+				// const grades = response.body.results.filter(g => g.contentId);
 				// debug(grades);
-				resolve(grades);
+				resolve(response.body.results);
 			});
 		}),
 		contents: ({ id, }, args, req) => new Promise((resolve, reject) => {

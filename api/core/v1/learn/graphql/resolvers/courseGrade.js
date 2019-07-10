@@ -17,10 +17,10 @@ module.exports = {
 					return reject(err);
 				}
 				// debug(response.body);
-				if (response.body.description === 'Thulium Exam') {
+				// if (response.body.description === 'Thulium Exam') {
 					return resolve(response.body);
-				}
-				resolve(null);
+				// }
+				// resolve(null);
 			});
 		}),
 		thuliumID: ({ id }, args, req) => new Promise((resolve, reject) => {

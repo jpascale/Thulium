@@ -31,7 +31,7 @@ class LoginModal extends React.Component {
 	render = () => {
 		const { profile, loggingIn } = this.props;
 		const { modal } = this.state;
-		const blackboardURI = 'https://itba-test.blackboard.com/learn/api/public/v1/oauth2/authorizationcode';
+		const blackboardURI = 'https://campus.itba.edu.ar/learn/api/public/v1/oauth2/authorizationcode';
 		const blackboardURL = `${blackboardURI}?redirect_uri=${SERVICE_URL}/core/v1/auth/social/blackboard&response_type=code&client_id=${BB_CLIENT_ID}&scope=read write offline`;
 		const navbarItems = profile.role === 'anonymous' ? (
 			<NavItem>

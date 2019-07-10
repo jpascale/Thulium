@@ -36,7 +36,7 @@ router.use('/',
 			cb => {
 				debug(`refreshing token for ${req.user.db.email}`);
 				superagent
-				.post('https://itba-test.blackboard.com/learn/api/public/v1/oauth2/token')
+				.post('https://campus.itba.edu.ar/learn/api/public/v1/oauth2/token')
 				.type('form')
 				.auth(Config.blackboard.APPLICATION_KEY, Config.blackboard.APPLICATION_SECRET)
 				.send({
@@ -80,9 +80,10 @@ router.use('/',
 			next();
 		});
 	},
-	proxy('https://itba-test.blackboard.com', {
+	proxy('https://campus.itba.edu.ar', {
 		proxyReqOptDecorator: (proxyReqOpts, req) => {
 			debug('rewriting authorization');
+			debug(`Bearer ${req.user.db.bb_access_token}`);
 			proxyReqOpts.headers.authorization = `Bearer ${req.user.db.bb_access_token}`;
 			delete proxyReqOpts.headers.origin;
 			delete proxyReqOpts.headers.referer;

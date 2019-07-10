@@ -108,7 +108,17 @@ export const submitExamResponse = () => (dispatch, getState) => {
 	}, {
 		token: getState().auth.token
 	}).then(response => {
+		dispatch(notify({
+			text: 'Received successfully',
+			type: 'success'
+		}));
 		return dispatch(submittedExamResponse(response));
+	}, err => {
+		dispatch(notify({
+			text: 'There was an error. Please try again',
+			type: 'danger'
+		}));
+		return err;
 	});
 };
 

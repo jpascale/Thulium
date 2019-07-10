@@ -61,6 +61,46 @@ const recursivelyCheckAndReplaceWhereClause = (instance, whereClause) => {
 	return true;
 };
 
+const recursivelyCheckAndReplaceExpression = instance => t => {
+	if (t.RangeSubselect) return recursivelyCheckAndReplaceAllTablesExist(instance, t.RangeSubselect.subquery);
+	if (t.JoinExpr) {
+		if (t.JoinExpr.larg.RangeSubselect && t.JoinExpr.rarg.RangeSubselect) {
+			const l = recursivelyCheckAndReplaceAllTablesExist(instance, t.JoinExpr.larg.RangeSubselect.subquery);
+			const r = recursivelyCheckAndReplaceAllTablesExist(instance, t.JoinExpr.rarg.RangeSubselect.subquery);
+			return l && r;
+		}
+		if (t.JoinExpr.larg.RangeSubselect) {
+			const l = recursivelyCheckAndReplaceAllTablesExist(instance, t.JoinExpr.larg.RangeSubselect.subquery);
+			const r = instance.tables.get(t.JoinExpr.rarg.RangeVar.relname);
+			t.JoinExpr.rarg.RangeVar.relname = instance.tables.get(t.JoinExpr.rarg.RangeVar.relname);
+			return l && r;
+		}
+		if (t.JoinExpr.rarg.RangeSubselect) {
+			const r = recursivelyCheckAndReplaceAllTablesExist(instance, t.JoinExpr.rarg.RangeSubselect.subquery);
+			const l = instance.tables.get(t.JoinExpr.larg.RangeVar.relname);
+			t.JoinExpr.larg.RangeVar.relname = instance.tables.get(t.JoinExpr.larg.RangeVar.relname);
+			return l && r;
+		}
+		debug(t);
+		if (t.JoinExpr.larg.JoinExpr) {
+			// debug('replace %s for %s', t.JoinExpr.rarg.RangeVar.relname, instance.tables.get(t.JoinExpr.rarg.RangeVar.relname));
+			const r = instance.tables.get(t.JoinExpr.rarg.RangeVar.relname);
+			t.JoinExpr.rarg.RangeVar.relname = instance.tables.get(t.JoinExpr.rarg.RangeVar.relname);
+			const l = recursivelyCheckAndReplaceExpression(instance)(t.JoinExpr.larg);
+			
+			return l && r;
+		}
+		const l = instance.tables.get(t.JoinExpr.larg.RangeVar.relname);
+		const r = instance.tables.get(t.JoinExpr.rarg.RangeVar.relname);
+		t.JoinExpr.larg.RangeVar.relname = instance.tables.get(t.JoinExpr.larg.RangeVar.relname);
+		t.JoinExpr.rarg.RangeVar.relname = instance.tables.get(t.JoinExpr.rarg.RangeVar.relname);
+		return l && r;
+	}
+	if (!instance.tables.get(t.RangeVar.relname)) return false;
+	t.RangeVar.relname = instance.tables.get(t.RangeVar.relname);
+	return true;
+}
+
 const recursivelyCheckAndReplaceAllTablesExist = (instance, query) => {
 	if (query.ExplainStmt) {
 		return recursivelyCheckAndReplaceAllTablesExist(instance, query.ExplainStmt.query);
@@ -90,36 +130,7 @@ const recursivelyCheckAndReplaceAllTablesExist = (instance, query) => {
 		if (query[statementKey].relation) return [query[statementKey].relation];
 		return query[statementKey].fromClause;
 	})();
-	const statementCondition = every(target, t => {
-		if (t.RangeSubselect) return recursivelyCheckAndReplaceAllTablesExist(instance, t.RangeSubselect.subquery);
-		if (t.JoinExpr) {
-			if (t.JoinExpr.larg.RangeSubselect && t.JoinExpr.rarg.RangeSubselect) {
-				const l = recursivelyCheckAndReplaceAllTablesExist(instance, t.JoinExpr.larg.RangeSubselect.subquery);
-				const r = recursivelyCheckAndReplaceAllTablesExist(instance, t.JoinExpr.rarg.RangeSubselect.subquery);
-				return l && r;
-			}
-			if (t.JoinExpr.larg.RangeSubselect) {
-				const l = recursivelyCheckAndReplaceAllTablesExist(instance, t.JoinExpr.larg.RangeSubselect.subquery);
-				const r = instance.tables.get(t.JoinExpr.rarg.RangeVar.relname);
-				t.JoinExpr.rarg.RangeVar.relname = instance.tables.get(t.JoinExpr.rarg.RangeVar.relname);
-				return l && r;
-			}
-			if (t.JoinExpr.rarg.RangeSubselect) {
-				const r = recursivelyCheckAndReplaceAllTablesExist(instance, t.JoinExpr.rarg.RangeSubselect.subquery);
-				const l = instance.tables.get(t.JoinExpr.larg.RangeVar.relname);
-				t.JoinExpr.larg.RangeVar.relname = instance.tables.get(t.JoinExpr.larg.RangeVar.relname);
-				return l && r;
-			}
-			const l = instance.tables.get(t.JoinExpr.larg.RangeVar.relname);
-			const r = instance.tables.get(t.JoinExpr.rarg.RangeVar.relname);
-			t.JoinExpr.larg.RangeVar.relname = instance.tables.get(t.JoinExpr.larg.RangeVar.relname);
-			t.JoinExpr.rarg.RangeVar.relname = instance.tables.get(t.JoinExpr.rarg.RangeVar.relname);
-			return l && r;
-		}
-		if (!instance.tables.get(t.RangeVar.relname)) return false;
-		t.RangeVar.relname = instance.tables.get(t.RangeVar.relname);
-		return true;
-	});
+	const statementCondition = every(target, recursivelyCheckAndReplaceExpression(instance));
 	if (!query[statementKey].whereClause) return statementCondition;
 	const whereCondition = recursivelyCheckAndReplaceWhereClause(instance, query[statementKey].whereClause);
 	return statementCondition && whereCondition;

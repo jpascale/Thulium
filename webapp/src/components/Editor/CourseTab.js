@@ -199,7 +199,7 @@ class CourseTab extends React.Component {
 
 		if (!membership) return null;
 
-		const isTeacher = ~['Instructor', 'TeachingAssistant'].indexOf(membership.courseRoleId)
+		const isTeacher = ~['Instructor', 'TeachingAssistant', 'PRM'].indexOf(membership.courseRoleId)
 
 		const gradeList = membership.course.grades.filter(g => g.content).map((g) => (
 			<li key={g.id}>
