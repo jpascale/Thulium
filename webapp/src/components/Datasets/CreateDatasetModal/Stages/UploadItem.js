@@ -159,7 +159,7 @@ class UploadItem extends React.Component {
                   </FormGroup>
                   <FormGroup check>
                     <Label check>
-                      <Input type="checkbox" value={null2NULL} onChange={this.handleToggle('null2NULL')} /> Cells containing "NULL" or "null" are treated as <code>NULL</code>
+                      <Input type="checkbox" value={null2NULL} onChange={this.handleToggle('null2NULL')} /> Cells containing {'"NULL"'} or {'"null"'} are treated as <code>NULL</code>
                     </Label>
                   </FormGroup>
                   <Button size="sm" disabled={!file || (options && options.exam && !reducedFile)} onClick={this.process}>Process File</Button>

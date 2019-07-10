@@ -70,8 +70,8 @@ router.use('/',
 			req.body.instructions = `<!-- Thulium Exam -->
 			<div>
 				Navigate to
-				<a href="http://localhost:3010/?exam=${exam._id}">
-					http://localhost:3010/?exam=${exam._id}
+				<a href="https://thulium.xyz/?exam=${exam._id}">
+					https://thulium.xyz/?exam=${exam._id}
 				</a>
 			</div>`;
 			req.body.description = 'Thulium Exam';

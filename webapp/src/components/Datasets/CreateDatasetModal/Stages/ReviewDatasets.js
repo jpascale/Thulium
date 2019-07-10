@@ -34,7 +34,7 @@ class ReviewDatasets extends React.Component {
           <br />
           <b>Date</b> must be of the form YYYY-MM-DD.
           <br />
-          <b>Timestamp</b> must be a valid <a className="alert-link" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601</a> string.
+          <b>Timestamp</b> must be a valid <a className="alert-link" href="https://en.wikipedia.org/wiki/ISO_8601" rel="noopener noreferrer" target="_blank">ISO 8601</a> string.
         </Alert>
         <div className="review-datasets d-flex flex-row">
           <Nav tabs className="nav-tabs--vertical nav-tabs--left">
