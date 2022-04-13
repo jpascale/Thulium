@@ -12,7 +12,7 @@
     "@thulium/base": "../base",
     "@thulium/internal": "../internal",
     "@thulium/storage": "../storage",
-    "async": "^2.6.2",
+    "async": "^3.2.2",
     "debug": "^4.1.1",
     "lodash.camelcase": "^4.3.0",
     "pg-query-parser": "jpascale/pg-query-parser",
